@@ -1,1695 +1,691 @@
-<!DOCTYPE html>
+import os
+
+html = '''<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#07090e">
-<title>Class 10 B · Our School Week</title>
+<meta name="theme-color" content="#0a0a0b">
+<title>Class 10 B · Our school week</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #07090e;
-  --bg-deep: #030408;
-  --accent: #f5a524;
-  --accent-light: #fde68a;
-  --rgb: 245, 165, 36;
-  --text: #f3f5f9;
-  --text-dim: #9aa4b6;
-  --muted: #6b778c;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.16);
-  --glass: rgba(13, 17, 26, 0.72);
-  --glass-card: rgba(18, 24, 38, 0.6);
-  --glass-hover: rgba(255, 255, 255, 0.07);
-  --glass-active: rgba(var(--rgb), 0.16);
-  --specular: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-  --shadow-lg: 0 24px 64px -12px rgba(0, 0, 0, 0.7);
-  --ease: cubic-bezier(0.16, 1, 0.3, 1);
-  --R: 260px;
-  --rot: 0deg;
+:root{
+  --bg:#0a0a0b; --text:#ecebe6; --muted:#7d7c77; --line:rgba(236,235,230,.1);
+  --accent:#ecebe6; --R:240px; --rot:0deg;
+  --ease:cubic-bezier(.7,0,.2,1);
 }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text)}
+body{font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+::selection{background:var(--accent);color:var(--bg)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;transition:opacity .8s}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center,transparent 40%,rgba(10,10,11,.8) 100%)}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 
-html {
-  scroll-behavior: smooth;
-  background: var(--bg-deep);
-  color-scheme: dark;
-}
+/* header */
+.top{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:24px 32px}
+.top b{color:var(--text);font-weight:400}
+.top-r{display:flex;gap:24px}
+.top-r button{transition:color .3s}
+.top-r button:hover{color:var(--text)}
+#sound i{font-style:normal;color:var(--text)}
 
-body {
-  background: radial-gradient(1100px 800px at 75% 20%, rgba(var(--rgb), 0.09), transparent 60%),
-              radial-gradient(900px 700px at 15% 65%, rgba(56, 189, 248, 0.04), transparent 60%),
-              var(--bg-deep);
-  background-attachment: fixed;
-  color: var(--text);
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  line-height: 1.55;
-  min-height: 100vh;
-}
+/* intro */
+.intro{position:fixed;right:6vw;bottom:8vh;z-index:3;text-align:right;pointer-events:none;transition:opacity .6s,transform .9s var(--ease)}
+.intro h1{font:400 clamp(56px,7.5vw,116px)/.9 'Instrument Serif',serif;letter-spacing:-.02em;margin-top:16px}
+.intro h1 em{color:var(--accent);transition:color .8s}
+.intro.hide{opacity:0;transform:translateY(24px)}
 
-button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  cursor: pointer;
-}
+/* dial */
+.dial{position:fixed;left:0;top:50%;width:0;height:0;z-index:5}
+.ring{position:absolute;border-radius:50%;pointer-events:none;border:1px solid var(--line)}
+.r1{width:calc(var(--R)*2);height:calc(var(--R)*2);left:calc(var(--R)*-1);top:calc(var(--R)*-1)}
+.r2{width:calc(var(--R)*2 - 150px);height:calc(var(--R)*2 - 150px);left:calc(var(--R)*-1 + 75px);top:calc(var(--R)*-1 + 75px);border-style:dashed;opacity:.5}
+.hitzone{position:absolute;width:calc(var(--R)*2 + 140px);height:calc(var(--R)*2 + 140px);left:calc(var(--R)*-1 - 70px);top:calc(var(--R)*-1 - 70px);border-radius:50%;cursor:pointer;z-index:1}
+.wheel{position:absolute;left:0;top:0;transform:rotate(var(--rot));transition:transform 1s var(--ease);z-index:2}
+.ticks{position:absolute;width:calc(var(--R)*2 + 56px);height:calc(var(--R)*2 + 56px);left:calc(var(--R)*-1 - 28px);top:calc(var(--R)*-1 - 28px);border-radius:50%;pointer-events:none;
+  background:repeating-conic-gradient(rgba(236,235,230,.22) 0 .3deg,transparent .3deg 4deg);
+  -webkit-mask:radial-gradient(circle closest-side,transparent calc(100% - 8px),#000 calc(100% - 7px));
+  mask:radial-gradient(circle closest-side,transparent calc(100% - 8px),#000 calc(100% - 7px))}
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+/* Day items with generous hit targets */
+.dy{position:absolute;left:0;top:0;width:0;height:0;padding:0;cursor:pointer;
+  transform:rotate(var(--a)) translateX(var(--R)) rotate(calc(-1 * var(--a) - var(--rot)));
+  transition:transform 1s var(--ease),opacity .6s;z-index:5}
+.dy::before{content:"";position:absolute;width:8px;height:8px;left:-4px;top:-4px;border-radius:50%;background:var(--muted);transition:opacity .4s,transform .4s;cursor:pointer}
+.dy .lb{position:absolute;left:0;top:0;white-space:nowrap;text-align:left;transform-origin:left center;
+  transform:translate(18px,-50%) scale(.58);color:var(--muted);transition:transform .9s var(--ease),color .5s;
+  cursor:pointer;padding:12px 20px;margin:-12px -20px}
+.dy .nm{display:block;font:400 42px/1 'Instrument Serif',serif}
+.dy .ct{display:block;margin-top:8px;opacity:0;transition:opacity .4s}
+.dy:hover .lb{color:var(--text)}
+.dy:hover::before{background:var(--text);transform:scale(1.4)}
+.dy.focus .lb{transform:translate(18px,-50%) scale(.82);color:var(--text)}
+.dy.on .lb{transform:translate(20px,calc(-100% - 8px)) scale(1);color:var(--text)}
+.dy.on .ct{opacity:1}
+.dy.on::before,.dy.focus::before{opacity:0}
 
-::selection {
-  background: var(--accent);
-  color: #04060a;
-}
+/* liquid */
+.goo{position:fixed;z-index:4;pointer-events:none;filter:url(#goo)}
+.goo span{position:absolute;border-radius:50%;background:var(--accent);transition:background .8s}
+.g-anchor{width:18px;height:18px;margin:-9px 0 0 -9px;animation:breathe 2.6s ease-in-out infinite}
+.g-drop{width:22px;height:22px;margin:-11px 0 0 -11px;opacity:0}
+.g-drop.sm{width:14px;height:14px;margin:-7px 0 0 -7px}
+.g-pool{width:30px;height:30px;margin:-15px 0 0 -15px;transform:scale(0)}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
 
-.mono {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
+.hint{position:fixed;z-index:5;left:calc(var(--R) + 32px);top:calc(50% + 34px);transition:opacity .5s;pointer-events:none}
+.hint.hide{opacity:0}
+.keys{position:fixed;left:32px;bottom:24px;z-index:5}
 
-/* ---------------- Atmospheric FX & Canvases ---------------- */
-#gl {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  z-index: 0;
-  pointer-events: none;
-  transition: opacity 0.6s ease;
-}
+/* panel */
+.panel{position:fixed;z-index:6;top:96px;bottom:48px;right:6vw;width:min(500px,42vw);
+  overflow-y:auto;scrollbar-width:none;pointer-events:none;clip-path:circle(0px at 0px 50%);
+  -webkit-mask:linear-gradient(to bottom,transparent 0,#000 20px,#000 calc(100% - 48px),transparent);
+  mask:linear-gradient(to bottom,transparent 0,#000 20px,#000 calc(100% - 48px),transparent);
+  padding:20px 2px 56px 0}
+.panel::-webkit-scrollbar{display:none}
+.panel.open{pointer-events:auto}
+.p-top{display:flex;justify-content:space-between;align-items:baseline}
+.close{transition:color .3s;padding:6px 12px;border-radius:999px;border:1px solid var(--line)}.close:hover{color:var(--text);border-color:var(--accent)}
+.panel h2{font:400 clamp(60px,6vw,88px)/.95 'Instrument Serif',serif;letter-spacing:-.02em;margin:14px 0 12px}
+.panel h2 span{color:var(--accent)}
+.meta{color:var(--text)}
+.p-note{color:#a3a19b;font-size:14px;max-width:420px;margin-top:12px}
+.sec{margin:36px 0 4px}
+.rows{list-style:none}
+.row{display:grid;grid-template-columns:60px 1fr auto;column-gap:16px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);
+  opacity:0;transform:translateY(10px);animation:in .7s cubic-bezier(.16,1,.3,1) forwards;animation-delay:calc(var(--i)*40ms + 260ms);cursor:pointer}
+.row .t{font:400 12px 'JetBrains Mono',monospace;color:var(--muted)}
+.row .s{transition:color .3s}
+.row .s em{font-style:normal;color:var(--muted)}
+.row .rm{font:400 11px 'JetBrains Mono',monospace;color:var(--muted);letter-spacing:.04em;text-align:right}
+.row .more{grid-column:2/-1;display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1)}
+.row .more>div{overflow:hidden;min-height:0}
+.row .more p{font-size:13px;color:#8f8d87;padding-top:6px}
+.row:hover .more,.row.open .more{grid-template-rows:1fr}
+.row:hover .s,.row.open .s{color:var(--accent)}
+.row.now .t{color:var(--accent)}
+.row.now .t::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:6px;vertical-align:middle}
+@keyframes in{to{opacity:1;transform:none}}
 
-.vignette {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  background: radial-gradient(ellipse at center, transparent 40%, rgba(7, 9, 14, 0.85) 100%);
-}
-
-.flash {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 30;
-  opacity: 0;
-  background: radial-gradient(circle at var(--fx, 70%) var(--fy, 45%), rgba(255, 255, 255, 0.35), rgba(var(--rgb), 0.18) 30%, transparent 65%);
-}
-.flash.go {
-  animation: flashBurst 0.85s ease-out;
-}
-@keyframes flashBurst {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
-.grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 40;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-}
-
-/* Fullscreen SVG layer for Gooey Fluid Droplet */
-.fluid-layer {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 95;
-}
-
-/* ---------------- Top Glass Header ---------------- */
-.top {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 50;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px clamp(18px, 5vw, 48px);
-  background: rgba(7, 9, 14, 0.75);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid var(--line);
-}
-
-.brand {
-  font: 700 15px 'Syne', sans-serif;
-  letter-spacing: 0.02em;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.brand i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 14px var(--accent);
-  transition: background 0.6s, box-shadow 0.6s;
-}
-.brand span {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-left: 4px;
-}
-
-.top-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.btn-shatter {
-  font: 600 11px 'JetBrains Mono', monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 7px 14px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  transition: color 0.3s, border-color 0.3s, background 0.3s;
-}
-.btn-shatter:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.07);
-}
-
-.sound {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font: 600 11px 'JetBrains Mono', monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  padding: 7px 15px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  transition: color 0.3s, border-color 0.3s, background 0.3s;
-}
-.sound:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.06);
-}
-.bars {
-  display: flex;
-  gap: 2.5px;
-  align-items: flex-end;
-  height: 12px;
-}
-.bars i {
-  width: 2px;
-  height: 3px;
-  background: var(--accent);
-  border-radius: 1px;
-  transition: background 0.6s;
-}
-.sound.on .bars i {
-  animation: eq 0.9s ease-in-out infinite;
-}
-.sound.on .bars i:nth-child(2) { animation-delay: -0.32s; }
-.sound.on .bars i:nth-child(3) { animation-delay: -0.65s; }
-@keyframes eq {
-  0%, 100% { height: 3px; }
-  50% { height: 12px; }
-}
-
-/* ---------------- Layout & Workspace ---------------- */
-.app-container {
-  position: relative;
-  z-index: 2;
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  padding: 88px clamp(18px, 4vw, 48px) 40px;
-  gap: 40px;
-  align-items: start;
-}
-
-/* ---------------- Left: Circular Dial & Controls ---------------- */
-.dial-column {
-  position: sticky;
-  top: 96px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.intro-box {
-  padding-left: 8px;
-}
-.intro-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font: 600 11px 'JetBrains Mono', monospace;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: rgba(var(--rgb), 0.1);
-  border: 1px solid rgba(var(--rgb), 0.25);
-  padding: 5px 12px;
-  border-radius: 999px;
-  margin-bottom: 14px;
-}
-.intro-pill .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 8px currentColor;
-}
-.intro-title {
-  font: 400 clamp(38px, 4.2vw, 56px)/0.95 'Instrument Serif', serif;
-  letter-spacing: -0.02em;
-}
-.intro-title em {
-  font-style: italic;
-  color: var(--accent);
-  transition: color 0.6s;
-}
-.intro-sub {
-  color: var(--text-dim);
-  font-size: 0.92rem;
-  margin-top: 10px;
-  font-weight: 300;
-  line-height: 1.5;
-}
-
-/* Dial Wheel Area */
-.dial-shell {
-  position: relative;
-  width: 320px;
-  height: 380px;
-  margin-top: 8px;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.dial-center {
-  position: absolute;
-  left: 30px;
-  top: 50%;
-  width: 0;
-  height: 0;
-}
-
-.ring {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  border: 1px solid var(--line);
-}
-.r1 {
-  width: calc(var(--R) * 2);
-  height: calc(var(--R) * 2);
-  left: calc(var(--R) * -1);
-  top: calc(var(--R) * -1);
-}
-.r2 {
-  width: calc(var(--R) * 2 - 120px);
-  height: calc(var(--R) * 2 - 120px);
-  left: calc(var(--R) * -1 + 60px);
-  top: calc(var(--R) * -1 + 60px);
-  border-style: dashed;
-  opacity: 0.4;
-}
-
-.ticks {
-  position: absolute;
-  width: calc(var(--R) * 2 + 48px);
-  height: calc(var(--R) * 2 + 48px);
-  left: calc(var(--R) * -1 - 24px);
-  top: calc(var(--R) * -1 - 24px);
-  border-radius: 50%;
-  pointer-events: none;
-  background: repeating-conic-gradient(rgba(255, 255, 255, 0.18) 0 0.3deg, transparent 0.3deg 4deg);
-  -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
-  mask: radial-gradient(circle closest-side, transparent calc(100% - 8px), #000 calc(100% - 7px));
-}
-
-.wheel {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: rotate(var(--rot));
-  transition: transform 0.85s var(--ease);
-}
-
-.dy {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: rotate(var(--a)) translateX(var(--R)) rotate(calc(-1 * var(--a) - var(--rot)));
-  transition: transform 0.85s var(--ease), opacity 0.4s;
-  cursor: pointer;
-}
-
-.dy .lb {
-  position: absolute;
-  left: 0;
-  top: 0;
-  transform: translate(16px, -50%);
-  display: inline-flex;
-  flex-direction: column;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background: rgba(18, 24, 38, 0.7);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: var(--text-dim);
-  white-space: nowrap;
-  transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s;
-}
-.dy:hover .lb {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #fff;
-  transform: translate(20px, -50%);
-}
-.dy.on .lb {
-  background: var(--accent);
-  color: #04060a !important;
-  border-color: transparent;
-  box-shadow: 0 0 24px rgba(var(--rgb), 0.5);
-  font-weight: 700;
-  transform: translate(24px, -50%) scale(1.05);
-}
-
-.dy .nm {
-  font: 400 24px/1 'Instrument Serif', serif;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.dy.on .nm {
-  font-weight: 600;
-}
-.dy .ct {
-  font: 600 10px 'JetBrains Mono', monospace;
-  opacity: 0.8;
-  margin-top: 2px;
-}
-.dy .dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.dial-hint {
-  font: 500 11px 'JetBrains Mono', monospace;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-/* ---------------- Right: Schedule Viewport Panel ---------------- */
-.panel-column {
-  min-width: 0;
-}
-
-.panel-card {
-  background: var(--glass);
-  border: 1px solid var(--line);
-  box-shadow: var(--specular), var(--shadow-lg);
-  border-radius: 28px;
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
-  padding: 36px 40px 48px;
-  position: relative;
-  transition: border-color 0.4s, box-shadow 0.4s, transform 0.3s var(--ease), opacity 0.3s;
-}
-.panel-card.impact {
-  animation: cardImpact 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes cardImpact {
-  0% { box-shadow: inset 4px 0 0 var(--accent), 0 0 36px rgba(var(--rgb), 0.35); }
-  100% { box-shadow: var(--specular), var(--shadow-lg); }
-}
-
-.p-header {
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 28px;
-}
-.p-badge-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.p-day-title {
-  font: 400 clamp(48px, 5.5vw, 76px)/0.92 'Instrument Serif', serif;
-  letter-spacing: -0.02em;
-}
-.p-day-title span {
-  color: var(--accent);
-  transition: color 0.6s;
-}
-
-.meta-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font: 600 11.5px 'JetBrains Mono', monospace;
-  padding: 5px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--line);
-  color: var(--text-dim);
-}
-.chip.highlight {
-  background: rgba(var(--rgb), 0.12);
-  border-color: rgba(var(--rgb), 0.28);
-  color: var(--accent);
-  transition: color 0.6s, background 0.6s, border-color 0.6s;
-}
-
-.p-note {
-  font-size: 0.96rem;
-  color: var(--text-dim);
-  font-weight: 300;
-  max-width: 660px;
-  margin-top: 14px;
-  line-height: 1.6;
-}
-
-/* Section titles */
-.sec-heading {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font: 600 11px 'JetBrains Mono', monospace;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-.sec-heading::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--line);
-}
-.sec-heading.after-school {
-  margin-top: 36px;
-}
-
-/* Lesson rows */
-.rows-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.row-item {
-  display: grid;
-  grid-template-columns: 82px 36px 1fr;
-  gap: 16px;
-  align-items: center;
-  padding: 14px 18px;
-  border-radius: 18px;
-  background: var(--glass-card);
-  border: 1px solid var(--line);
-  transition: background 0.25s, border-color 0.25s, transform 0.25s var(--ease), box-shadow 0.25s;
-  cursor: pointer;
-}
-.row-item:hover {
-  background: var(--glass-hover);
-  border-color: rgba(255, 255, 255, 0.18);
-  transform: translateX(2px);
-}
-.row-item.lit {
-  background: rgba(var(--rgb), 0.16) !important;
-  border-color: rgba(var(--rgb), 0.45) !important;
-  box-shadow: inset 3.5px 0 0 var(--accent), 0 4px 24px rgba(var(--rgb), 0.22) !important;
-  transform: translateX(4px);
-}
-.row-item.live {
-  border-color: rgba(var(--rgb), 0.5);
-  background: linear-gradient(90deg, rgba(var(--rgb), 0.18), var(--glass-card));
-  box-shadow: inset 3px 0 0 var(--accent);
-}
-
-.t-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  font-family: 'JetBrains Mono', monospace;
-  line-height: 1.25;
-}
-.t-start {
-  font-size: 13.5px;
-  font-weight: 700;
-  color: #fff;
-}
-.t-end {
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.idx-badge {
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
-  display: grid;
-  place-items: center;
-  font: 700 11px 'JetBrains Mono', monospace;
-  color: var(--accent);
-  background: rgba(var(--rgb), 0.12);
-  border: 1px solid rgba(var(--rgb), 0.3);
-  transition: color 0.6s, background 0.6s, border-color 0.6s;
-}
-.idx-badge svg {
-  width: 15px;
-  height: 15px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.row-item.live .idx-badge {
-  background: var(--accent);
-  color: #04060a;
-  border-color: transparent;
-  box-shadow: 0 0 14px var(--accent);
-}
-
-.main-col {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-}
-.subject-wrap {
-  flex: 1;
-}
-.subject-title {
-  font: 600 1.02rem 'Plus Jakarta Sans', sans-serif;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.sub-tag {
-  font: 600 10px 'JetBrains Mono', monospace;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: rgba(var(--rgb), 0.12);
-  border: 1px solid rgba(var(--rgb), 0.28);
-  padding: 2px 7px;
-  border-radius: 6px;
-}
-.live-beacon {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font: 700 9px 'JetBrains Mono', monospace;
-  letter-spacing: 0.1em;
-  background: var(--accent);
-  color: #04060a;
-  padding: 2px 6px;
-  border-radius: 6px;
-}
-.live-beacon .dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #04060a;
-  animation: pulseBeacon 1.2s infinite;
-}
-@keyframes pulseBeacon {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.subject-desc {
-  font-size: 0.86rem;
-  color: var(--text-dim);
-  font-weight: 300;
-  margin-top: 3px;
-}
-
-.room-badge {
-  font: 600 11.5px 'JetBrains Mono', monospace;
-  letter-spacing: 0.02em;
-  color: var(--accent);
-  background: rgba(var(--rgb), 0.1);
-  border: 1px solid rgba(var(--rgb), 0.25);
-  padding: 6px 14px;
-  border-radius: 999px;
-  white-space: nowrap;
-  transition: color 0.6s, background 0.6s, border-color 0.6s;
-}
-
-/* Break interval divider */
-.break-chip {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 4px 18px 4px 114px;
-}
-.break-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font: 500 10.5px 'JetBrains Mono', monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px dashed rgba(255, 255, 255, 0.1);
-  padding: 4px 12px;
-  border-radius: 8px;
-}
-.break-pill svg {
-  width: 12px;
-  height: 12px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-}
-
-/* Mobile segmented control (hidden on desktop) */
-.mobile-day-bar {
-  display: none;
-}
-
-/* ---------------- Responsive Styles ---------------- */
-@media (max-width: 960px) {
-  .app-container {
-    grid-template-columns: 280px 1fr;
-    gap: 28px;
-    padding-top: 80px;
-  }
-}
-
-@media (max-width: 768px) {
-  body {
-    overflow-y: auto !important;
-  }
-  .app-container {
-    display: flex;
-    flex-direction: column;
-    padding: 72px 14px 40px;
-    gap: 20px;
-  }
-
-  .dial-column {
-    position: static;
-    width: 100%;
-    gap: 16px;
-  }
-  .dial-shell {
-    display: none; /* Hide complex desktop circular dial on mobile */
-  }
-
-  /* Show elegant mobile segmented bar */
-  .mobile-day-bar {
-    display: flex;
-    position: sticky;
-    top: 61px;
-    z-index: 25;
-    background: rgba(7, 9, 14, 0.94);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    padding: 8px 0;
-    margin: 0 -4px;
-    width: 100%;
-  }
-  .mobile-nav {
-    position: relative;
-    display: flex;
-    gap: 4px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--line);
-    padding: 4px;
-    border-radius: 999px;
-    width: 100%;
-  }
-  .mobile-pill-active {
-    position: absolute;
-    top: 4px;
-    left: 0;
-    width: var(--m-w, 64px);
-    height: calc(100% - 8px);
-    border-radius: 999px;
-    background: var(--accent);
-    transform: translateX(var(--m-x, 0px));
-    transition: transform 0.4s var(--ease), background 0.6s;
-    pointer-events: none;
-  }
-  .m-btn {
-    flex: 1;
-    height: 42px;
-    border-radius: 999px;
-    font: 600 0.92rem 'Plus Jakarta Sans', sans-serif;
-    color: var(--text-dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-  }
-  .m-btn.on {
-    color: #04060a;
-    font-weight: 700;
-  }
-
-  .panel-card {
-    padding: 24px 16px 32px;
-    border-radius: 22px;
-  }
-  .p-day-title {
-    font-size: 2.4rem;
-  }
-
-  .row-item {
-    grid-template-columns: 62px 1fr;
-    gap: 8px 12px;
-    padding: 14px 12px;
-    border-radius: 16px;
-  }
-  .idx-badge {
-    display: none;
-  }
-  .t-col {
-    align-items: flex-start;
-  }
-  .t-start {
-    font-size: 12.5px;
-  }
-  .t-end {
-    font-size: 10.5px;
-  }
-  .main-col {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .room-badge {
-    font-size: 10.5px;
-    padding: 4px 10px;
-  }
-  .break-chip {
-    padding: 4px 8px;
-  }
-  .break-pill {
-    font-size: 9.5px;
-    padding: 3px 8px;
-  }
-}
+/* mobile: thumb wheel at the bottom */
+.m .top{padding:18px 18px}
+.m .intro{left:18px;right:18px;top:78px;bottom:auto;text-align:left}
+.m .intro h1{font-size:clamp(48px,14vw,68px)}
+.m .dial{left:50%;top:100%}
+.m .hitzone{cursor:ew-resize}
+.m .dy .lb{text-align:center;transform-origin:center center;transform:translate(-50%,calc(-100% - 14px)) scale(.58)}
+.m .dy .nm{font-size:34px}
+.m .dy.focus .lb{transform:translate(-50%,16px) scale(.85)}
+.m .dy.on .lb{transform:translate(-50%,16px) scale(1)}
+.m .hint{left:50%;top:auto;bottom:calc(var(--R) + 30px);transform:translateX(-50%)}
+.m .keys{display:none}
+.m .panel{top:64px;left:18px;right:18px;width:auto;bottom:calc(var(--R) + 96px)}
+.m .row{grid-template-columns:52px 1fr auto}
 </style>
 </head>
 <body>
-
-<!-- Fluid Gooey Filter & Overlay -->
-<svg class="fluid-layer" id="fluidLayer" aria-hidden="true">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="fluid-goo" x="-25%" y="-25%" width="150%" height="150%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur" />
-      <feColorMatrix in="blur" mode="matrix" values="
-        1 0 0 0 0
-        0 1 0 0 0
-        0 0 1 0 0
-        0 0 0 20 -9" result="goo" />
-      <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+    <filter id="goo" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b"/>
+      <feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8"/>
     </filter>
   </defs>
-  <g filter="url(#fluid-goo)" id="fluidGooGroup">
-    <circle id="donorBlob" cx="-100" cy="-100" r="0" fill="var(--accent)" />
-    <circle id="travelBlob" cx="-100" cy="-100" r="0" fill="var(--accent)" />
-    <circle id="targetBlob" cx="-100" cy="-100" r="0" fill="var(--accent)" />
-  </g>
-  <g id="splashGroup"></g>
 </svg>
 
 <canvas id="gl"></canvas>
 <div class="vignette"></div>
-<div class="flash" id="flash"></div>
 <div class="grain"></div>
 
 <header class="top">
-  <a href="#" class="brand"><i></i>Class 10 B<span>Weekly Orbit</span></a>
-  <div class="top-actions">
-    <button class="btn-shatter" id="shatterBtn">Shatter Planet</button>
-    <button class="sound on" id="sound" aria-pressed="true">
-      <span class="bars"><i></i><i></i><i></i></span>
-      <span id="soundLbl">Sound on</span>
-    </button>
+  <span class="mono"><b>Class 10 B</b> · Minsk</span>
+  <div class="top-r">
+    <button class="mono" id="shatterBtn">Shatter</button>
+    <button class="mono" id="sound" aria-pressed="true">Sound <i id="soundLbl">on</i></button>
   </div>
 </header>
 
-<main class="app-container" id="mainContainer">
-  
-  <!-- Left Column: Intro & Interactive Dial -->
-  <aside class="dial-column">
-    <div class="intro-box">
-      <div class="intro-pill"><span class="dot"></span>English Project · Class 10 B</div>
-      <h1 class="intro-title">Our school<br><em>week.</em></h1>
-      <p class="intro-sub">Spin the circular dial or choose a day to reconstruct the planetary orbit and view lessons.</p>
-    </div>
+<div class="intro" id="intro">
+  <p class="mono">English project · Class 10 B</p>
+  <h1>Our school<br><em>week.</em></h1>
+</div>
 
-    <!-- Desktop Circular Dial -->
-    <div class="dial-shell" id="dialShell">
-      <div class="dial-center" id="dial">
-        <div class="ring r1"></div>
-        <div class="ring r2"></div>
-        <div class="wheel" id="wheel"><div class="ticks"></div></div>
-      </div>
-    </div>
-    <p class="dial-hint"><span class="dot"></span>Scroll wheel or tap a day · ↑ ↓ arrow keys</p>
+<div class="dial" id="dial">
+  <div class="hitzone" id="hitzone" title="Click to open active day"></div>
+  <div class="ring r1"></div>
+  <div class="ring r2"></div>
+  <div class="wheel" id="wheel"><div class="ticks"></div></div>
+</div>
 
-    <!-- Mobile Segmented Bar -->
-    <div class="mobile-day-bar">
-      <nav class="mobile-nav" id="mobileNav" role="tablist">
-        <div class="mobile-pill-active" id="mPill" aria-hidden="true"></div>
-      </nav>
-    </div>
-  </aside>
+<div class="goo" id="goo" aria-hidden="true">
+  <span class="g-anchor" id="anchor"></span>
+  <span class="g-drop" id="d1"></span>
+  <span class="g-drop sm" id="d2"></span>
+  <span class="g-pool" id="pool"></span>
+</div>
 
-  <!-- Right Column: Interactive Schedule Viewport -->
-  <section class="panel-column">
-    <div class="panel-card" id="panelCard">
-      <div class="p-header" id="panelHead"></div>
-      <div class="p-body" id="panelBody"></div>
-    </div>
-  </section>
+<p class="mono hint" id="hint">Pick a day</p>
+<p class="mono keys">Scroll the dial · ↑ ↓ · Esc</p>
 
-</main>
+<section class="panel" id="panel" aria-live="polite"></section>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 <script>
 (function(){
 "use strict";
-const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const $=s=>document.querySelector(s);
 
-/* ---------------- BELL SCHEDULES & DATA ---------------- */
-// College bells on Monday (Vocational Training - Sewing, Room 36):
-const TIMES_COLLEGE = [
-  ["08:30", "09:15"],
-  ["09:25", "10:10"],
-  ["10:20", "11:05"],
-  ["11:25", "12:10"],
-  ["12:30", "13:15"],
-  ["13:35", "14:20"]
+/* ================= DATA ================= */
+const TIMES_COLLEGE=[["08:30","09:15"],["09:25","10:10"],["10:20","11:05"],["11:25","12:10"],["12:30","13:15"],["13:35","14:20"]];
+const TIMES_SCHOOL=[["08:30","09:15"],["09:30","10:15"],["10:30","11:15"],["11:30","12:15"],["12:30","13:15"],["13:35","14:20"],["14:35","15:20"]];
+const CREAM="#ecebe6", CREAM2="#efe9dc";
+
+const DAYS=[
+{name:"Monday",place:"College",c1:"#e8875b",gym:true,times:TIMES_COLLEGE,
+ note:"Vocational training day at the college. Sewing practice in Room 36.",
+ lessons:[
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Safety rules and types of fabric."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Taking measurements and cutting patterns."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Setting up the sewing machine, straight stitches."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Putting the parts together, basic seams."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Finishing edges and pressing."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Finishing practice pieces and cleaning up."}
+ ]},
+{name:"Tuesday",place:"School",c1:"#8fb3d9",gym:false,times:TIMES_SCHOOL,
+ note:"Seven lessons, six rooms, three floors. Most breaks are spent on the stairs.",
+ lessons:[
+  {s:"Russian Literature",room:"Room 305",n:"Classic prose and discussion."},
+  {s:"Russian Language",room:"Room 305",n:"Syntax and punctuation."},
+  {s:"History of Belarus in World Context",room:"Room 306",n:"Belarus in the wider European story."},
+  {s:"Physics",room:"Room 210",n:"Mechanics, formulas and experiments."},
+  {s:"PE & Health",room:"Gym 1",n:"Fitness and team sports in the gym."},
+  {s:"Mathematics",room:"Room 301",n:"Trigonometry and problem solving."},
+  {s:"Belarusian Literature",room:"Room 316",n:"Poetry at the end of a seven-lesson day."}
+ ]},
+{name:"Wednesday",place:"School",c1:"#a9c49f",gym:true,times:TIMES_SCHOOL,
+ note:"Six lessons and a balanced mix. The calmest day of the week.",
+ lessons:[
+  {s:"Mathematics",room:"Room 301",n:"Algebra and quadratic functions."},
+  {s:"Russian Language",room:"Room 305",n:"Grammar and punctuation drills."},
+  {s:"English / German Language",room:"Room 324 / 212",n:"The class splits into two language groups."},
+  {s:"Computer Science / IT",room:"Lab 212 / 322",n:"Algorithms and programming."},
+  {s:"Geography",room:"Room 319",n:"Maps, climate zones and population."},
+  {s:"Biology",room:"Room 311",n:"Cells, genetics and ecosystems."}
+ ]},
+{name:"Thursday",place:"School",c1:"#dcb85f",gym:false,times:TIMES_SCHOOL,
+ note:"Starts with Chemistry, ends with two Belarusian lessons in Room 316.",
+ lessons:[
+  {s:"Chemistry",room:"Room 313",n:"Reactions and the periodic table."},
+  {s:"History of Belarus",room:"Room 306",n:"Statehood and national culture."},
+  {s:"Technical Drawing",sub:"Drafting",room:"Room 305",n:"Projections, rulers and precision."},
+  {s:"PE & Health",room:"Gym 1",n:"Cardio and athletics."},
+  {s:"Mathematics",room:"Room 301",n:"Trigonometric identities and geometry."},
+  {s:"Belarusian Language",room:"Room 316",n:"Spelling, vocabulary and style."},
+  {s:"Belarusian Literature",room:"Room 316",n:"Same room, last lesson of the day."}
+ ]},
+{name:"Friday",place:"School",c1:"#d98e8e",gym:true,times:TIMES_SCHOOL,
+ note:"Seven lessons in seven rooms. Physics last, then the weekend.",
+ lessons:[
+  {s:"Mathematics",room:"Room 301",n:"Starting Friday with numbers."},
+  {s:"PE & Health",room:"Gym 1",n:"An early workout."},
+  {s:"English / German",room:"Room 324 / 212",n:"Speaking practice and presentations."},
+  {s:"Social Studies",room:"Room 306",n:"Society, law and rights."},
+  {s:"Chemistry",room:"Room 313",n:"Formulas and practical problems."},
+  {s:"Biology",room:"Room 311",n:"Evolution and ecosystems."},
+  {s:"Physics",room:"Room 210",n:"The last lesson of the week."}
+ ]}
 ];
 
-// High school bells (Tuesday – Friday):
-const TIMES_SCHOOL = [
-  ["08:30", "09:15"],
-  ["09:30", "10:15"],
-  ["10:30", "11:15"],
-  ["11:30", "12:15"],
-  ["12:30", "13:15"],
-  ["13:35", "14:20"],
-  ["14:35", "15:20"]
+const AFTER=[
+ [{t:"14:45",a:"Home & lunch",tag:"Home",n:"Lunch and a short rest after the college."},
+  {t:"16:00–17:30",a:"Gym",tag:"Gym",n:"First training of the week."},
+  {t:"18:30–20:30",a:"Laptop work",tag:"Laptop",n:"Code and digital tasks, headphones on."},
+  {t:"21:00",a:"Homework",tag:"Study",n:"Getting ready for Tuesday."}],
+ [{t:"15:40",a:"Home & lunch",tag:"Home",n:"Seven lessons done. Food first."},
+  {t:"16:30–18:00",a:"Homework",tag:"Study",n:"Reading and maths."},
+  {t:"18:30–20:30",a:"Laptop work",tag:"Laptop",n:"Evening work session."},
+  {t:"21:00",a:"Free time",tag:"Free",n:"Music, a series, rest."}],
+ [{t:"14:40",a:"Home & lunch",tag:"Home",n:"Shorter day, more time to rest."},
+  {t:"16:00–17:30",a:"Gym",tag:"Gym",n:"Mid-week training."},
+  {t:"18:30–20:30",a:"Laptop work",tag:"Laptop",n:"Programming and small projects."},
+  {t:"21:00",a:"Homework",tag:"Study",n:"Getting ready for Thursday."}],
+ [{t:"15:40",a:"Home & lunch",tag:"Home",n:"A calm lunch after a long day."},
+  {t:"16:30–18:00",a:"Homework",tag:"Study",n:"Technical drawing and formulas."},
+  {t:"18:30–20:30",a:"Laptop work",tag:"Laptop",n:"Finishing tasks for the week."},
+  {t:"21:00",a:"Free time",tag:"Free",n:"Rest before Friday."}],
+ [{t:"15:40",a:"Home & lunch",tag:"Home",n:"The school week is over."},
+  {t:"16:30–18:00",a:"Gym",tag:"Gym",n:"Last training of the week."},
+  {t:"18:30–20:00",a:"Laptop work",tag:"Laptop",n:"Personal projects, no deadlines."},
+  {t:"20:00",a:"Weekend",tag:"Free",n:"Friends, films and sleep."}]
 ];
 
-const BREAKS = {
-  college: [
-    "10 min break · Setup needles & bobbins",
-    "10 min break · Sewing machine adjustment",
-    "20 min lunch break · College canteen",
-    "20 min break · Pattern assembly & check",
-    "20 min break · Final press & tidy up"
-  ],
-  school: [
-    "15 min break · Move to Room 305",
-    "15 min break · Move to Room 306",
-    "15 min break · Lockers & recess",
-    "15 min break · Move to next floor",
-    "20 min lunch break · School cafeteria",
-    "15 min break · Afternoon prep"
-  ]
-};
+const toMin=s=>{const p=s.split(":");return +p[0]*60+ +p[1];};
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
 
-const DAYS = [
-  {
-    name: "Monday",
-    short: "Mon",
-    place: "College",
-    c1: "#f5a524",
-    c2: "#fde68a",
-    gym: true,
-    times: TIMES_COLLEGE,
-    breaks: BREAKS.college,
-    note: "Vocational training day at the college. Sewing practice and basic garment making in Room 36.",
-    lessons: [
-      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Safety protocols and fabric classification in Room 36." },
-      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Taking measurements and cutting fabric patterns." },
-      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Sewing machine setup and straight stitching practice." },
-      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Assembling garment parts and basic seam joining." },
-      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Edge finishing, trimming, and steam pressing." },
-      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Completing practice pieces and workspace cleaning." }
-    ]
-  },
-  {
-    name: "Tuesday",
-    short: "Tue",
-    place: "School",
-    c1: "#38bdf8",
-    c2: "#a5b4fc",
-    gym: false,
-    times: TIMES_SCHOOL,
-    breaks: BREAKS.school,
-    note: "Seven academic periods across six rooms and three floors. Most breaks are spent moving between classrooms.",
-    lessons: [
-      { s: "Russian Literature", room: "Room 305", n: "Classic prose analysis and literary discussion." },
-      { s: "Russian Language", room: "Room 305", n: "Advanced syntax and punctuation exercises." },
-      { s: "History of Belarus in World Context", room: "Room 306", n: "Historic milestones in the broader European context." },
-      { s: "Physics", room: "Room 210", n: "Kinematic formulas, mechanics, and laboratory experiments." },
-      { s: "PE & Health", room: "Gym 1", n: "High-energy fitness and team sports in the gymnasium." },
-      { s: "Mathematics", room: "Room 301", n: "Trigonometric equations and algebraic problem solving." },
-      { s: "Belarusian Literature", room: "Room 316", n: "Poetic reflections at the close of a 7-period day." }
-    ]
-  },
-  {
-    name: "Wednesday",
-    short: "Wed",
-    place: "School",
-    c1: "#a78bfa",
-    c2: "#f0abfc",
-    gym: true,
-    times: TIMES_SCHOOL,
-    breaks: BREAKS.school,
-    note: "Six periods, six classrooms, and a well-balanced academic flow. The calmest day of the school week.",
-    lessons: [
-      { s: "Mathematics", room: "Room 301", n: "Morning algebraic proofs and quadratic functions." },
-      { s: "Russian Language", room: "Room 305", n: "Grammar parsing, punctuation, and linguistic drills." },
-      { s: "English / German Language", room: "Room 324 / 212", n: "Conversational fluency debates and foreign language vocabulary." },
-      { s: "Computer Science / IT", room: "Lab 212 / 322", n: "Algorithms, programming scripts, and digital systems." },
-      { s: "Geography", room: "Room 319", n: "Global economic maps, climate zones, and demographics." },
-      { s: "Biology", room: "Room 311", n: "Cellular structures, genetics, and biological ecosystems." }
-    ]
-  },
-  {
-    name: "Thursday",
-    short: "Thu",
-    place: "School",
-    c1: "#34d399",
-    c2: "#bef264",
-    gym: false,
-    times: TIMES_SCHOOL,
-    breaks: BREAKS.school,
-    note: "Seven periods starting with Chemistry and concluding with Belarusian literature in Room 316.",
-    lessons: [
-      { s: "Chemistry", room: "Room 313", n: "Chemical reactions, molecular weights, and periodic properties." },
-      { s: "History of Belarus", room: "Room 306", n: "Historic chronicles, statehood, and national culture." },
-      { s: "Technical Drawing & Drafting", sub: "Drafting", room: "Room 305", n: "Orthographic projections, rulers, and geometric precision." },
-      { s: "PE & Health", room: "Gym 1", n: "Cardio and athletics conditioning in the main gym." },
-      { s: "Mathematics", room: "Room 301", n: "Trigonometric identities and geometry theorems." },
-      { s: "Belarusian Language", room: "Room 316", n: "Orthography, vocabulary enrichment, and stylistic rules." },
-      { s: "Belarusian Literature", room: "Room 316", n: "Classic lyrical poetry to conclude the Thursday schedule." }
-    ]
-  },
-  {
-    name: "Friday",
-    short: "Fri",
-    place: "School",
-    c1: "#fb7185",
-    c2: "#fdba74",
-    gym: true,
-    times: TIMES_SCHOOL,
-    breaks: BREAKS.school,
-    note: "Seven periods in seven different classrooms. Concluding with Physics before the weekend unlocks.",
-    lessons: [
-      { s: "Mathematics", room: "Room 301", n: "Opening Friday with sharp numerical calculations." },
-      { s: "PE & Health", room: "Gym 1", n: "Early workout session to boost energy levels." },
-      { s: "English / German", room: "Room 324 / 212", n: "Oral communication and creative language presentations." },
-      { s: "Social Studies", room: "Room 306", n: "Civil society, jurisprudence, and modern sociology." },
-      { s: "Chemistry", room: "Room 313", n: "Laboratory formulas and practical chemical problem solving." },
-      { s: "Biology", room: "Room 311", n: "Evolutionary adaptations and ecosystem dynamics." },
-      { s: "Physics", room: "Room 210", n: "The final lesson of the week! Weekend officially unlocked." }
-    ]
-  }
-];
-
-const AFTER = [
-  [
-    { t: "14:45", a: "Home & lunch", n: "A warm lunch and short rest after sewing practice at the college.", k: "home" },
-    { t: "16:00–17:30", a: "Gym workout", n: "First strength training session of the week.", k: "gym" },
-    { t: "18:30–20:30", a: "Work on the laptop", n: "Writing code, digital tasks, headphones on.", k: "laptop" },
-    { t: "21:00", a: "Homework", n: "Preparing assignments for Tuesday.", k: "study" }
-  ],
-  [
-    { t: "15:40", a: "Home & lunch", n: "Seven periods finished. Recharging with a hearty meal.", k: "home" },
-    { t: "16:30–18:00", a: "Homework", n: "Literature readings and math exercises.", k: "study" },
-    { t: "18:30–20:30", a: "Work on the laptop", n: "Creative evening development session.", k: "laptop" },
-    { t: "21:00", a: "Free time", n: "Music, series, relaxing before Wednesday.", k: "rest" }
-  ],
-  [
-    { t: "14:40", a: "Home & lunch", n: "Earlier bell today. Relaxing and having lunch.", k: "home" },
-    { t: "16:00–17:30", a: "Gym workout", n: "Mid-week fitness and cardio session.", k: "gym" },
-    { t: "18:30–20:30", a: "Work on the laptop", n: "Focused programming and tech experiments.", k: "laptop" },
-    { t: "21:00", a: "Homework", n: "Getting ready for Thursday schedule.", k: "study" }
-  ],
-  [
-    { t: "15:40", a: "Home & lunch", n: "A calm lunch after surviving seven academic periods.", k: "home" },
-    { t: "16:30–18:00", a: "Homework", n: "Technical drawing blueprints and formulas.", k: "study" },
-    { t: "18:30–20:30", a: "Work on the laptop", n: "Wrapping up tasks for the school week.", k: "laptop" },
-    { t: "21:00", a: "Free evening", n: "Resting before the final push on Friday.", k: "rest" }
-  ],
-  [
-    { t: "15:40", a: "Home & lunch", n: "The high school week is officially accomplished!", k: "home" },
-    { t: "16:30–18:00", a: "Gym workout", n: "Final fitness training of the week.", k: "gym" },
-    { t: "18:30–20:00", a: "Work on the laptop", n: "Light personal projects with zero deadlines.", k: "laptop" },
-    { t: "20:00", a: "Weekend unlocked", n: "Free time, friends, cinema, and good sleep.", k: "rest" }
-  ]
-];
-
-const ICONS = {
-  home: '<path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/>',
-  gym: '<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',
-  laptop: '<path d="M4 6h16v10H4zM2 19h20"/>',
-  study: '<path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>',
-  rest: '<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>'
-};
-const TAGS = { home: "Home", gym: "Gym", laptop: "Laptop", study: "Homework", rest: "Free" };
-
-const rgb = h => { const n = parseInt(h.slice(1), 16); return ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255); };
-const toMin = s => { const p = s.split(":"); return +p[0] * 60 + +p[1]; };
-const rnd = (a, b) => a + Math.random() * (b - a);
-
-/* ---------------- AUDIO & HAPTIC ENGINE ---------------- */
-const Sound = {
-  ctx: null, on: true,
+/* ================= SOUND (Web Audio only) ================= */
+const Sound={
+  ctx:null,on:true,
   init(){
-    if(this.ctx){ if(this.ctx.state === "suspended") this.ctx.resume(); return; }
-    const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
-    const c = this.ctx = new AC();
-    this.out = c.createGain(); this.out.gain.value = 0.65;
-    const comp = c.createDynamicsCompressor(); this.out.connect(comp); comp.connect(c.destination);
-    this.verb = c.createConvolver();
-    const len = c.sampleRate * 2.5, ir = c.createBuffer(2, len, c.sampleRate);
-    for(let ch = 0; ch < 2; ch++){ const d = ir.getChannelData(ch); for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
-    this.verb.buffer = ir; const vg = c.createGain(); vg.gain.value = 0.45; this.verb.connect(vg); vg.connect(this.out);
-    const nl = c.sampleRate * 2; this.noise = c.createBuffer(1, nl, c.sampleRate);
-    const nd = this.noise.getChannelData(0); for(let i = 0; i < nl; i++) nd[i] = Math.random() * 2 - 1;
+    if(this.ctx){if(this.ctx.state==="suspended")this.ctx.resume();return;}
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    const c=this.ctx=new AC();
+    this.out=c.createGain();this.out.gain.value=.6;
+    const comp=c.createDynamicsCompressor();this.out.connect(comp);comp.connect(c.destination);
+    this.verb=c.createConvolver();
+    const len=c.sampleRate*3,ir=c.createBuffer(2,len,c.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
+    this.verb.buffer=ir;const vg=c.createGain();vg.gain.value=.5;this.verb.connect(vg);vg.connect(this.out);
+    const nl=c.sampleRate*2;this.noise=c.createBuffer(1,nl,c.sampleRate);
+    const nd=this.noise.getChannelData(0);for(let i=0;i<nl;i++)nd[i]=Math.random()*2-1;
   },
-  ok(){ return this.on && this.ctx; },
-  route(n, w){ n.connect(this.out); if(w){ const g = this.ctx.createGain(); g.gain.value = w; n.connect(g); g.connect(this.verb); } },
-  env(g, t, a, p, d){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(p, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); },
-  ns(){ const s = this.ctx.createBufferSource(); s.buffer = this.noise; return s; },
-  haptic(){
-    if(navigator.vibrate) try{ navigator.vibrate([10]); }catch(e){}
-    if(!this.ok()) return;
-    const c = this.ctx, t = c.currentTime;
-    const o = c.createOscillator();
-    o.frequency.setValueAtTime(1400, t);
-    o.frequency.exponentialRampToValueAtTime(350, t + 0.04);
-    const g = c.createGain();
-    this.env(g, t, 0.002, 0.08, 0.04);
-    o.connect(g); this.route(g, 0.1);
-    o.start(t); o.stop(t + 0.05);
-  },
-  splash(){
-    if(!this.ok()) return;
-    const c = this.ctx, t = c.currentTime;
-    const o = c.createOscillator();
-    o.frequency.setValueAtTime(450, t);
-    o.frequency.exponentialRampToValueAtTime(1200, t + 0.09);
-    const g = c.createGain();
-    this.env(g, t, 0.004, 0.14, 0.18);
-    o.connect(g); this.route(g, 0.35);
-    o.start(t); o.stop(t + 0.2);
-  },
+  ok(){return this.on&&this.ctx;},
+  route(n,w){n.connect(this.out);if(w){const g=this.ctx.createGain();g.gain.value=w;n.connect(g);g.connect(this.verb);}},
+  env(g,t,a,p,d){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(p,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d);},
+  ns(){const s=this.ctx.createBufferSource();s.buffer=this.noise;return s;},
   boom(){
-    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
-    const o = c.createOscillator(); o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(32, t + 1.4);
-    const g = c.createGain(); this.env(g, t, 0.006, 0.85, 1.6); o.connect(g); this.route(g, 0.25); o.start(t); o.stop(t + 1.8);
-    const n = this.ns(), lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.setValueAtTime(1400, t); lp.frequency.exponentialRampToValueAtTime(60, t + 1.4);
-    const g2 = c.createGain(); this.env(g2, t, 0.004, 0.75, 1.4); n.connect(lp); lp.connect(g2); this.route(g2, 0.45); n.start(t); n.stop(t + 1.7);
+    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
+    const o=c.createOscillator();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(30,t+1.4);
+    const g=c.createGain();this.env(g,t,.006,.8,1.7);o.connect(g);this.route(g,.25);o.start(t);o.stop(t+1.9);
+    const n=this.ns(),lp=c.createBiquadFilter();lp.type="lowpass";lp.frequency.setValueAtTime(1400,t);lp.frequency.exponentialRampToValueAtTime(60,t+1.4);
+    const g2=c.createGain();this.env(g2,t,.004,.7,1.5);n.connect(lp);lp.connect(g2);this.route(g2,.45);n.start(t);n.stop(t+1.8);
   },
   shatter(){
-    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
-    const n = this.ns(), hp = c.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 2000;
-    const g = c.createGain(); this.env(g, t, 0.002, 0.45, 0.6); n.connect(hp); hp.connect(g); this.route(g, 0.5); n.start(t, Math.random()); n.stop(t + 0.8);
-    for(let i = 0; i < 14; i++){
-      const t0 = t + Math.pow(Math.random(), 1.6) * 0.7, s = this.ns(), bp = c.createBiquadFilter();
-      bp.type = "bandpass"; bp.frequency.value = rnd(2800, 9500); bp.Q.value = rnd(6, 15);
-      const gg = c.createGain(), d = rnd(0.05, 0.16); this.env(gg, t0, 0.002, rnd(0.2, 0.5), d);
-      s.connect(bp); bp.connect(gg); this.route(gg, 0.6); s.start(t0, Math.random() * 1.5); s.stop(t0 + d + 0.05);
+    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
+    const n=this.ns(),hp=c.createBiquadFilter();hp.type="highpass";hp.frequency.value=2000;
+    const g=c.createGain();this.env(g,t,.002,.35,.6);n.connect(hp);hp.connect(g);this.route(g,.5);n.start(t,Math.random());n.stop(t+.8);
+    for(let i=0;i<14;i++){
+      const t0=t+Math.pow(Math.random(),1.6)*.7,s=this.ns(),bp=c.createBiquadFilter();
+      bp.type="bandpass";bp.frequency.value=rnd(2800,9500);bp.Q.value=rnd(6,15);
+      const gg=c.createGain(),d=rnd(.05,.16);this.env(gg,t0,.002,rnd(.15,.4),d);
+      s.connect(bp);bp.connect(gg);this.route(gg,.6);s.start(t0,Math.random()*1.5);s.stop(t0+d+.05);
     }
   },
   implode(){
-    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
-    const n = this.ns(), bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 1.4;
-    bp.frequency.setValueAtTime(200, t); bp.frequency.exponentialRampToValueAtTime(2400, t + 0.7);
-    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35, t + 0.68); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
-    n.connect(bp); bp.connect(g); this.route(g, 0.5); n.start(t, Math.random()); n.stop(t + 0.9);
+    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
+    const n=this.ns(),bp=c.createBiquadFilter();bp.type="bandpass";bp.Q.value=1.4;
+    bp.frequency.setValueAtTime(200,t);bp.frequency.exponentialRampToValueAtTime(2400,t+.7);
+    const g=c.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.3,t+.68);g.gain.exponentialRampToValueAtTime(.0001,t+.8);
+    n.connect(bp);bp.connect(g);this.route(g,.5);n.start(t,Math.random());n.stop(t+.9);
   },
   chime(){
-    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
-    const notes = [1046.5, 1174.66, 1318.51, 1567.98, 1760, 2093];
-    for(let i = 0; i < 5; i++){
-      const t0 = t + i * 0.08 + Math.random() * 0.03, f = notes[(Math.random() * notes.length) | 0], d = rnd(1.1, 1.8);
-      const o = c.createOscillator(); o.frequency.value = f;
-      const g = c.createGain(); this.env(g, t0, 0.004, 0.14, d); o.connect(g); this.route(g, 0.7); o.start(t0); o.stop(t0 + d + 0.1);
+    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
+    const notes=[1046.5,1174.66,1318.51,1567.98,1760,2093];
+    for(let i=0;i<5;i++){
+      const t0=t+i*.08+Math.random()*.03,f=notes[(Math.random()*notes.length)|0],d=rnd(1.2,2);
+      [[1,1],[2.756,.3]].forEach(([m,a])=>{
+        const o=c.createOscillator();o.frequency.value=f*m;
+        const g=c.createGain();this.env(g,t0,.004,.1*a,d/m);o.connect(g);this.route(g,.8);o.start(t0);o.stop(t0+d+.1);
+      });
     }
+  },
+  drip(){
+    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
+    [[0,300,850],[.58,480,1250]].forEach(([d,f0,f1])=>{
+      const o=c.createOscillator();o.frequency.setValueAtTime(f0,t+d);o.frequency.exponentialRampToValueAtTime(f1,t+d+.07);
+      const g=c.createGain();this.env(g,t+d,.004,.16,.12);o.connect(g);this.route(g,.35);o.start(t+d);o.stop(t+d+.2);
+    });
+  },
+  tick(){
+    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
+    const o=c.createOscillator();o.frequency.setValueAtTime(1500,t);o.frequency.exponentialRampToValueAtTime(800,t+.05);
+    const g=c.createGain();this.env(g,t,.002,.045,.06);o.connect(g);this.route(g,.15);o.start(t);o.stop(t+.1);
   }
 };
-
-addEventListener("pointerdown", () => Sound.init(), { capture: true, once: true });
-addEventListener("keydown", () => Sound.init(), { capture: true, once: true });
-const soundBtn = $("#sound");
-soundBtn.addEventListener("click", () => {
-  Sound.on = !Sound.on; soundBtn.classList.toggle("on", Sound.on);
-  soundBtn.setAttribute("aria-pressed", Sound.on);
-  $("#soundLbl").textContent = Sound.on ? "Sound on" : "Sound off";
-  if(Sound.on){ Sound.init(); Sound.haptic(); }
+addEventListener("pointerdown",()=>Sound.init(),{capture:true,once:true});
+addEventListener("keydown",()=>Sound.init(),{capture:true,once:true});
+$("#sound").addEventListener("click",()=>{
+  Sound.on=!Sound.on;$("#soundLbl").textContent=Sound.on?"on":"off";
+  $("#sound").setAttribute("aria-pressed",Sound.on);
+  if(Sound.on){Sound.init();Sound.tick();}
 });
 
-/* ---------------- 3D PLANET (GPU Particles) ---------------- */
-const E = 0.9, C = 1.5, TOTAL = E + C + 0.35;
-function initGL(startDay, hooks){
-  const canvas = $("#gl");
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
-  const PR = Math.min(devicePixelRatio, 1.5); renderer.setPixelRatio(PR); renderer.setClearColor(0, 0);
-  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
-  const group = new THREE.Group(); scene.add(group);
+/* ================= UI STATE ================= */
+const root=document.documentElement, body=document.body;
+const wheel=$("#wheel"), panel=$("#panel"), intro=$("#intro"), hint=$("#hint"), goo=$("#goo");
+const anchor=$("#anchor"), d1=$("#d1"), d2=$("#d2"), pool=$("#pool"), glc=$("#gl");
+const STEP=22;
+const wd=new Date().getDay(), todayIdx=(wd>=1&&wd<=5)?wd-1:-1;
+let R=240, mobile=false, SEL=0, focusIdx=todayIdx>=0?todayIdx:0, current=-1, isOpen=false, token=0, panelAnim=null, GL=null;
+const geo={dx:0,dy:0,ox:"0px",oy:"50%"};
 
-  const N = innerWidth < 700 ? 7500 : 9000;
-  const FROM = new Float32Array(N * 3), TO = new Float32Array(N * 3), DIR = new Float32Array(N * 3), RA = new Float32Array(N), SZ = new Float32Array(N);
-  for(let i = 0; i < N; i++){ RA[i] = Math.random(); SZ[i] = 0.5 + Math.pow(Math.random(), 3) * 1.8; }
+const items=DAYS.map((D,i)=>{
+  const b=document.createElement("button");
+  b.className="dy";b.style.setProperty("--a",(i*STEP)+"deg");b.setAttribute("aria-label",D.name);
+  b.innerHTML=`<span class="lb"><span class="nm">${D.name}</span><span class="ct mono">${D.lessons.length} lessons${i===todayIdx?" · today":""}</span></span>`;
+  b.addEventListener("click",e=>{
+    e.stopPropagation();
+    select(i);
+  });
+  wheel.appendChild(b);return b;
+});
 
-  const sph = (r, o, k) => { const u = Math.random() * 2 - 1, a = Math.random() * 6.2832, s = Math.sqrt(1 - u * u); o[k] = Math.cos(a) * s * r; o[k + 1] = u * r; o[k + 2] = Math.sin(a) * s * r; };
-  const rotX = (o, k, a) => { const y = o[k + 1], z = o[k + 2], c = Math.cos(a), s = Math.sin(a); o[k + 1] = y * c - z * s; o[k + 2] = y * s + z * c; };
-  const rotZ = (o, k, a) => { const x = o[k], y = o[k + 1], c = Math.cos(a), s = Math.sin(a); o[k] = x * c - y * s; o[k + 1] = x * s + y * c; };
-  const ring = (o, k, r0, r1, h) => { const a = Math.random() * 6.2832, r = r0 + Math.pow(Math.random(), 0.7) * (r1 - r0); o[k] = Math.cos(a) * r; o[k + 1] = (Math.random() - 0.5) * h; o[k + 2] = Math.sin(a) * r; };
-  const spikes = []; for(let i = 0; i < 24; i++){ const y = 1 - (i + 0.5) / 24 * 2, r = Math.sqrt(1 - y * y), a = i * 2.39996; spikes.push([Math.cos(a) * r, y, Math.sin(a) * r]); }
+function setRot(){
+  root.style.setProperty("--rot",(SEL-focusIdx*STEP)+"deg");
+  items.forEach((el,i)=>{
+    el.style.opacity=Math.max(.28,1-Math.abs(i-focusIdx)*.2);
+    el.classList.toggle("on",i===current);
+    el.classList.toggle("focus",i===focusIdx&&current<0);
+  });
+}
+function setAccent(hex){root.style.setProperty("--accent",hex);}
 
-  function buildShape(d, o){
-    for(let i = 0; i < N; i++){
-      const k = i * 3, q = Math.random();
-      if(d === 0){ if(q < 0.14) sph(rnd(0.1, 0.85), o, k); else { sph(1, o, k); const a = Math.atan2(o[k + 2], o[k]); const r = 1.5 + (Math.sin(a * 14) > 0.2 ? 0.12 : 0) + rnd(-0.02, 0.02); o[k] *= r; o[k + 1] *= r; o[k + 2] *= r; } }
-      else if(d === 1){ if(q < 0.66) sph(1.25 + rnd(-0.03, 0.03), o, k); else { ring(o, k, 1.85, 2.8, 0.05); rotX(o, k, 0.42); rotZ(o, k, -0.18); } }
-      else if(d === 2){ sph(1, o, k); const x = o[k], y = o[k + 1], z = o[k + 2]; const n = Math.sin(x * 3.1 + 1.3) * Math.sin(y * 3.7) * Math.sin(z * 2.9 + 0.7); const r = q < 0.2 ? rnd(0.3, 1.4) : 1.42 + n * 0.4 + rnd(-0.05, 0.05); o[k] = x * r; o[k + 1] = y * r; o[k + 2] = z * r; }
-      else if(d === 3){ if(q < 0.58) sph(1.15 + rnd(-0.03, 0.03), o, k); else { ring(o, k, 2, 2.16, 0.04); const w = q < 0.79 ? 1 : -1; rotX(o, k, 1.1 * w); rotZ(o, k, 0.55 * w); } }
-      else { if(q < 0.62) sph(1.32 + rnd(-0.03, 0.03), o, k); else { const s = spikes[(Math.random() * 24) | 0], t = Math.pow(Math.random(), 1.4), r = 1.32 + t * 1.4, j = 0.06 * (1 - t); o[k] = s[0] * r + rnd(-j, j); o[k + 1] = s[1] * r + rnd(-j, j); o[k + 2] = s[2] * r + rnd(-j, j); } }
+function measure(){
+  const pr=panel.getBoundingClientRect();let ax,ay,tx,ty;
+  if(!mobile){ax=R;ay=innerHeight/2;tx=pr.left;ty=ay;geo.ox="0px";geo.oy=(ty-pr.top)+"px";}
+  else{ax=innerWidth/2;ay=innerHeight-R;tx=ax;ty=pr.bottom;geo.ox=(tx-pr.left)+"px";geo.oy="100%";}
+  const pad=50,x0=Math.min(ax,tx)-pad,y0=Math.min(ay,ty)-pad;
+  goo.style.left=x0+"px";goo.style.top=y0+"px";
+  goo.style.width=(Math.abs(tx-ax)+pad*2)+"px";goo.style.height=(Math.abs(ty-ay)+pad*2)+"px";
+  [anchor,d1,d2].forEach(e=>{e.style.left=(ax-x0)+"px";e.style.top=(ay-y0)+"px";});
+  pool.style.left=(tx-x0)+"px";pool.style.top=(ty-y0)+"px";
+  geo.dx=tx-ax;geo.dy=ty-ay;
+  if(!panelAnim&&!isOpen)panel.style.clipPath=`circle(0px at ${geo.ox} ${geo.oy})`;
+}
+function layout(){
+  mobile=innerWidth<760;body.classList.toggle("m",mobile);
+  R=mobile?Math.round(Math.min(160,innerWidth*.4)):Math.round(Math.min(270,innerHeight*.32));
+  SEL=mobile?-90:0;root.style.setProperty("--R",R+"px");
+  setRot();measure();if(GL)GL.layout();
+}
+
+function animPanel(show,dur){
+  const a=`circle(0px at ${geo.ox} ${geo.oy})`,b=`circle(160% at ${geo.ox} ${geo.oy})`;
+  if(panelAnim){try{panelAnim.cancel();}catch(e){}panelAnim=null;}
+  try{
+    panelAnim=panel.animate([{clipPath:show?a:b},{clipPath:show?b:a}],
+      {duration:dur,easing:show?"cubic-bezier(.7,0,.2,1)":"cubic-bezier(.5,0,.75,0)",fill:"forwards"});
+    return panelAnim.finished.then(()=>{
+      panel.style.clipPath=show?b:a;
+    }).catch(()=>{
+      panel.style.clipPath=show?b:a;
+    });
+  }catch(err){
+    panel.style.clipPath=show?b:a;
+    return Promise.resolve();
+  }
+}
+function pour(){
+  const {dx,dy}=geo,ease="cubic-bezier(.55,0,.35,1)";
+  anchor.animate([{transform:"scale(1)"},{transform:"scale(1.7)"},{transform:"scale(1)"}],{duration:520,easing:"ease-out"});
+  [d1,d2].forEach((d,j)=>d.animate([
+    {opacity:1,transform:"translate(0,0) scale(.6)"},
+    {opacity:1,transform:`translate(${dx*.45}px,${dy*.45}px) scale(1)`,offset:.45},
+    {opacity:1,transform:`translate(${dx}px,${dy}px) scale(.7)`}
+  ],{duration:640,delay:j*90,easing:ease}));
+  pool.animate([{transform:"scale(0)"},{transform:"scale(1.5)",offset:.35},{transform:"scale(0)"}],{duration:900,delay:560,easing:"cubic-bezier(.2,.7,.3,1)"});
+  Sound.drip();
+  return wait(620);
+}
+
+function shortRoom(r){return r.replace(/^College,\s*/,"").replace(/^Room\s+/,"");}
+function render(i){
+  const D=DAYS[i],T=D.times,end=T[D.lessons.length-1][1],now=new Date(),m=now.getHours()*60+now.getMinutes();
+  let k=0;
+  const rows=D.lessons.map((L,j)=>{
+    const t=T[j],live=i===todayIdx&&m>=toMin(t[0])&&m<toMin(t[1]);
+    return `<li class="row${live?" now":""}" style="--i:${k++}"><span class="t">${t[0]}</span>
+      <span class="s">${L.s}${L.sub?`<em> · ${L.sub}</em>`:""}</span><span class="rm">${shortRoom(L.room)}</span>
+      <div class="more"><div><p>${t[0]}–${t[1]} · ${L.room}. ${L.n}</p></div></div></li>`;
+  }).join("");
+  const after=AFTER[i].map(A=>`<li class="row" style="--i:${k++}"><span class="t">${A.t.split("–")[0]}</span>
+      <span class="s">${A.a}</span><span class="rm">${A.tag}</span>
+      <div class="more"><div><p>${A.t} · ${A.n}</p></div></div></li>`).join("");
+  panel.innerHTML=`<div class="p-top"><span class="mono">0${i+1} · ${D.place}${i===todayIdx?" · today":""}</span><button class="mono close" id="closeBtn">Close</button></div>
+    <h2>${D.name}<span>.</span></h2>
+    <p class="mono meta">${D.lessons.length} lessons · ${T[0][0]}–${end}${D.gym?" · gym day":""}</p>
+    <p class="p-note">${D.note}</p>
+    <p class="mono sec">Lessons</p><ol class="rows">${rows}</ol>
+    <p class="mono sec">After school</p><ul class="rows">${after}</ul>`;
+  panel.scrollTop=0;
+}
+panel.addEventListener("click",e=>{
+  e.stopPropagation();
+  if(e.target.closest("#closeBtn")){close();return;}
+  const r=e.target.closest(".row");if(r)r.classList.toggle("open");
+});
+
+const hooks={
+  burst(){Sound.boom();Sound.shatter();},
+  collapse(){Sound.implode();setTimeout(()=>Sound.chime(),600);}
+};
+function shatter(d){if(GL)GL.request(d);else{hooks.burst();setTimeout(hooks.collapse,900);}}
+
+async function select(i){
+  if(i===current&&isOpen){close();return;}
+  const my=++token,wasOpen=isOpen;
+  focusIdx=i;current=i;setRot();setAccent(DAYS[i].c1);Sound.tick();
+  intro.classList.add("hide");hint.classList.add("hide");
+  shatter(i);
+  if(wasOpen){isOpen=false;panel.classList.remove("open");await animPanel(false,260);}
+  await wait(wasOpen?100:340);
+  if(my!==token)return;
+  await pour();
+  if(my!==token)return;
+  render(i);
+  await animPanel(true,950);
+  isOpen=true;panel.classList.add("open");
+  if(GL)GL.setOpen(true);
+  glc.style.opacity=mobile?.25:1;
+}
+function close(){
+  token++;isOpen=false;current=-1;panel.classList.remove("open");
+  setRot();setAccent(CREAM);animPanel(false,420);
+  intro.classList.remove("hide");hint.classList.remove("hide");
+  if(GL){GL.setOpen(false);GL.setColor(CREAM);}
+  glc.style.opacity=1;Sound.tick();
+}
+function step(dir){
+  const base=current>=0?current:focusIdx,n=Math.max(0,Math.min(DAYS.length-1,base+dir));
+  if(n===base)return;
+  if(current>=0)select(n);else{focusIdx=n;setRot();Sound.tick();}
+}
+
+/* input & click handling */
+let lastWheel=0;
+addEventListener("wheel",e=>{
+  if(isOpen&&e.target.closest("#panel"))return; // allow normal scroll inside panel
+  const t=performance.now();if(t-lastWheel<450)return;lastWheel=t;
+  step((e.deltaY||e.deltaX)>0?1:-1);
+},{passive:true});
+
+$("#hitzone").addEventListener("click",e=>{
+  if(e.target===$("#hitzone")){
+    select(focusIdx);
+  }
+});
+
+let tx0=null,ty0=null;
+addEventListener("touchstart",e=>{
+  if(isOpen&&e.target.closest("#panel"))return;
+  tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;
+},{passive:true});
+addEventListener("touchend",e=>{
+  if(tx0===null)return;const dx=e.changedTouches[0].clientX-tx0,dy=e.changedTouches[0].clientY-ty0;tx0=null;
+  const d=mobile?dx:dy;if(Math.abs(d)>30)step(d<0===mobile?1:-1);
+},{passive:true});
+
+addEventListener("keydown",e=>{
+  if(e.key==="ArrowDown"||e.key==="ArrowRight"){e.preventDefault();step(1);}
+  else if(e.key==="ArrowUp"||e.key==="ArrowLeft"){e.preventDefault();step(-1);}
+  else if(e.key==="Enter"&&current<0)select(focusIdx);
+  else if(e.key==="Escape"&&current>=0)close();
+});
+glc.addEventListener("click",()=>shatter(current>=0?current:focusIdx));
+$("#shatterBtn").addEventListener("click",()=>shatter(current>=0?current:focusIdx));
+
+/* ================= PLANET (GPU particles) ================= */
+const E=.9,C=1.5,TOTAL=E+C+.35;
+function initGL(startDay,hooks){
+  const renderer=new THREE.WebGLRenderer({canvas:glc,antialias:false,alpha:true,powerPreference:"high-performance"});
+  const PR=Math.min(devicePixelRatio,1.5);renderer.setPixelRatio(PR);renderer.setClearColor(0,0);
+  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(55,1,.1,200);
+  const group=new THREE.Group();scene.add(group);
+
+  const N=innerWidth<760?7600:9000;
+  const FROM=new Float32Array(N*3),TO=new Float32Array(N*3),DIR=new Float32Array(N*3),RA=new Float32Array(N),SZ=new Float32Array(N);
+  for(let i=0;i<N;i++){RA[i]=Math.random();SZ[i]=.5+Math.pow(Math.random(),3)*1.7;}
+  const sph=(r,o,k)=>{const u=Math.random()*2-1,a=Math.random()*6.2832,s=Math.sqrt(1-u*u);o[k]=Math.cos(a)*s*r;o[k+1]=u*r;o[k+2]=Math.sin(a)*s*r;};
+  const rotX=(o,k,a)=>{const y=o[k+1],z=o[k+2],c=Math.cos(a),s=Math.sin(a);o[k+1]=y*c-z*s;o[k+2]=y*s+z*c;};
+  const rotZ=(o,k,a)=>{const x=o[k],y=o[k+1],c=Math.cos(a),s=Math.sin(a);o[k]=x*c-y*s;o[k+1]=x*s+y*c;};
+  const ring=(o,k,r0,r1,h)=>{const a=Math.random()*6.2832,r=r0+Math.pow(Math.random(),.7)*(r1-r0);o[k]=Math.cos(a)*r;o[k+1]=(Math.random()-.5)*h;o[k+2]=Math.sin(a)*r;};
+  const spikes=[];for(let i=0;i<24;i++){const y=1-(i+.5)/24*2,r=Math.sqrt(1-y*y),a=i*2.39996;spikes.push([Math.cos(a)*r,y,Math.sin(a)*r]);}
+  function buildShape(d,o){
+    for(let i=0;i<N;i++){
+      const k=i*3,q=Math.random();
+      if(d===0){if(q<.14)sph(rnd(.1,.85),o,k);else{sph(1,o,k);const a=Math.atan2(o[k+2],o[k]);const r=1.5+(Math.sin(a*14)>.2?.12:0)+rnd(-.02,.02);o[k]*=r;o[k+1]*=r;o[k+2]*=r;}}
+      else if(d===1){if(q<.66)sph(1.25+rnd(-.03,.03),o,k);else{ring(o,k,1.85,2.8,.05);rotX(o,k,.42);rotZ(o,k,-.18);}}
+      else if(d===2){sph(1,o,k);const x=o[k],y=o[k+1],z=o[k+2];const n=Math.sin(x*3.1+1.3)*Math.sin(y*3.7)*Math.sin(z*2.9+.7);const r=q<.2?rnd(.3,1.4):1.42+n*.4+rnd(-.05,.05);o[k]=x*r;o[k+1]=y*r;o[k+2]=z*r;}
+      else if(d===3){if(q<.58)sph(1.15+rnd(-.03,.03),o,k);else{ring(o,k,2,2.16,.04);const w=q<.79?1:-1;rotX(o,k,1.1*w);rotZ(o,k,.55*w);}}
+      else{if(q<.62)sph(1.32+rnd(-.03,.03),o,k);else{const s=spikes[(Math.random()*24)|0],t=Math.pow(Math.random(),1.4),r=1.32+t*1.4,j=.06*(1-t);o[k]=s[0]*r+rnd(-j,j);o[k+1]=s[1]*r+rnd(-j,j);o[k+2]=s[2]*r+rnd(-j,j);}}
     }
   }
-  function makeDirs(){
-    for(let i = 0; i < N; i++){
-      const k = i * 3; sph(1, DIR, k); const d = 2.5 + Math.pow(Math.random(), 1.5) * 7;
-      DIR[k] *= d; DIR[k + 1] *= d; DIR[k + 2] *= d;
-      if(Math.random() < 0.25) DIR[k + 2] += 3 + Math.random() * 6;
+  makeDirs(){
+    for(let i=0;i<N;i++){
+      const k=i*3;sph(1,DIR,k);const d=2.5+Math.pow(Math.random(),1.5)*7;
+      DIR[k]*=d;DIR[k+1]*=d;DIR[k+2]*=d;
+      if(Math.random()<.25)DIR[k+2]+=3+Math.random()*6;
     }
   }
-  buildShape(startDay, TO); for(let i = 0; i < N; i++) sph(rnd(5, 11), FROM, i * 3); makeDirs();
+  buildShape(startDay,TO);for(let i=0;i<N;i++)sph(rnd(5,11),FROM,i*3);makeDirs();
 
-  const geo = new THREE.BufferGeometry();
-  const aFrom = new THREE.BufferAttribute(FROM, 3), aTo = new THREE.BufferAttribute(TO, 3), aDir = new THREE.BufferAttribute(DIR, 3);
-  geo.setAttribute("position", aFrom); geo.setAttribute("aTo", aTo); geo.setAttribute("aDir", aDir);
-  geo.setAttribute("aRand", new THREE.BufferAttribute(RA, 1)); geo.setAttribute("aSize", new THREE.BufferAttribute(SZ, 1));
+  const g=new THREE.BufferGeometry();
+  const aFrom=new THREE.BufferAttribute(FROM,3),aTo=new THREE.BufferAttribute(TO,3),aDir=new THREE.BufferAttribute(DIR,3);
+  g.setAttribute("position",aFrom);g.setAttribute("aTo",aTo);g.setAttribute("aDir",aDir);
+  g.setAttribute("aRand",new THREE.BufferAttribute(RA,1));g.setAttribute("aSize",new THREE.BufferAttribute(SZ,1));
 
-  const cA = new THREE.Color(DAYS[startDay].c1), cB = new THREE.Color(DAYS[startDay].c2), tA = cA.clone(), tB = cB.clone();
-  const U = { uT: { value: E }, uTime: { value: 0 }, uSpin: { value: 0 }, uSize: { value: 26 }, uPR: { value: PR }, uFlash: { value: 0 }, uColor: { value: cA }, uColor2: { value: cB } };
-  const mat = new THREE.ShaderMaterial({
-    uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    vertexShader: `
+  const cA=new THREE.Color(CREAM),cB=new THREE.Color(CREAM2),tA=cA.clone();
+  const U={uT:{value:E},uTime:{value:0},uSpin:{value:0},uSize:{value:24},uPR:{value:PR},uFlash:{value:0},uColor:{value:cA},uColor2:{value:cB}};
+  const mat=new THREE.ShaderMaterial({
+    uniforms:U,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:`
       attribute vec3 aTo; attribute vec3 aDir; attribute float aRand; attribute float aSize;
-      uniform float uT, uTime, uSpin, uSize, uPR, uFlash;
+      uniform float uT,uTime,uSpin,uSize,uPR,uFlash;
       varying float vRand;
-      const float E = ${E.toFixed(2)}; const float C = ${C.toFixed(2)};
-      vec3 rotY(vec3 p, float a){ float c = cos(a), s = sin(a); return vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z); }
-      float ease(float x){ return x < .5 ? 4. * x * x * x : 1. - pow(-2. * x + 2., 3.) / 2.; }
+      const float E=${E.toFixed(2)}; const float C=${C.toFixed(2)};
+      vec3 rotY(vec3 p,float a){float c=cos(a),s=sin(a);return vec3(c*p.x+s*p.z,p.y,-s*p.x+c*p.z);}
+      float ease(float x){return x<.5?4.*x*x*x:1.-pow(-2.*x+2.,3.)/2.;}
       void main(){
-        vec3 fromP = rotY(position, uSpin);
-        vec3 toP = rotY(aTo, uSpin);
-        float tE = min(uT, E);
-        vec3 burst = aDir * (1. - exp(-3. * tE));
-        vec3 turb = vec3(sin(aRand * 40. + uT * 2.1), sin(aRand * 57. + uT * 1.7), cos(aRand * 33. + uT * 2.4)) * .6 * smoothstep(0., .5, tE);
-        float p = clamp((uT - E - aRand * .35) / C, 0., 1.);
-        float e = ease(p);
-        vec3 pos = mix(fromP + burst + turb, toP, e);
-        pos = rotY(pos, sin(e * 3.14159) * 1.6 * step(E, uT));
-        pos *= 1. + sin(uTime * 1.4 + aRand * 12.) * .012 * e;
-        vec4 mv = modelViewMatrix * vec4(pos, 1.);
-        gl_Position = projectionMatrix * mv;
-        float tw = .75 + .25 * sin(uTime * 2. + aRand * 50.);
-        gl_PointSize = min(uSize * aSize * uPR * tw * (1. + uFlash * .6) / max(-mv.z, .1), 48.);
-        vRand = aRand;
+        vec3 fromP=rotY(position,uSpin), toP=rotY(aTo,uSpin);
+        float tE=min(uT,E);
+        vec3 burst=aDir*(1.-exp(-3.*tE));
+        vec3 turb=vec3(sin(aRand*40.+uT*2.1),sin(aRand*57.+uT*1.7),cos(aRand*33.+uT*2.4))*.6*smoothstep(0.,.5,tE);
+        float p=clamp((uT-E-aRand*.35)/C,0.,1.);
+        float e=ease(p);
+        vec3 pos=mix(fromP+burst+turb,toP,e);
+        pos=rotY(pos,sin(e*3.14159)*1.6*step(E,uT));
+        pos*=1.+sin(uTime*1.4+aRand*12.)*.012*e;
+        vec4 mv=modelViewMatrix*vec4(pos,1.);
+        gl_Position=projectionMatrix*mv;
+        float tw=.75+.25*sin(uTime*2.+aRand*50.);
+        gl_PointSize=min(uSize*aSize*uPR*tw*(1.+uFlash*.5)/max(-mv.z,.1),44.);
+        vRand=aRand;
       }`,
-    fragmentShader: `
-      uniform vec3 uColor, uColor2; uniform float uFlash; varying float vRand;
+    fragmentShader:`
+      uniform vec3 uColor,uColor2; uniform float uFlash; varying float vRand;
       void main(){
-        float d = length(gl_PointCoord - .5); if(d > .5) discard;
-        float a = pow(1. - d * 2., 1.8);
-        vec3 c = mix(uColor, uColor2, smoothstep(.65, .95, vRand));
-        c = mix(c, vec3(1.), pow(a, 3.) * .5 + uFlash * .3);
-        gl_FragColor = vec4(c * a * .8, a);
+        float d=length(gl_PointCoord-.5); if(d>.5) discard;
+        float a=pow(1.-d*2.,1.8);
+        vec3 c=mix(uColor,uColor2,step(.45,vRand));
+        c=mix(c,vec3(1.),pow(a,3.)*.3+uFlash*.25);
+        gl_FragColor=vec4(c*a*.72,a);
       }`
   });
-  const pts = new THREE.Points(geo, mat); pts.frustumCulled = false; group.add(pts);
+  const pts=new THREE.Points(g,mat);pts.frustumCulled=false;group.add(pts);
 
-  const gc = document.createElement("canvas"); gc.width = gc.height = 128;
-  const gx = gc.getContext("2d"), gr = gx.createRadialGradient(64, 64, 0, 64, 64, 64);
-  gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.2, "rgba(255,255,255,.3)"); gr.addColorStop(0.55, "rgba(255,255,255,.05)"); gr.addColorStop(1, "rgba(255,255,255,0)");
-  gx.fillStyle = gr; gx.fillRect(0, 0, 128, 128);
-  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
-  glow.scale.setScalar(6.5); group.add(glow);
+  const gc=document.createElement("canvas");gc.width=gc.height=128;
+  const gx=gc.getContext("2d"),gr=gx.createRadialGradient(64,64,0,64,64,64);
+  gr.addColorStop(0,"rgba(255,255,255,1)");gr.addColorStop(.2,"rgba(255,255,255,.25)");gr.addColorStop(.55,"rgba(255,255,255,.04)");gr.addColorStop(1,"rgba(255,255,255,0)");
+  gx.fillStyle=gr;gx.fillRect(0,0,128,128);
+  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(gc),transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
+  glow.scale.setScalar(6);group.add(glow);
 
-  const shock = new THREE.Mesh(new THREE.RingGeometry(0.94, 1, 96), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false }));
+  const shock=new THREE.Mesh(new THREE.RingGeometry(.96,1,96),new THREE.MeshBasicMaterial({transparent:true,opacity:0,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,depthWrite:false}));
   scene.add(shock);
 
-  const SN = 1200, sp = new Float32Array(SN * 3); for(let i = 0; i < SN; i++) sph(rnd(25, 70), sp, i * 3);
-  const sg = new THREE.BufferGeometry(); sg.setAttribute("position", new THREE.BufferAttribute(sp, 3));
-  const stars = new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xa5b4fc, size: 0.08, transparent: true, opacity: 0.6, depthWrite: false }));
+  const SN=1000,sp=new Float32Array(SN*3);for(let i=0;i<SN;i++)sph(rnd(25,70),sp,i*3);
+  const sg=new THREE.BufferGeometry();sg.setAttribute("position",new THREE.BufferAttribute(sp,3));
+  const stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xd8d4c8,size:.07,transparent:true,opacity:.45,depthWrite:false}));
   scene.add(stars);
 
-  const base = { x: 0, y: 0, z: 7.5 };
+  let camZ=8,openGL=false;
+  const tgt={x:0,y:0,s:1},cur={x:0,y:0,s:1};
+  function aim(){
+    const visH=2*Math.tan(27.5*Math.PI/180)*camZ,visW=visH*camera.aspect;
+    if(!mobile){
+      if(openGL){const pr=panel.getBoundingClientRect();tgt.x=(((R+pr.left)/2)/innerWidth-.5)*visW;tgt.s=.78;}
+      else{tgt.x=.04*visW;tgt.s=1;}
+      tgt.y=0;
+    }else{tgt.x=0;tgt.y=.05*visH;tgt.s=openGL?.7:.85;}
+  }
   function layout(){
-    const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
-    if(w > 960){ base.x = w > 1400 ? 1.8 : 1.4; base.y = 0; base.z = 7.5; } else { base.x = 0; base.y = 1.2; base.z = w < 600 ? 10.5 : 9; }
+    renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+    camZ=mobile?11:8;aim();
   }
-  layout(); addEventListener("resize", layout);
-  let mx = 0, my = 0, sx = 0, sy = 0;
-  addEventListener("pointermove", e => { mx = e.clientX / innerWidth * 2 - 1; my = -(e.clientY / innerHeight * 2 - 1); }, { passive: true });
+  layout();
+  let mx=0,my=0,sx=0,sy=0;
+  addEventListener("pointermove",e=>{mx=e.clientX/innerWidth*2-1;my=-(e.clientY/innerHeight*2-1);},{passive:true});
 
-  let uT = E, spin = 0, flash = 0, ringT = 9, glowOp = 0, queued = null, pendingColor = null;
+  let uT=E,spin=0,flash=0,ringT=9,glowOp=0,queued=null,pendingColor=null;
   function burst(d){
-    FROM.set(TO); buildShape(d, TO); makeDirs();
-    aFrom.needsUpdate = aTo.needsUpdate = aDir.needsUpdate = true;
-    uT = 0; flash = 1; ringT = 0; pendingColor = d;
-    shock.material.color.copy(cA);
-    hooks.burst();
+    FROM.set(TO);buildShape(d,TO);makeDirs();
+    aFrom.needsUpdate=aTo.needsUpdate=aDir.needsUpdate=true;
+    uT=0;flash=1;ringT=0;pendingColor=DAYS[d].c1;
+    shock.material.color.copy(cA);hooks.burst();
   }
-  function request(d){ if(uT < TOTAL){ queued = d; return; } burst(d); }
+  function request(d){if(uT<TOTAL){queued=d;return;}burst(d);}
 
-  let last = performance.now(), time = 0;
+  let last=performance.now(),time=0;
   function loop(now){
     requestAnimationFrame(loop);
-    const dt = Math.min(0.033, (now - last) / 1000); last = now; time += dt; uT += dt;
-    if(pendingColor !== null && uT > E){ tA.set(DAYS[pendingColor].c1); tB.set(DAYS[pendingColor].c2); pendingColor = null; hooks.collapse(); }
-    if(queued !== null && uT >= TOTAL){ const q = queued; queued = null; burst(q); }
-    const k = 1 - Math.exp(-4 * dt); sx += (mx - sx) * k; sy += (my - sy) * k;
-    const ck = 1 - Math.exp(-2.4 * dt); cA.lerp(tA, ck); cB.lerp(tB, ck);
-    flash *= Math.exp(-3 * dt);
-    spin += dt * (uT < E ? 0.7 : 0.13);
-    U.uT.value = uT; U.uTime.value = time; U.uSpin.value = spin; U.uFlash.value = flash;
-    group.rotation.x = sy * 0.3; group.rotation.y = sx * 0.45;
-    group.position.set(base.x + sx * 0.25, base.y + sy * 0.15, 0);
-    camera.position.set(sx * 0.35, sy * 0.2, base.z); camera.lookAt(base.x * 0.15, base.y * 0.5, 0);
-    glowOp += ((uT < E + 0.4 ? 0.04 : 0.42) - glowOp) * (1 - Math.exp(-3 * dt));
-    glow.material.opacity = glowOp; glow.material.color.copy(cA);
-    if(ringT < 1.2){ ringT += dt; const p = ringT / 1.2, s = 1 + (1 - Math.pow(1 - p, 3)) * 9; shock.scale.set(s, s, s); shock.material.opacity = (1 - p) * 0.6; shock.position.copy(group.position); }
-    else shock.material.opacity = 0;
-    stars.rotation.y += dt * 0.006;
-    renderer.render(scene, camera);
+    const dt=Math.min(.033,(now-last)/1000);last=now;time+=dt;uT+=dt;
+    if(pendingColor!==null&&uT>E){tA.set(pendingColor);pendingColor=null;hooks.collapse();}
+    if(queued!==null&&uT>=TOTAL){const q=queued;queued=null;burst(q);}
+    const k=1-Math.exp(-4*dt);sx+=(mx-sx)*k;sy+=(my-sy)*k;
+    const pk=1-Math.exp(-3*dt);cur.x+=(tgt.x-cur.x)*pk;cur.y+=(tgt.y-cur.y)*pk;cur.s+=(tgt.s-cur.s)*pk;
+    cA.lerp(tA,1-Math.exp(-2.4*dt));
+    flash*=Math.exp(-3*dt);spin+=dt*(uT<E?.7:.12);
+    U.uT.value=uT;U.uTime.value=time;U.uSpin.value=spin;U.uFlash.value=flash;
+    group.rotation.x=sy*.3;group.rotation.y=sx*.45;
+    group.position.set(cur.x+sx*.2,cur.y+sy*.12,0);group.scale.setScalar(cur.s);
+    camera.position.set(sx*.3,sy*.15,camZ);camera.lookAt(0,0,0);
+    glowOp+=((uT<E+.4?.03:.2)-glowOp)*(1-Math.exp(-3*dt));
+    glow.material.opacity=glowOp;glow.material.color.copy(cA);
+    if(ringT<1.2){ringT+=dt;const p=ringT/1.2,s=(1+(1-Math.pow(1-p,3))*9)*cur.s;shock.scale.set(s,s,s);shock.material.opacity=(1-p)*.35;shock.position.copy(group.position);}
+    else shock.material.opacity=0;
+    stars.rotation.y+=dt*.005;
+    renderer.render(scene,camera);
   }
   requestAnimationFrame(loop);
-  return { request };
+  return {request,layout,setOpen(v){openGL=v;aim();},setColor(hex){pendingColor=null;tA.set(hex);}};
 }
 
-/* ---------------- FLUID GOOEY ENGINE ---------------- */
-const Fluid = {
-  anim: null,
-  launch(fromEl, toEl, color, onHit){
-    if(!fromEl || !toEl) return;
-    const donor = $("#donorBlob"), travel = $("#travelBlob"), target = $("#targetBlob"), splash = $("#splashGroup");
-    if(!donor || !travel || !target) return;
-
-    donor.setAttribute("fill", color);
-    travel.setAttribute("fill", color);
-    target.setAttribute("fill", color);
-
-    const r1 = fromEl.getBoundingClientRect();
-    const r2 = toEl.getBoundingClientRect();
-    const isMobile = window.innerWidth <= 768;
-
-    let sx, sy, ex, ey;
-    if(isMobile){
-      sx = r1.left + r1.width / 2;
-      sy = r1.bottom;
-      ex = sx;
-      ey = r2.top + 10;
-    } else {
-      sx = r1.right;
-      sy = r1.top + r1.height / 2;
-      ex = r2.left;
-      ey = sy;
-    }
-
-    if(this.anim) cancelAnimationFrame(this.anim);
-    const duration = 340, start = performance.now();
-
-    const frame = now => {
-      const p = Math.min(1, (now - start) / duration);
-      if(p < 0.25){
-        const p1 = p / 0.25;
-        donor.setAttribute("cx", sx); donor.setAttribute("cy", sy);
-        donor.setAttribute("r", 15 * (1 - p1 * 0.3));
-        travel.setAttribute("cx", sx + (ex - sx) * 0.15 * p1);
-        travel.setAttribute("cy", sy + (ey - sy) * 0.15 * p1);
-        travel.setAttribute("r", 9 * p1);
-        target.setAttribute("r", 0);
-      } else if(p < 0.85){
-        const p2 = (p - 0.25) / 0.6;
-        const ease = p2 < 0.5 ? 4 * p2 * p2 * p2 : 1 - Math.pow(-2 * p2 + 2, 3) / 2;
-        donor.setAttribute("r", Math.max(0, 10 * (1 - p2 * 1.5)));
-        travel.setAttribute("cx", sx + (ex - sx) * ease);
-        travel.setAttribute("cy", sy + (ey - sy) * ease);
-        travel.setAttribute("r", 11);
-        target.setAttribute("r", 0);
-      } else {
-        const p3 = (p - 0.85) / 0.15;
-        donor.setAttribute("r", 0);
-        travel.setAttribute("r", 11 * (1 - p3));
-        target.setAttribute("cx", ex); target.setAttribute("cy", ey);
-        target.setAttribute("r", 16 * Math.sin(p3 * Math.PI));
-      }
-
-      if(p < 1){
-        this.anim = requestAnimationFrame(frame);
-      } else {
-        donor.setAttribute("r", 0); travel.setAttribute("r", 0); target.setAttribute("r", 0);
-        Sound.splash();
-        this.makeSplash(ex, ey, color, splash);
-        if(onHit) onHit(ex, ey);
-      }
-    };
-    this.anim = requestAnimationFrame(frame);
-  },
-  makeSplash(x, y, color, group){
-    group.innerHTML = "";
-    for(let i = 0; i < 5; i++){
-      const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      c.setAttribute("cx", x); c.setAttribute("cy", y);
-      c.setAttribute("r", rnd(2.5, 4.5));
-      c.setAttribute("fill", color);
-      group.appendChild(c);
-      const angle = rnd(-Math.PI * 0.5, Math.PI * 0.5), dist = rnd(16, 36);
-      c.animate([
-        { transform: "translate(0, 0) scale(1)", opacity: 1 },
-        { transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px) scale(0)`, opacity: 0 }
-      ], { duration: 320, easing: "ease-out", fill: "forwards" });
-    }
-    setTimeout(() => { group.innerHTML = ""; }, 350);
-  }
-};
-
-/* ---------------- UI CONTROLLER & RENDERER ---------------- */
-const root = document.documentElement;
-const STEP = 22;
-const now = new Date(), wd = now.getDay(), todayIdx = (wd >= 1 && wd <= 5) ? wd - 1 : -1;
-let current = -1, GL = null;
-
-const wheel = $("#wheel"), mobileNav = $("#mobileNav"), mPill = $("#mPill");
-const panelCard = $("#panelCard"), panelHead = $("#panelHead"), panelBody = $("#panelBody"), flashEl = $("#flash");
-
-/* Build Desktop Dial items */
-const dialButtons = DAYS.map((D, i) => {
-  const b = document.createElement("button");
-  b.className = "dy";
-  b.style.setProperty("--a", (i * STEP) + "deg");
-  b.setAttribute("aria-label", D.name);
-  b.innerHTML = `
-    <span class="lb">
-      <span class="nm">${D.name}</span>
-      <span class="ct">${D.lessons.length} lessons${i === todayIdx ? ' · Today' : ''}</span>
-    </span>
-  `;
-  b.addEventListener("click", () => selectDay(i));
-  wheel.appendChild(b);
-  return b;
-});
-
-/* Build Mobile segmented buttons */
-const mobileButtons = DAYS.map((D, i) => {
-  const b = document.createElement("button");
-  b.className = "m-btn";
-  b.textContent = D.short;
-  b.setAttribute("role", "tab");
-  b.addEventListener("click", () => selectDay(i));
-  mobileNav.appendChild(b);
-  return b;
-});
-
-function syncMobilePill(){
-  const b = mobileButtons[current]; if(!b) return;
-  mobileNav.style.setProperty("--m-x", b.offsetLeft + "px");
-  mobileNav.style.setProperty("--m-w", b.offsetWidth + "px");
-}
-addEventListener("resize", syncMobilePill);
-
-function setDialRotation(idx){
-  root.style.setProperty("--rot", (-idx * STEP) + "deg");
-  dialButtons.forEach((btn, i) => {
-    btn.classList.toggle("on", i === idx);
-    btn.style.opacity = Math.max(0.3, 1 - Math.abs(i - idx) * 0.22);
-  });
-  mobileButtons.forEach((btn, i) => {
-    btn.classList.toggle("on", i === idx);
-  });
-  syncMobilePill();
-}
-
-function setAccent(idx){
-  const c = DAYS[idx].c1;
-  root.style.setProperty("--accent", c);
-  root.style.setProperty("--rgb", rgb(c));
-}
-
-function triggerRadialRipple(hitX, hitY){
-  panelCard.classList.remove("impact");
-  void panelCard.offsetWidth;
-  panelCard.classList.add("impact");
-
-  const rows = $$(".row-item");
-  rows.forEach(r => {
-    const rect = r.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dist = Math.hypot(hitX - cx, hitY - cy);
-    const delay = Math.min(220, Math.round(dist * 0.28));
-    setTimeout(() => {
-      r.classList.add("lit");
-      setTimeout(() => r.classList.remove("lit"), 460);
-    }, delay);
-  });
-}
-
-function render(d){
-  const D = DAYS[d];
-  const m = now.getHours() * 60 + now.getMinutes();
-  const times = D.times;
-  const uniqueRooms = new Set(D.lessons.map(l => l.room)).size;
-  const startTm = times[0][0];
-  const endTm = times[D.lessons.length - 1][1];
-
-  panelHead.innerHTML = `
-    <div class="p-badge-row">
-      <span class="mono">0${d + 1} / 05 · ${D.place}${d === todayIdx ? ' · Today' : ''}</span>
-      <span class="mono">${D.lessons.length} Periods</span>
-    </div>
-    <h2 class="p-day-title">${D.name}<span>.</span></h2>
-    <div class="meta-row">
-      <span class="chip highlight">${D.lessons.length} Lessons</span>
-      <span class="chip">${uniqueRooms} ${uniqueRooms === 1 ? 'Room' : 'Rooms'}</span>
-      <span class="chip">${startTm} – ${endTm}</span>
-      ${D.gym ? '<span class="chip highlight">Gym Day</span>' : ''}
-    </div>
-    <p class="p-note">${D.note}</p>
-  `;
-
-  let lessonsHtml = '';
-  D.lessons.forEach((L, k) => {
-    const t = times[k];
-    const live = (d === todayIdx) && (m >= toMin(t[0])) && (m < toMin(t[1]));
-
-    lessonsHtml += `
-      <div class="row-item${live ? ' live' : ''}">
-        <div class="t-col">
-          <span class="t-start">${t[0]}</span>
-          <span class="t-end">${t[1]}</span>
-        </div>
-        <div class="idx-badge">${k + 1}</div>
-        <div class="main-col">
-          <div class="subject-wrap">
-            <h4 class="subject-title">
-              <span>${L.s}</span>
-              ${L.sub ? `<span class="sub-tag">${L.sub}</span>` : ''}
-              ${live ? `<span class="live-beacon"><span class="dot"></span>LIVE</span>` : ''}
-            </h4>
-            <p class="subject-desc">${L.n}</p>
-          </div>
-          <span class="room-badge">${L.room}</span>
-        </div>
-      </div>
-    `;
-
-    if(k < D.lessons.length - 1 && D.breaks[k]){
-      lessonsHtml += `
-        <div class="break-chip">
-          <span class="break-pill">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-            <span>${D.breaks[k]}</span>
-          </span>
-        </div>
-      `;
-    }
-  });
-
-  let afterHtml = '';
-  AFTER[d].forEach(A => {
-    afterHtml += `
-      <div class="row-item">
-        <div class="t-col">
-          <span class="t-start">${A.t.split('–')[0]}</span>
-          <span class="t-end">${A.t.includes('–') ? A.t.split('–')[1] : 'Routine'}</span>
-        </div>
-        <div class="idx-badge"><svg viewBox="0 0 24 24">${ICONS[A.k]}</svg></div>
-        <div class="main-col">
-          <div class="subject-wrap">
-            <h4 class="subject-title">
-              <span>${A.a}</span>
-              <span class="sub-tag">${TAGS[A.k]}</span>
-            </h4>
-            <p class="subject-desc">${A.n}</p>
-          </div>
-          <span class="room-badge">${TAGS[A.k]}</span>
-        </div>
-      </div>
-    `;
-  });
-
-  panelBody.innerHTML = `
-    <div class="sec-heading">Lessons Schedule</div>
-    <div class="rows-list">${lessonsHtml}</div>
-    <div class="sec-heading after-school">After School Routine</div>
-    <div class="rows-list">${afterHtml}</div>
-  `;
-}
-
-const hooks = {
-  burst(){
-    Sound.boom(); Sound.shatter();
-    const mob = innerWidth <= 960;
-    flashEl.style.setProperty("--fx", mob ? "50%" : "72%");
-    flashEl.style.setProperty("--fy", mob ? "26%" : "50%");
-    flashEl.classList.remove("go"); void flashEl.offsetWidth; flashEl.classList.add("go");
-  },
-  collapse(){ Sound.implode(); setTimeout(() => Sound.chime(), 600); }
-};
-
-function shatter(d){
-  if(GL) GL.request(d);
-  else { hooks.burst(); setTimeout(hooks.collapse, 900); }
-}
-
-function selectDay(d){
-  if(d === current) return;
-  const isFirst = current === -1;
-  current = d;
-
-  setDialRotation(d);
-  setAccent(d);
-  render(d);
-
-  if(!isFirst){
-    Sound.haptic();
-    const isMobile = window.innerWidth <= 768;
-    const origin = isMobile ? mobileButtons[d] : dialButtons[d];
-    Fluid.launch(origin, panelCard, DAYS[d].c1, (hitX, hitY) => {
-      triggerRadialRipple(hitX, hitY);
-    });
-    shatter(d);
-  }
-}
-
-$("#shatterBtn").addEventListener("click", () => shatter(current));
-
-/* Wheel scroll on Dial */
-let lastWheel = 0;
-const dialShell = $("#dialShell");
-if(dialShell){
-  dialShell.addEventListener("wheel", e => {
-    e.preventDefault();
-    const t = performance.now();
-    if(t - lastWheel < 450) return;
-    lastWheel = t;
-    const dir = (e.deltaY || e.deltaX) > 0 ? 1 : -1;
-    selectDay(Math.max(0, Math.min(DAYS.length - 1, current + dir)));
-  }, { passive: false });
-}
-
-/* Keyboard arrows */
-addEventListener("keydown", e => {
-  if(e.key === "ArrowDown" || e.key === "ArrowRight"){ e.preventDefault(); selectDay((current + 1) % 5); }
-  if(e.key === "ArrowUp" || e.key === "ArrowLeft"){ e.preventDefault(); selectDay((current + 4) % 5); }
-});
-
-/* Touch Swipe Navigation on Mobile */
-let tStartX = 0, tStartY = 0;
-addEventListener("touchstart", e => {
-  tStartX = e.touches[0].clientX;
-  tStartY = e.touches[0].clientY;
-}, { passive: true });
-
-addEventListener("touchend", e => {
-  const dx = e.changedTouches[0].clientX - tStartX;
-  const dy = e.changedTouches[0].clientY - tStartY;
-  if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy) * 1.5){
-    if(dx < 0) selectDay((current + 1) % 5);
-    else selectDay((current + 4) % 5);
-  }
-}, { passive: true });
-
-/* Auto Boot */
-const startDay = todayIdx >= 0 ? todayIdx : 0;
-try {
-  if(window.THREE && document.createElement("canvas").getContext("webgl")) GL = initGL(startDay, hooks);
-} catch(err){ console.warn("WebGL unavailable", err); GL = null; }
-
-selectDay(startDay);
-if(document.fonts) document.fonts.ready.then(syncMobilePill);
-
+/* ================= BOOT ================= */
+layout();
+addEventListener("resize",layout);
+try{
+  if(window.THREE&&document.createElement("canvas").getContext("webgl")){GL=initGL(focusIdx,hooks);GL.layout();}
+}catch(err){console.warn("WebGL unavailable",err);GL=null;}
+if(document.fonts)document.fonts.ready.then(measure);
 })();
 </script>
 </body>
-</html>\n
+</html>
+'''
+
+with open("D:/dz/school-day/index.html", "w", encoding="utf-8") as f:
+    f.write(html.strip() + "\\n")
+
+print("D:/dz/school-day/index.html restored to Opus's exact original design with fixed click and wheel handlers!")
+'''
+
+with open("D:/dz/school-day/apply_opus_fixed.py", "w", encoding="utf-8") as f:
+    f.write(html)
