@@ -20,7 +20,7 @@ body{
   background:radial-gradient(900px 700px at 78% 18%,rgba(var(--rgb),.09),transparent 60%),var(--bg);
   background-attachment:fixed;
   color:var(--text);font-family:'Plus Jakarta Sans',system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.5;
 }
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
@@ -38,7 +38,7 @@ a{color:inherit;text-decoration:none}
 .top{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:20px clamp(18px,5vw,64px)}
 .brand{font:700 15px 'Syne';letter-spacing:.02em;display:flex;align-items:center;gap:10px}
 .brand i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);transition:background .6s}
-.sound{display:flex;align-items:center;gap:10px;font:500 11px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 14px;border:1px solid var(--line);border-radius:999px;transition:color .3s,border-color .3s}
+.sound{display:flex;align-items:center;gap:10px;font:500 11px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(3,7,18,.5);transition:color .3s,border-color .3s}
 .sound:hover{color:#fff;border-color:rgba(255,255,255,.2)}
 .bars{display:flex;gap:2px;align-items:flex-end;height:12px}
 .bars i{width:2px;height:3px;background:var(--accent);border-radius:1px}
@@ -54,7 +54,7 @@ main{position:relative;z-index:2}
 .label{font:500 11px 'JetBrains Mono';letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 h1{font:800 clamp(3.2rem,8vw,6.6rem) 'Syne';line-height:.92;letter-spacing:-.045em;margin:20px 0 24px}
 h1 span{color:var(--accent);transition:color .6s}
-.lead{color:#a3acba;font-weight:300;font-size:1.05rem;max-width:440px}
+.lead{color:#a3acba;font-weight:300;font-size:1.05rem;max-width:440px;line-height:1.6}
 .actions{display:flex;gap:22px;align-items:center;margin-top:34px;flex-wrap:wrap}
 .btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:999px;background:var(--accent);color:#06070b;font:600 12px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;transition:transform .4s var(--ease),background .6s}
 .btn:hover{transform:translateY(-2px)}
@@ -72,7 +72,8 @@ h1 span{color:var(--accent);transition:color .6s}
 .sec-title{font:700 clamp(2rem,4.5vw,3.2rem) 'Syne';letter-spacing:-.04em;line-height:1;margin:14px 0 54px}
 .tt{display:grid;grid-template-columns:var(--navw) 1fr;column-gap:var(--gap);align-items:start}
 
-.days{position:sticky;top:110px;display:flex;flex-direction:column}
+/* left: days */
+.days{position:sticky;top:110px;display:flex;flex-direction:column;gap:8px}
 .goo{position:absolute;left:0;top:0;bottom:0;width:calc(100% + var(--gap) + 20px);filter:url(#goo);pointer-events:none;z-index:0}
 .blob,.trail{position:absolute;left:0;top:0;width:calc(100% - var(--gap) - 20px);height:var(--h,64px);border-radius:32px;background:var(--accent);transform:translateY(var(--y,0px));transition:transform .55s cubic-bezier(.65,0,.25,1),background .6s}
 .trail{transition:transform .9s cubic-bezier(.65,0,.25,1),background .6s;transform:translateY(var(--y,0px)) scale(.86)}
@@ -84,43 +85,44 @@ h1 span{color:var(--accent);transition:color .6s}
 @keyframes drip{0%{opacity:1;transform:translateX(0) scale(1)}75%{opacity:1;transform:translateX(calc(var(--gap) + 23px)) scale(.8)}100%{opacity:0;transform:translateX(calc(var(--gap) + 23px)) scale(.3)}}
 .land{position:absolute;left:calc(100% - 25px);width:10px;border-radius:6px;background:var(--accent);top:var(--y,0px);height:var(--h,64px);transition:top .55s cubic-bezier(.65,0,.25,1) .5s,background .6s}
 
-.day{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 24px;border-radius:32px;text-align:left;color:var(--muted);transition:color .4s}
-.day:hover{color:#fff}
-.day[aria-selected="true"]{color:#06070b}
+.day{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;height:64px;padding:0 24px;border-radius:32px;text-align:left;color:var(--muted);background:rgba(255,255,255,.035);border:1px solid var(--line);transition:color .4s,background .4s,border-color .4s}
+.day:hover{color:#fff;border-color:rgba(255,255,255,.16)}
+.day[aria-selected="true"]{color:#06070b;background:transparent;border-color:transparent}
 .day .nm{font:600 1rem 'Plus Jakarta Sans'}
 .day .nm .s{display:none}
 .day .ct{font:500 11px 'JetBrains Mono';opacity:.75}
 .day .td{width:5px;height:5px;border-radius:50%;background:currentColor;margin-left:8px;display:inline-block;vertical-align:middle}
 
-.panel{border-left:1px solid var(--line);padding-left:44px;min-height:520px}
-.ph{margin-bottom:26px}
+/* right: panel */
+.panel{border-left:1px solid var(--line);padding-left:44px}
+.ph{margin-bottom:24px}
 .ph h3{font:800 clamp(2.4rem,5vw,3.6rem) 'Syne';letter-spacing:-.045em;line-height:1;margin:10px 0 10px}
 .meta{font:500 12px 'JetBrains Mono';color:var(--accent);letter-spacing:.06em;transition:color .6s}
-.note{color:#a3acba;font-weight:300;max-width:560px;margin-top:12px}
-.rows{list-style:none}
-.row{display:grid;grid-template-columns:44px 1fr auto;gap:20px;align-items:center;padding:18px 0;border-top:1px solid var(--line);
-  opacity:0;transform:translateY(12px);animation:up .7s var(--ease) forwards;animation-delay:calc(var(--i)*55ms + 80ms)}
-.row:last-child{border-bottom:1px solid var(--line)}
-.row .n{font:500 12px 'JetBrains Mono';color:var(--muted);transition:color .3s}
-.row:hover .n{color:var(--accent)}
-.row h4{font:600 1.02rem 'Plus Jakarta Sans';color:#fff}
-.row h4 small{font:500 10.5px 'JetBrains Mono';color:var(--muted);margin-left:8px;letter-spacing:.06em}
-.row p{font-size:.9rem;color:#8d97a7;font-weight:300;margin-top:2px}
-.row .r{text-align:right;white-space:nowrap}
-.row .tm{display:block;font:400 12px 'JetBrains Mono';color:#c3cad5}
-.row .rm{display:block;font:500 11px 'JetBrains Mono';color:var(--accent);margin-top:3px;transition:color .6s}
-.row.live h4::after{content:"now";font:500 10px 'JetBrains Mono';color:#06070b;background:var(--accent);padding:2px 7px;border-radius:5px;margin-left:10px;vertical-align:middle}
-.panel.out .ph,.panel.out .rows{opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
+.note{color:#a3acba;font-weight:300;max-width:560px;margin-top:10px}
+.sub-h{display:flex;align-items:center;gap:14px;margin:34px 0 14px}
+.sub-h::after{content:"";flex:1;height:1px;background:var(--line)}
+.sub-h:first-of-type{margin-top:0}
+.list{list-style:none;display:flex;flex-direction:column;gap:8px}
 
-/* notes */
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
-.card{padding:34px 34px 34px 0;border-right:1px solid var(--line)}
-.card+.card{padding-left:34px}
-.card:last-child{border-right:0}
-.card .label{display:block;margin-bottom:18px}
-.card h3{font:700 1.35rem 'Syne';letter-spacing:-.02em;margin-bottom:12px}
-.card p{color:#98a2b1;font-weight:300;font-size:.95rem}
-.card button{margin-top:18px;font:500 11px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--accent);transition:color .6s}
+.row{display:grid;grid-template-columns:40px 1fr auto;gap:16px;align-items:center;min-height:64px;padding:10px 12px;padding-right:14px;border-radius:32px;
+  background:rgba(255,255,255,.035);border:1px solid var(--line);
+  transition:background .35s,border-color .35s;
+  opacity:0;transform:translateY(12px);animation:up .7s var(--ease) forwards;animation-delay:calc(var(--i)*45ms + 60ms)}
+.row:hover{background:rgba(var(--rgb),.1);border-color:rgba(var(--rgb),.35)}
+.row .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:500 12px 'JetBrains Mono';color:var(--accent);border:1px solid rgba(var(--rgb),.4);transition:color .6s,border-color .6s}
+.row .n svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.row h4{font:600 .98rem 'Plus Jakarta Sans';color:#fff}
+.row h4 small{font:500 10.5px 'JetBrains Mono';color:var(--muted);margin-left:8px;letter-spacing:.06em}
+.row p{font-size:.86rem;color:#8d97a7;font-weight:300;margin-top:1px}
+.row .r{display:flex;align-items:center;gap:14px;white-space:nowrap}
+.row .tm{font:400 12px 'JetBrains Mono';color:#aeb6c2}
+.row .rm{font:500 11px 'JetBrains Mono';color:var(--accent);background:rgba(var(--rgb),.12);padding:7px 13px;border-radius:999px;transition:color .6s,background .6s}
+.row.live{background:var(--accent);border-color:transparent}
+.row.live h4,.row.live p,.row.live .tm,.row.live .n{color:#06070b}
+.row.live .n{border-color:rgba(0,0,0,.35)}
+.row.live .rm{background:rgba(0,0,0,.15);color:#06070b}
+.row.live h4::after{content:"now";font:500 10px 'JetBrains Mono';margin-left:10px;padding:2px 7px;border-radius:5px;background:rgba(0,0,0,.15)}
+.panel.out .ph,.panel.out .lists{opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s}
 
 footer{position:relative;z-index:2;padding:40px clamp(18px,6vw,96px);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:500 11px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 
@@ -131,8 +133,6 @@ footer{position:relative;z-index:2;padding:40px clamp(18px,6vw,96px);border-top:
 @media (max-width:960px){
   .hero{align-items:flex-end;padding-top:48vh;padding-bottom:70px}
   .hit{width:100%;height:46vh}
-  .cards{grid-template-columns:1fr}
-  .card,.card+.card{padding:28px 0;border-right:0;border-bottom:1px solid var(--line)}
 }
 @media (max-width:720px){
   :root{--gap:16px;--navw:74px}
@@ -142,11 +142,12 @@ footer{position:relative;z-index:2;padding:40px clamp(18px,6vw,96px);border-top:
   .day .nm .f,.day .ct{display:none}
   .day .nm .s{display:inline;font-size:.9rem}
   .day .td{position:absolute;top:10px;right:12px;margin:0}
-  .panel{padding-left:18px;min-height:0}
-  .row{grid-template-columns:1fr;gap:4px;padding:15px 0}
-  .row .n{display:none}
-  .row .r{text-align:left;display:flex;gap:12px;order:-1}
-  .row .rm{margin:0}
+  .panel{padding-left:16px}
+  .row{grid-template-columns:34px 1fr;gap:4px 12px;padding:12px 14px 12px 10px;border-radius:26px}
+  .row .n{width:34px;height:34px;font-size:11px;grid-row:span 2}
+  .row .r{grid-column:2;gap:10px}
+  .row .rm{padding:4px 10px;font-size:10.5px}
+  .row .tm{font-size:11px}
   .stats{gap:28px}
   .hero{padding-left:18px;padding-right:18px}
 }
@@ -177,21 +178,21 @@ footer{position:relative;z-index:2;padding:40px clamp(18px,6vw,96px);border-top:
     <div class="hero-in">
       <p class="label fade">English project · Class 10 B</p>
       <h1 class="fade">Our school<br>week<span>.</span></h1>
-      <p class="lead fade">This is the real weekly timetable of class 10 B: five days, 33 lessons and a lot of stairs. Pick a day and the planet rebuilds itself.</p>
+      <p class="lead fade">The real weekly timetable of class 10 B, plus what I do after school: lessons, the gym and work on my laptop. Pick a day and the planet rebuilds itself.</p>
       <div class="actions fade">
         <a href="#timetable" class="btn">View timetable</a>
         <button class="link" id="shatterBtn">Shatter the planet</button>
       </div>
       <div class="stats fade">
         <div><b>33</b><span>Lessons</span></div>
-        <div><b>5</b><span>Days</span></div>
+        <div><b>3</b><span>Gym days</span></div>
         <div><b id="roomCount">0</b><span>Rooms</span></div>
       </div>
     </div>
   </section>
 
   <section class="section" id="timetable">
-    <p class="label reveal">01 · Timetable</p>
+    <p class="label reveal">Timetable</p>
     <h2 class="sec-title reveal">Pick a day.</h2>
     <div class="tt">
       <nav class="days" id="days" role="tablist" aria-label="Days">
@@ -203,33 +204,8 @@ footer{position:relative;z-index:2;padding:40px clamp(18px,6vw,96px);border-top:
       </nav>
       <div class="panel" id="panel">
         <div class="ph" id="ph"></div>
-        <ol class="rows" id="rows"></ol>
+        <div class="lists" id="lists"></div>
       </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <p class="label reveal">02 · Notes</p>
-    <h2 class="sec-title reveal">A few things about our week.</h2>
-    <div class="cards reveal">
-      <article class="card">
-        <span class="label">Monday</span>
-        <h3>The Monday UPK Phenomenon</h3>
-        <p>Monday is completely different from the rest of the week. All six periods are Vocational Training in the Workshop Lab, so we never change rooms. It's practical work instead of textbooks, and honestly it's not a bad way to start the week.</p>
-        <button data-day="0">Open Monday →</button>
-      </article>
-      <article class="card">
-        <span class="label">Tuesday · Thursday · Friday</span>
-        <h3>The Seven-Period Days</h3>
-        <p>Three days a week we have seven lessons. On Tuesday we go from the second floor for Physics down to the gym and then back up to the third floor for Maths. Ten minutes is not a lot of time for that.</p>
-        <button data-day="1">Open Tuesday →</button>
-      </article>
-      <article class="card">
-        <span class="label">Friday</span>
-        <h3>Friday, Period 7</h3>
-        <p>Friday has seven lessons in seven different rooms, and the last one is Physics in Room 210. It's a good subject, but it's hard to focus on formulas when the weekend starts in forty-five minutes.</p>
-        <button data-day="4">Open Friday →</button>
-      </article>
     </div>
   </section>
 </main>
@@ -248,7 +224,7 @@ const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 /* ---------------- DATA ---------------- */
 const TIMES=[["08:00","08:45"],["08:55","09:40"],["10:00","10:45"],["11:05","11:50"],["12:05","12:50"],["13:00","13:45"],["13:55","14:40"]];
 const DAYS=[
-{name:"Monday",short:"Mon",c1:"#f5a524",c2:"#fde68a",
+{name:"Monday",short:"Mon",c1:"#f5a524",c2:"#fde68a",gym:true,
  note:"Six straight periods of hands-on technical workshop training. Physical craftsmanship over desk fatigue!",
  lessons:[
   {s:"Vocational Training",sub:"1 of 6",room:"Workshop Lab",n:"Safety briefing first. Goggles on, phones away."},
@@ -256,26 +232,26 @@ const DAYS=[
   {s:"Vocational Training",sub:"3 of 6",room:"Workshop Lab",n:"Halfway to a finished project. Probably."},
   {s:"Vocational Training",sub:"4 of 6",room:"Workshop Lab",n:"No desks, no textbooks, just tools and patience."},
   {s:"Vocational Training",sub:"5 of 6",room:"Workshop Lab",n:"The workshop is loud, but in a good way."},
-  {s:"Vocational Training",sub:"6 of 6",room:"Workshop Lab",n:"Cleaning the bench before the bell. The week has officially started."}
+  {s:"Vocational Training",sub:"6 of 6",room:"Workshop Lab",n:"Cleaning the bench before the bell."}
  ]},
 {name:"Tuesday",short:"Tue",c1:"#38bdf8",c2:"#a5b4fc",
  note:"Seven lessons across six rooms and three floors. Most of the ten-minute breaks are spent on the stairs.",
  lessons:[
   {s:"Russian Literature",room:"Room 305",n:"A quiet start with 19th-century classics."},
   {s:"Russian Language",room:"Room 305",n:"Same room, so no rush. Just commas."},
-  {s:"History of Belarus in World Context",room:"Room 306",n:"Next door. Belarus in the bigger picture of world history."},
+  {s:"History of Belarus in World Context",room:"Room 306",n:"Belarus in the bigger picture of world history."},
   {s:"Physics",room:"Room 210",n:"Down to the second floor for formulas and experiments."},
   {s:"PE & Health",room:"Gym 1",n:"All the way down to the gym. Changing fast is a skill."},
   {s:"Mathematics",room:"Room 301",n:"Back up to the third floor, slightly out of breath."},
-  {s:"Belarusian Literature",room:"Room 316",n:"The last lesson. Poetry at the end of a long day."}
+  {s:"Belarusian Literature",room:"Room 316",n:"Poetry at the end of a long day."}
  ]},
-{name:"Wednesday",short:"Wed",c1:"#a78bfa",c2:"#f0abfc",
+{name:"Wednesday",short:"Wed",c1:"#a78bfa",c2:"#f0abfc",gym:true,
  note:"Six lessons, six rooms and a fairly balanced mix. Probably the calmest day of the week.",
  lessons:[
   {s:"Mathematics",room:"Room 301",n:"Starting the day with equations."},
   {s:"Russian Language",room:"Room 305",n:"Grammar, spelling, and a bit more grammar."},
   {s:"English / German Language",room:"Room 324 / 212",n:"The class splits into English and German groups."},
-  {s:"Computer Science / IT",room:"Lab 212/322",n:"Computer lab. Usually the most popular lesson of the day."},
+  {s:"Computer Science / IT",room:"Lab 212/322",n:"Usually the most popular lesson of the day."},
   {s:"Geography",room:"Room 319",n:"Maps, climates and countries."},
   {s:"Biology",room:"Room 311",n:"Cells, organisms and an easy end to the day."}
  ]},
@@ -284,24 +260,57 @@ const DAYS=[
  lessons:[
   {s:"Chemistry",room:"Room 313",n:"Early experiments, carefully supervised."},
   {s:"History of Belarus",room:"Room 306",n:"Dates, events and the occasional surprise quiz."},
-  {s:"Technical Drawing & Drafting",sub:"Черчение",room:"Room 305",n:"Rulers, compasses and a very sharp pencil. Precision matters."},
+  {s:"Technical Drawing & Drafting",sub:"Черчение",room:"Room 305",n:"Rulers, compasses and a very sharp pencil."},
   {s:"PE & Health",room:"Gym 1",n:"Down to the gym in the middle of the day."},
   {s:"Mathematics",room:"Room 301",n:"Back to the third floor for Maths."},
   {s:"Belarusian Language",room:"Room 316",n:"Room 316 for the rest of the day."},
   {s:"Belarusian Literature",room:"Room 316",n:"Same room, last lesson. No stairs needed."}
  ]},
-{name:"Friday",short:"Fri",c1:"#fb7185",c2:"#fdba74",
- note:"Seven lessons in seven different rooms. The day ends with Physics in period 7, when everyone is already thinking about the weekend.",
+{name:"Friday",short:"Fri",c1:"#fb7185",c2:"#fdba74",gym:true,
+ note:"Seven lessons in seven different rooms. The day ends with Physics, and then the weekend finally starts.",
  lessons:[
   {s:"Mathematics",room:"Room 301",n:"Maths first thing on a Friday."},
   {s:"PE & Health",room:"Gym 1",n:"Gym early, so the rest of the day feels long."},
   {s:"English / German",room:"Room 324 / 212",n:"Back upstairs for English or German."},
   {s:"Social Studies",room:"Room 306",n:"Society, rights and how things work."},
   {s:"Chemistry",room:"Room 313",n:"The second Chemistry lesson of the week."},
-  {s:"Biology",room:"Room 311",n:"Biology, one lesson before the end."},
-  {s:"Physics",room:"Room 210",n:"The last lesson of the week. Then, finally, the weekend."}
+  {s:"Biology",room:"Room 311",n:"One lesson before the end."},
+  {s:"Physics",room:"Room 210",n:"The last lesson of the week."}
  ]}
 ];
+
+/* After school: k = home | gym | laptop | study | rest */
+const AFTER=[
+ [ {t:"14:00",a:"Home & lunch",n:"A quick lunch and a short break after the workshop.",k:"home"},
+   {t:"15:30–17:00",a:"Gym",n:"First training of the week. Fresh start.",k:"gym"},
+   {t:"18:00–20:00",a:"Work on the laptop",n:"Back home, laptop open, headphones on.",k:"laptop"},
+   {t:"20:30",a:"Homework",n:"Whatever is due on Tuesday.",k:"study"} ],
+ [ {t:"15:00",a:"Home & lunch",n:"Seven lessons later, food is the priority.",k:"home"},
+   {t:"16:00–17:30",a:"Homework",n:"Long day, so a bit more homework than usual.",k:"study"},
+   {t:"18:00–20:30",a:"Work on the laptop",n:"The main working session of the day.",k:"laptop"},
+   {t:"21:00",a:"Free time",n:"Music, a series, or just sleep.",k:"rest"} ],
+ [ {t:"14:00",a:"Home & lunch",n:"Short day, so there is time to rest.",k:"home"},
+   {t:"15:30–17:00",a:"Gym",n:"Mid-week training.",k:"gym"},
+   {t:"18:00–20:00",a:"Work on the laptop",n:"Back home and straight to work.",k:"laptop"},
+   {t:"20:30",a:"Homework",n:"Getting ready for Thursday.",k:"study"} ],
+ [ {t:"15:00",a:"Home & lunch",n:"A slow lunch after a long day.",k:"home"},
+   {t:"16:00–17:30",a:"Homework",n:"Technical Drawing always takes longer than it looks.",k:"study"},
+   {t:"18:00–20:30",a:"Work on the laptop",n:"Finishing the tasks for the week.",k:"laptop"},
+   {t:"21:00",a:"Free time",n:"Rest before the last school day.",k:"rest"} ],
+ [ {t:"15:00",a:"Home & lunch",n:"The week is done.",k:"home"},
+   {t:"16:00–17:30",a:"Gym",n:"Last training of the week.",k:"gym"},
+   {t:"18:30–20:00",a:"Work on the laptop",n:"A lighter session. It's Friday.",k:"laptop"},
+   {t:"20:00",a:"Weekend",n:"Homework can wait until Sunday. Probably.",k:"rest"} ]
+];
+const ICONS={
+  home:'<path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/>',
+  gym:'<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',
+  laptop:'<path d="M4 6h16v10H4zM2 19h20"/>',
+  study:'<path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>',
+  rest:'<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>'
+};
+const TAGS={home:"Home",gym:"Gym",laptop:"Laptop",study:"Homework",rest:"Free"};
+
 const rgb=h=>{const n=parseInt(h.slice(1),16);return ((n>>16)&255)+","+((n>>8)&255)+","+(n&255);};
 const toMin=s=>{const p=s.split(":");return +p[0]*60+ +p[1];};
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -411,7 +420,7 @@ function initGL(startDay,hooks){
     for(let i=0;i<N;i++){
       const k=i*3;sph(1,DIR,k);const d=2.5+Math.pow(Math.random(),1.5)*7;
       DIR[k]*=d;DIR[k+1]*=d;DIR[k+2]*=d;
-      if(Math.random()<.25)DIR[k+2]+=3+Math.random()*6;   // shards flying toward the camera
+      if(Math.random()<.25)DIR[k+2]+=3+Math.random()*6;
     }
   }
   buildShape(startDay,TO);for(let i=0;i<N;i++)sph(rnd(5,11),FROM,i*3);makeDirs();
@@ -523,7 +532,7 @@ function initGL(startDay,hooks){
 /* ---------------- UI ---------------- */
 const root=document.documentElement;
 const now=new Date(),wd=now.getDay(),todayIdx=(wd>=1&&wd<=5)?wd-1:-1;
-const nav=$("#days"),panel=$("#panel"),ph=$("#ph"),rowsEl=$("#rows"),drop1=$("#drop1"),drop2=$("#drop2"),flashEl=$("#flash");
+const nav=$("#days"),panel=$("#panel"),ph=$("#ph"),lists=$("#lists"),drop1=$("#drop1"),drop2=$("#drop2"),flashEl=$("#flash");
 let current=-1,tmr=null,GL=null;
 
 DAYS.forEach((D,i)=>{
@@ -550,13 +559,20 @@ function render(d,instant){
   const build=()=>{
     const rooms=new Set(D.lessons.map(l=>l.room)).size,end=TIMES[D.lessons.length-1][1];
     ph.innerHTML=`<p class="label">Day 0${d+1} / 05${d===todayIdx?" · Today":""}</p><h3>${D.name}</h3>
-      <p class="meta">${D.lessons.length} lessons · ${rooms} ${rooms===1?"room":"rooms"} · 08:00–${end}</p><p class="note">${D.note}</p>`;
-    rowsEl.innerHTML=D.lessons.map((L,i)=>{
-      const t=TIMES[i],live=d===todayIdx&&m>=toMin(t[0])&&m<toMin(t[1]);
-      return `<li class="row${live?" live":""}" style="--i:${i}"><span class="n">0${i+1}</span>
+      <p class="meta">${D.lessons.length} lessons · ${rooms} ${rooms===1?"room":"rooms"} · 08:00–${end}${D.gym?" · gym day":""}</p>
+      <p class="note">${D.note}</p>`;
+    let i=0;
+    const lessons=D.lessons.map((L,k)=>{
+      const t=TIMES[k],live=d===todayIdx&&m>=toMin(t[0])&&m<toMin(t[1]);
+      return `<li class="row${live?" live":""}" style="--i:${i++}"><span class="n">${k+1}</span>
         <div><h4>${L.s}${L.sub?`<small>${L.sub}</small>`:""}</h4><p>${L.n}</p></div>
         <div class="r"><span class="tm">${t[0]}–${t[1]}</span><span class="rm">${L.room}</span></div></li>`;
     }).join("");
+    const after=AFTER[d].map(A=>`<li class="row" style="--i:${i++}"><span class="n"><svg viewBox="0 0 24 24">${ICONS[A.k]}</svg></span>
+        <div><h4>${A.a}</h4><p>${A.n}</p></div>
+        <div class="r"><span class="tm">${A.t}</span><span class="rm">${TAGS[A.k]}</span></div></li>`).join("");
+    lists.innerHTML=`<p class="label sub-h">Lessons</p><ol class="list">${lessons}</ol>
+      <p class="label sub-h">After school</p><ul class="list">${after}</ul>`;
     panel.classList.remove("out");
   };
   if(instant)build();else{panel.classList.add("out");tmr=setTimeout(build,260);}
@@ -585,7 +601,6 @@ function selectDay(d){
 
 $("#shatterBtn").addEventListener("click",()=>shatter(current));
 $("#hit").addEventListener("click",()=>shatter(current));
-$$(".card button").forEach(b=>b.addEventListener("click",()=>{selectDay(+b.dataset.day);$("#timetable").scrollIntoView({behavior:"smooth"});}));
 addEventListener("keydown",e=>{
   if(e.key==="ArrowDown"||e.key==="ArrowRight"){e.preventDefault();selectDay((current+1)%5);}
   if(e.key==="ArrowUp"||e.key==="ArrowLeft"){e.preventDefault();selectDay((current+4)%5);}
@@ -595,7 +610,7 @@ const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.t
 $$(".reveal").forEach(el=>io.observe(el));
 
 const glc=$("#gl");
-addEventListener("scroll",()=>{glc.style.opacity=1-Math.min(.65,scrollY/innerHeight*.65);},{passive:true});
+addEventListener("scroll",()=>{glc.style.opacity=1-Math.min(.7,scrollY/innerHeight*.7);},{passive:true});
 
 const start=todayIdx>=0?todayIdx:0;
 try{ if(window.THREE&&document.createElement("canvas").getContext("webgl")) GL=initGL(start,hooks); }
