@@ -70,7 +70,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .dy.on::before,.dy.focus::before{opacity:0}
 
 /* liquid */
-.goo{position:fixed;z-index:4;pointer-events:none;filter:url(#goo)}
+.goo{position:fixed;z-index:4;pointer-events:none;filter:url(#gooFilter)}
 .goo span{position:absolute;border-radius:50%;background:var(--accent);transition:background .8s}
 .g-anchor{width:18px;height:18px;margin:-9px 0 0 -9px;animation:breathe 2.6s ease-in-out infinite}
 .g-drop{width:22px;height:22px;margin:-11px 0 0 -11px;opacity:0}
@@ -89,7 +89,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   mask:linear-gradient(to bottom,transparent 0,#000 20px,#000 calc(100% - 48px),transparent);
   padding:20px 2px 56px 0}
 .panel::-webkit-scrollbar{display:none}
-.panel.open{pointer-events:auto}
+.panel.open{pointer-events:auto;clip-path:circle(160% at 0px 50%)}
 .p-top{display:flex;justify-content:space-between;align-items:baseline}
 .close{transition:color .3s;padding:6px 12px;border-radius:999px;border:1px solid var(--line)}.close:hover{color:var(--text);border-color:var(--accent)}
 .panel h2{font:400 clamp(60px,6vw,88px)/.95 'Instrument Serif',serif;letter-spacing:-.02em;margin:14px 0 12px}
@@ -132,7 +132,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="goo" x="-20%" y="-20%" width="140%" height="140%">
+    <filter id="gooFilter" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="b"/>
       <feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8"/>
     </filter>
@@ -163,7 +163,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   <div class="wheel" id="wheel"><div class="ticks"></div></div>
 </div>
 
-<div class="goo" id="goo" aria-hidden="true">
+<div class="goo" id="gooBox" aria-hidden="true">
   <span class="g-anchor" id="anchor"></span>
   <span class="g-drop" id="d1"></span>
   <span class="g-drop sm" id="d2"></span>
@@ -348,7 +348,7 @@ $("#sound").addEventListener("click",()=>{
 
 /* ================= UI STATE ================= */
 const root=document.documentElement, body=document.body;
-const wheel=$("#wheel"), panel=$("#panel"), intro=$("#intro"), hint=$("#hint"), goo=$("#goo");
+const wheel=$("#wheel"), panel=$("#panel"), intro=$("#intro"), hint=$("#hint"), goo=$("#gooBox");
 const anchor=$("#anchor"), d1=$("#d1"), d2=$("#d2"), pool=$("#pool"), glc=$("#gl");
 const STEP=22;
 const wd=new Date().getDay(), todayIdx=(wd>=1&&wd<=5)?wd-1:-1;
@@ -398,6 +398,7 @@ function layout(){
 function animPanel(show,dur){
   const a=`circle(0px at ${geo.ox} ${geo.oy})`,b=`circle(160% at ${geo.ox} ${geo.oy})`;
   if(panelAnim){try{panelAnim.cancel();}catch(e){}panelAnim=null;}
+  panel.style.clipPath=show?b:a;
   try{
     panelAnim=panel.animate([{clipPath:show?a:b},{clipPath:show?b:a}],
       {duration:dur,easing:show?"cubic-bezier(.7,0,.2,1)":"cubic-bezier(.5,0,.75,0)",fill:"forwards"});
@@ -469,10 +470,10 @@ async function select(i){
   await pour();
   if(my!==token)return;
   render(i);
-  await animPanel(true,950);
   isOpen=true;panel.classList.add("open");
   if(GL)GL.setOpen(true);
   glc.style.opacity=mobile?.25:1;
+  await animPanel(true,950);
 }
 function close(){
   token++;isOpen=false;current=-1;panel.classList.remove("open");
@@ -546,7 +547,7 @@ function initGL(startDay,hooks){
       else{if(q<.62)sph(1.32+rnd(-.03,.03),o,k);else{const s=spikes[(Math.random()*24)|0],t=Math.pow(Math.random(),1.4),r=1.32+t*1.4,j=.06*(1-t);o[k]=s[0]*r+rnd(-j,j);o[k+1]=s[1]*r+rnd(-j,j);o[k+2]=s[2]*r+rnd(-j,j);}}
     }
   }
-  makeDirs(){
+  function makeDirs(){
     for(let i=0;i<N;i++){
       const k=i*3;sph(1,DIR,k);const d=2.5+Math.pow(Math.random(),1.5)*7;
       DIR[k]*=d;DIR[k+1]*=d;DIR[k+2]*=d;
