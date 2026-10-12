@@ -3,1241 +3,1129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Typical School Day — A Day in the Life</title>
-  <meta name="description" content="A modern interactive presentation of my typical school day routine, timetable, subjects, and student life.">
+  <title>ORBIT // High School Routine · 10 "B"</title>
+  <meta name="description" content="An interactive 3D WebGL motion-design experience exploring the real daily routine and timetable of a 10th-grade student.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <!-- Three.js + GSAP CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
     :root {
-      --bg-primary: #0a0f1d;
-      --bg-secondary: #111827;
-      --bg-card: rgba(17, 24, 39, 0.75);
-      --bg-card-hover: rgba(31, 41, 55, 0.85);
-      --border-color: rgba(255, 255, 255, 0.08);
-      --border-accent: rgba(99, 102, 241, 0.3);
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --text-sub: #6b7280;
-      --accent: #6366f1;
-      --accent-glow: rgba(99, 102, 241, 0.35);
-      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-      --badge-bg: rgba(99, 102, 241, 0.15);
-      --badge-text: #818cf8;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --header-blur: rgba(10, 15, 29, 0.8);
-      --radius: 16px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    [data-theme="light"] {
-      --bg-primary: #f8fafc;
-      --bg-secondary: #ffffff;
-      --bg-card: rgba(255, 255, 255, 0.85);
-      --bg-card-hover: rgba(241, 245, 249, 0.95);
-      --border-color: rgba(0, 0, 0, 0.08);
-      --border-accent: rgba(99, 102, 241, 0.3);
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-sub: #94a3b8;
-      --accent: #4f46e5;
-      --accent-glow: rgba(79, 70, 229, 0.2);
-      --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #db2777 100%);
-      --badge-bg: rgba(79, 70, 229, 0.1);
-      --badge-text: #4338ca;
-      --header-blur: rgba(248, 250, 252, 0.85);
+      --bg: #030712;
+      --card-bg: rgba(15, 23, 42, 0.65);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --card-hover: rgba(30, 41, 59, 0.85);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-mon: #38bdf8;
+      --accent-tue: #a855f7;
+      --accent-wed: #10b981;
+      --accent-thu: #f59e0b;
+      --accent-fri: #ec4899;
+      --current-accent: var(--accent-mon);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
+      user-select: none;
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      line-height: 1.6;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
-      transition: background-color 0.4s ease, color 0.4s ease;
+      position: relative;
     }
 
-    /* Ambient Background Glow */
-    .ambient-glow {
+    /* WebGL Background Canvas */
+    #webgl-canvas {
       position: fixed;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.08) 50%, transparent 80%);
-      pointer-events: none;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
-      filter: blur(80px);
+      pointer-events: all;
+    }
+
+    /* Noise Texture Overlay */
+    .noise-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 0);
+      background-size: 24px 24px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* UI Layer */
+    .ui-layer {
+      position: relative;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .interactive {
+      pointer-events: auto;
     }
 
     /* Navigation Bar */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      background-color: var(--header-blur);
-      border-bottom: 1px solid var(--border-color);
-      transition: var(--transition);
-    }
-
-    .nav-container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 16px 24px;
+      padding: 24px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    .logo {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-      text-decoration: none;
-      color: var(--text-main);
+      gap: 14px;
     }
 
-    .logo-badge {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--accent-gradient);
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 30%, #38bdf8, #6366f1, #030712);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      color: white;
-      font-size: 1rem;
-      box-shadow: 0 4px 12px var(--accent-glow);
+      font-size: 1.1rem;
     }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      list-style: none;
+    .brand-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
     }
 
-    .nav-links a {
+    .brand-subtitle {
+      font-size: 0.75rem;
       color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.92rem;
-      font-weight: 500;
-      transition: var(--transition);
-      position: relative;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.08em;
     }
 
-    .nav-links a:hover {
-      color: var(--text-main);
-    }
-
-    .nav-actions {
+    .header-actions {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .theme-toggle {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 8px 14px;
+    .audio-btn, .shatter-trigger-btn {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text);
+      padding: 8px 18px;
       border-radius: 999px;
-      font-size: 0.88rem;
-      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: var(--transition);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
     }
 
-    .theme-toggle:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--border-accent);
-      transform: translateY(-1px);
+    .shatter-trigger-btn {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(99, 102, 241, 0.2));
+      border-color: rgba(236, 72, 153, 0.4);
+      color: #f472b6;
+      font-weight: 700;
     }
 
-    /* Container */
-    .container {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
+    .audio-btn:hover, .shatter-trigger-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      border-color: var(--current-accent);
     }
 
     /* Hero Section */
     .hero {
-      padding: 72px 0 54px;
+      padding: 60px 32px 30px;
+      max-width: 1280px;
+      margin: 0 auto;
       text-align: center;
     }
 
-    .status-pill {
+    .badge-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      background: var(--badge-bg);
-      border: 1px solid var(--border-accent);
+      gap: 10px;
+      padding: 6px 18px;
       border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--badge-text);
-      margin-bottom: 24px;
-      letter-spacing: 0.02em;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
     }
 
-    .status-dot {
+    .badge-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 10px var(--success);
-      animation: pulse 2s infinite;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulse 1.8s infinite;
     }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.85); }
+      50% { opacity: 0.4; transform: scale(0.7); }
     }
 
-    .hero-title {
-      font-size: 3.5rem;
+    .hero-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5.2rem);
       font-weight: 800;
-      line-height: 1.15;
-      letter-spacing: -0.03em;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
       margin-bottom: 20px;
+      text-transform: uppercase;
     }
 
-    .gradient-text {
-      background: var(--accent-gradient);
+    .gradient-word {
+      background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .hero-subtitle {
-      font-size: 1.25rem;
+    .hero-sub {
+      font-size: 1.15rem;
       color: var(--text-muted);
-      max-width: 680px;
+      max-width: 720px;
       margin: 0 auto 36px;
       line-height: 1.6;
     }
 
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      max-width: 880px;
-      margin: 0 auto 48px;
-    }
-
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      backdrop-filter: blur(12px);
-      padding: 20px;
-      border-radius: var(--radius);
-      transition: var(--transition);
-      text-align: center;
-    }
-
-    .stat-card:hover {
-      border-color: var(--border-accent);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-
-    .stat-number {
-      font-size: 1.75rem;
-      font-weight: 800;
-      color: var(--text-main);
+    /* 3D Planet Hint */
+    .canvas-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       font-family: 'JetBrains Mono', monospace;
-      margin-bottom: 4px;
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--text-sub);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      font-weight: 600;
-    }
-
-    /* Live School Tracker Banner */
-    .live-tracker {
-      background: var(--bg-card);
-      border: 1px solid var(--border-accent);
-      border-radius: var(--radius);
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 64px;
-      box-shadow: 0 8px 32px var(--accent-glow);
-    }
-
-    .tracker-info {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .tracker-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: var(--badge-bg);
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-    }
-
-    .tracker-title {
-      font-weight: 700;
-      font-size: 0.98rem;
-    }
-
-    .tracker-desc {
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       color: var(--text-muted);
-    }
-
-    .current-clock {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.15rem;
-      font-weight: 700;
-      background: var(--bg-secondary);
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 8px;
-      border: 1px solid var(--border-color);
-      color: var(--badge-text);
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 40px;
     }
 
-    /* Section Headers */
-    .section-header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .section-tag {
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .section-title {
-      font-size: 2.3rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 12px;
-    }
-
-    .section-subtitle {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* Timeline Section */
-    .timeline {
-      position: relative;
-      max-width: 860px;
-      margin: 0 auto 80px;
-    }
-
-    .timeline::before {
-      content: '';
-      position: absolute;
-      top: 20px;
-      bottom: 20px;
-      left: 31px;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--accent), var(--border-color) 90%);
-    }
-
-    .timeline-item {
-      position: relative;
-      display: flex;
-      gap: 28px;
-      margin-bottom: 36px;
-    }
-
-    .timeline-marker {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      background: var(--bg-secondary);
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 16px var(--accent-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      flex-shrink: 0;
-      z-index: 2;
-      transition: var(--transition);
-    }
-
-    .timeline-item:hover .timeline-marker {
-      transform: scale(1.1) rotate(5deg);
-      border-color: #a855f7;
-    }
-
-    .timeline-content {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      backdrop-filter: blur(12px);
-      border-radius: var(--radius);
-      padding: 24px;
-      flex-grow: 1;
-      transition: var(--transition);
-    }
-
-    .timeline-item:hover .timeline-content {
-      border-color: var(--border-accent);
-      transform: translateX(4px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    }
-
-    .timeline-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .timeline-time {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--accent);
-      background: var(--badge-bg);
-      padding: 4px 12px;
-      border-radius: 999px;
-    }
-
-    .timeline-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .timeline-text {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.65;
-      margin-bottom: 14px;
-    }
-
-    .timeline-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tag {
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-sub);
-      border: 1px solid var(--border-color);
-    }
-
-    /* Weekly Timetable Grid */
-    .timetable-section {
-      margin-bottom: 80px;
+    /* Day Selector Tabs */
+    .day-selector-container {
+      max-width: 1100px;
+      margin: 0 auto 48px;
+      padding: 0 24px;
     }
 
     .day-tabs {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.7);
+      padding: 8px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
     }
 
-    .day-tab {
-      padding: 10px 20px;
-      border-radius: 12px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
+    .day-tab-btn {
+      padding: 16px 12px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      background: transparent;
       color: var(--text-muted);
-      font-weight: 600;
-      font-size: 0.92rem;
       cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .day-tab.active, .day-tab:hover {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-      box-shadow: 0 4px 16px var(--accent-glow);
-    }
-
-    .timetable-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-    }
-
-    .lesson-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 20px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 16px;
-      transition: var(--transition);
+      gap: 4px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .lesson-card:hover {
-      border-color: var(--border-accent);
+    .day-tab-btn .day-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.7;
+    }
+
+    .day-tab-btn .day-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+
+    .day-tab-btn .day-count {
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-muted);
+    }
+
+    .day-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     }
 
-    .lesson-num {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
+    .day-tab-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--current-accent);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.25);
+    }
+
+    /* Main Schedule Showcase Grid */
+    .schedule-wrapper {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .day-meta-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+      margin-bottom: 28px;
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-      color: var(--badge-text);
+      flex-wrap: wrap;
+      gap: 20px;
+      border-left: 6px solid var(--current-accent);
+      transition: border-color 0.4s ease;
+    }
+
+    .day-headline {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .day-subtext {
+      color: var(--text-muted);
       font-size: 0.95rem;
+      max-width: 600px;
     }
 
-    .lesson-details {
-      flex-grow: 1;
+    .day-quick-stats {
+      display: flex;
+      gap: 16px;
     }
 
-    .lesson-name {
-      font-weight: 700;
-      font-size: 1rem;
-      margin-bottom: 2px;
+    .stat-pill {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 18px;
+      border-radius: 12px;
+      text-align: center;
     }
 
-    .lesson-time {
-      font-size: 0.8rem;
-      color: var(--text-sub);
+    .stat-val {
       font-family: 'JetBrains Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--current-accent);
     }
 
-    /* Favorite Subjects Section */
-    .subjects-grid {
+    .stat-lbl {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    /* Lesson Cards Grid */
+    .lessons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .lesson-row {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px 24px;
+      backdrop-filter: blur(14px);
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin-bottom: 80px;
-    }
-
-    .subject-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 28px;
-      transition: var(--transition);
+      grid-template-columns: 80px 1fr 140px;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       overflow: hidden;
     }
 
-    .subject-card::before {
+    .lesson-row::before {
       content: '';
       position: absolute;
-      top: 0;
       left: 0;
-      right: 0;
-      height: 4px;
-      background: var(--accent-gradient);
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--current-accent);
       opacity: 0;
-      transition: var(--transition);
+      transition: opacity 0.3s ease;
     }
 
-    .subject-card:hover {
-      border-color: var(--border-accent);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    .lesson-row:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+      background: var(--card-hover);
+      transform: translateX(6px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    .subject-card:hover::before {
+    .lesson-row:hover::before {
       opacity: 1;
     }
 
-    .subject-icon {
-      font-size: 2.2rem;
-      margin-bottom: 16px;
-      display: inline-block;
-    }
-
-    .subject-title {
-      font-size: 1.25rem;
+    .period-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .subject-desc {
-      font-size: 0.92rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* Habits / Tips Section */
-    .tips-container {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 40px;
-      margin-bottom: 80px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 32px;
-    }
-
-    .tip-item {
+      color: var(--text);
       display: flex;
-      gap: 16px;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    .tip-icon {
-      font-size: 1.6rem;
-      flex-shrink: 0;
-    }
-
-    .tip-title {
-      font-weight: 700;
-      font-size: 1.05rem;
-      margin-bottom: 6px;
-    }
-
-    .tip-text {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-    }
-
-    /* Reflection Quote Box */
-    .quote-box {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
-      border: 1px solid var(--border-accent);
-      border-radius: var(--radius);
-      padding: 40px;
-      text-align: center;
-      max-width: 860px;
-      margin: 0 auto 96px;
-      position: relative;
-    }
-
-    .quote-text {
+    .period-num {
       font-size: 1.25rem;
-      font-style: italic;
-      color: var(--text-main);
-      line-height: 1.7;
-      margin-bottom: 16px;
+      color: var(--current-accent);
     }
 
-    .quote-author {
-      font-size: 0.9rem;
+    .period-time {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .lesson-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .lesson-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: var(--badge-text);
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .lesson-commentary {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .room-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      color: #e2e8f0;
+      white-space: nowrap;
+    }
+
+    /* Special Highlights Section */
+    .highlights-grid {
+      max-width: 1100px;
+      margin: 0 auto 90px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .highlight-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s ease;
+    }
+
+    .highlight-card:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-4px);
+    }
+
+    .highlight-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #38bdf8;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .highlight-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .highlight-text {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border-color);
-      padding: 40px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 40px 32px;
       text-align: center;
-      color: var(--text-sub);
-      font-size: 0.88rem;
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 16px;
-      list-style: none;
-    }
-
-    .footer-links a {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
+      backdrop-filter: blur(12px);
     }
 
     /* Responsive */
     @media (max-width: 768px) {
-      .hero-title {
-        font-size: 2.3rem;
+      header {
+        padding: 16px 20px;
       }
-      .hero-subtitle {
-        font-size: 1.05rem;
+      .hero {
+        padding: 40px 20px 20px;
       }
-      .nav-links {
-        display: none;
+      .day-tabs {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+        padding: 6px;
       }
-      .timeline::before {
-        left: 23px;
+      .day-tab-btn {
+        padding: 10px 4px;
       }
-      .timeline-marker {
-        width: 48px;
-        height: 48px;
-        font-size: 1.2rem;
-        border-radius: 14px;
+      .day-tab-btn .day-title {
+        font-size: 0.88rem;
       }
-      .timeline-item {
-        gap: 16px;
+      .lesson-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
-      .tips-container {
-        padding: 24px;
+      .room-badge {
+        align-self: flex-start;
       }
     }
   </style>
 </head>
 <body>
-  <div class="ambient-glow"></div>
 
-  <!-- Header -->
-  <header>
-    <div class="nav-container">
-      <a href="#" class="logo">
-        <div class="logo-badge">M</div>
-        <span>My School Day</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="#routine">Daily Routine</a></li>
-        <li><a href="#timetable">Timetable</a></li>
-        <li><a href="#subjects">Favorite Classes</a></li>
-        <li><a href="#habits">Study Habits</a></li>
-        <li><a href="#reflection">Reflection</a></li>
-      </ul>
-      <div class="nav-actions">
-        <button class="theme-toggle" id="themeBtn" aria-label="Toggle theme">
-          <span id="themeIcon">☀️</span>
-          <span id="themeLabel">Light</span>
+  <!-- Three.js Interactive WebGL Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <div class="noise-overlay"></div>
+
+  <div class="ui-layer">
+    <!-- Header -->
+    <header class="interactive">
+      <div class="brand">
+        <div class="brand-mark">10B</div>
+        <div>
+          <div class="brand-title">Daily Orbit</div>
+          <div class="brand-subtitle">CLASS 10 "B" · TIMETABLE SYSTEM</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="shatter-trigger-btn" id="shatterBtn" aria-label="Shatter planet">
+          💥 Shatter Planet
+        </button>
+        <button class="audio-btn" id="audioBtn" aria-label="Toggle sound effects">
+          🔊 Sound: ON
         </button>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="container">
-    <!-- Hero Section -->
+    <!-- Hero Title -->
     <section class="hero">
-      <div class="status-pill">
-        <span class="status-dot"></span>
-        English Project · 10th Grade
+      <div class="badge-pill">
+        <span class="badge-dot"></span>
+        English Project · High School Daily Routine
       </div>
-      <h1 class="hero-title">
-        A Typical Day in My Life <br>
-        <span class="gradient-text">As a High School Student</span>
+      <h1 class="hero-heading">
+        Inside My <span class="gradient-word">School Week</span>
       </h1>
-      <p class="hero-subtitle">
-        Welcome to my personal school day breakdown. From early morning alarm bells to after-school hobbies, here is an honest look at my schedule, classes, and daily routines.
+      <p class="hero-sub">
+        An interactive WebGL journey through our authentic 10th-grade class schedule. Drag the planetary particle sphere with your cursor, click any day to shatter and reform the celestial core.
       </p>
-
-      <!-- Quick Stats -->
-      <div class="hero-stats">
-        <div class="stat-card">
-          <div class="stat-number">07:00</div>
-          <div class="stat-label">Wake Up Call</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">6 – 7</div>
-          <div class="stat-label">Lessons Per Day</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">14:30</div>
-          <div class="stat-label">Bell Rings</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">100%</div>
-          <div class="stat-label">Dedication</div>
-        </div>
-      </div>
-
-      <!-- Live Interactive Tracker -->
-      <div class="live-tracker">
-        <div class="tracker-info">
-          <div class="tracker-icon">⏰</div>
-          <div style="text-align: left;">
-            <div class="tracker-title" id="trackerTitle">Checking current school period...</div>
-            <div class="tracker-desc" id="trackerDesc">Based on your local system time</div>
-          </div>
-        </div>
-        <div class="current-clock" id="currentClock">--:--:--</div>
+      <div class="canvas-hint">
+        <span>✨ Tip: Click & drag the background to orbit 3D space. Press "Shatter" for particle explosion.</span>
       </div>
     </section>
 
-    <!-- Daily Routine Timeline -->
-    <section id="routine">
-      <div class="section-header">
-        <span class="section-tag">Step by Step</span>
-        <h2 class="section-title">The Complete Daily Timeline</h2>
-        <p class="section-subtitle">
-          How my 24 hours are structured, balanced between intensive learning, social life, and evening relaxation.
-        </p>
-      </div>
-
-      <div class="timeline">
-        <!-- Morning -->
-        <div class="timeline-item">
-          <div class="timeline-marker">🌅</div>
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="timeline-time">07:00 AM – 07:45 AM</span>
-              <span class="tag">Morning Prep</span>
-            </div>
-            <h3 class="timeline-title">Awakening & Morning Routine</h3>
-            <p class="timeline-text">
-              My alarm rings precisely at 7 o'clock. Even though getting out of a warm bed is always the hardest challenge of the morning, I do a quick five-minute stretch to wake up my body. Afterward, I take a cold splash of water, brush my teeth, and have a healthy breakfast — usually scrambled eggs or oatmeal with a warm cup of sweet black tea. Finally, I double-check my backpack to ensure all notebooks, textbooks, and pens are packed.
-            </p>
-            <div class="timeline-tags">
-              <span class="tag">#EarlyMorning</span>
-              <span class="tag">#NutritiousBreakfast</span>
-              <span class="tag">#Discipline</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Commute -->
-        <div class="timeline-item">
-          <div class="timeline-marker">🚶‍♂️</div>
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="timeline-time">07:45 AM – 08:15 AM</span>
-              <span class="tag">Commute</span>
-            </div>
-            <h3 class="timeline-title">The Journey to School</h3>
-            <p class="timeline-text">
-              I leave home around quarter to eight. The morning air is crisp and refreshing. Walking to school takes about twenty minutes, which serves as my daily cardio. I usually listen to my favorite upbeat music playlist or an English podcast through my headphones. Near the school gates, I meet up with my classmates, and we walk into the building together, chatting about our homework and expectations for the day.
-            </p>
-            <div class="timeline-tags">
-              <span class="tag">#MorningWalk</span>
-              <span class="tag">#FavoriteMusic</span>
-              <span class="tag">#MeetingFriends</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Morning Classes -->
-        <div class="timeline-item">
-          <div class="timeline-marker">📐</div>
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="timeline-time">08:30 AM – 11:15 AM</span>
-              <span class="tag">Academic Focus</span>
-            </div>
-            <h3 class="timeline-title">The First Wave of Lessons</h3>
-            <p class="timeline-text">
-              The sharp school bell signals the start of the first lesson at 8:30 sharp. The morning schedule is typically dedicated to challenging exact sciences — Algebra, Geometry, and Physics. Our math teacher explains complex trigonometric functions and formulas, and we solve equations on the blackboard. Staying focused during these hours is crucial because the material in the 10th grade requires deep concentration and thorough note-taking.
-            </p>
-            <div class="timeline-tags">
-              <span class="tag">#Algebra</span>
-              <span class="tag">#ProblemSolving</span>
-              <span class="tag">#ActiveListening</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lunch Break -->
-        <div class="timeline-item">
-          <div class="timeline-marker">🥪</div>
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="timeline-time">11:15 AM – 12:00 PM</span>
-              <span class="tag">Midday Break</span>
-            </div>
-            <h3 class="timeline-title">The Big Break & Cafeteria Lunch</h3>
-            <p class="timeline-text">
-              After the third period comes the most anticipated part of the morning — the 20-minute big break! We rush down to the school canteen. The aroma of freshly baked buns and hot soup fills the cafeteria. I grab a hot meal with my friends, exchange jokes, talk about video games, and discuss our weekend plans. It’s the ultimate mental reset before the second half of the day.
-            </p>
-            <div class="timeline-tags">
-              <span class="tag">#LunchTime</span>
-              <span class="tag">#SchoolCafeteria</span>
-              <span class="tag">#Socializing</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Afternoon Classes -->
-        <div class="timeline-item">
-          <div class="timeline-marker">🌍</div>
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="timeline-time">12:00 PM – 14:30 PM</span>
-              <span class="tag">Languages & Humanities</span>
-            </div>
-            <h3 class="timeline-title">Language, IT & Creative Discussions</h3>
-            <p class="timeline-text">
-              The afternoon classes are much more interactive. English is easily one of my favorite subjects: we practice fluent conversational dialogues, discuss contemporary global topics, debate interesting ideas, and analyze grammar structures. After English, we head over to the computer science lab or history class, where we explore world history milestones and work on digital projects.
-            </p>
-            <div class="timeline-tags">
-              <span class="tag">#EnglishClass</span>
-              <span class="tag">#ComputerScience</span>
-              <span class="tag">#Creativity</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- After School -->
-        <div class="timeline-item">
-          <div class="timeline-marker">⚽</div>
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="timeline-time">14:30 PM – 17:30 PM</span>
-              <span class="tag">Extracurricular</span>
-            </div>
-            <h3 class="timeline-title">The Final Bell, Sports & Heading Home</h3>
-            <p class="timeline-text">
-              At 14:30, the final bell rings, echoing liberation across the hallways! Depending on the day of the week, I either head to the gym for a workout session or play basketball with friends in the school yard. Physical activity after sitting at a desk for six hours feels fantastic. By 16:30, I return home, enjoy a hearty dinner, take a warm shower, and give my brain a well-deserved one-hour breather.
-            </p>
-            <div class="timeline-tags">
-              <span class="tag">#SchoolOut</span>
-              <span class="tag">#SportsTraining</span>
-              <span class="tag">#HealthyLifestyle</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Homework & Night -->
-        <div class="timeline-item">
-          <div class="timeline-marker">📖</div>
-          <div class="timeline-content">
-            <div class="timeline-top">
-              <span class="timeline-time">18:00 PM – 22:30 PM</span>
-              <span class="tag">Self-Study & Night</span>
-            </div>
-            <h3 class="timeline-title">Homework, Personal Coding & Sleep</h3>
-            <p class="timeline-text">
-              By 18:00, I sit down at my desk to conquer my homework assignments. I prioritize written exercises first, then read literature and memorize new vocabulary. Once my school work is complete, I spend an hour working on personal coding projects and exploring web technology. Around 22:30, I put away all screens, read a book chapter, and drift off to sleep to wake up refreshed for tomorrow.
-            </p>
-            <div class="timeline-tags">
-              <span class="tag">#HomeworkTime</span>
-              <span class="tag">#CodingPassion</span>
-              <span class="tag">#GoodSleep</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Interactive Timetable -->
-    <section id="timetable" class="timetable-section">
-      <div class="section-header">
-        <span class="section-tag">Schedule</span>
-        <h2 class="section-title">My Weekly Timetable</h2>
-        <p class="section-subtitle">
-          Select a day to inspect my real school timetable and subject distribution.
-        </p>
-      </div>
-
+    <!-- Day Navigation Tabs -->
+    <section class="day-selector-container interactive">
       <div class="day-tabs">
-        <button class="day-tab active" onclick="switchDay('mon', this)">Monday</button>
-        <button class="day-tab" onclick="switchDay('tue', this)">Tuesday</button>
-        <button class="day-tab" onclick="switchDay('wed', this)">Wednesday</button>
-        <button class="day-tab" onclick="switchDay('thu', this)">Thursday</button>
-        <button class="day-tab" onclick="switchDay('fri', this)">Friday</button>
-      </div>
-
-      <div class="timetable-grid" id="timetableGrid">
-        <!-- Rendered dynamically by JavaScript -->
+        <button class="day-tab-btn active" data-day="mon" onclick="selectDay('mon')">
+          <span class="day-code">DAY 01</span>
+          <span class="day-title">Monday</span>
+          <span class="day-count">6 Periods</span>
+        </button>
+        <button class="day-tab-btn" data-day="tue" onclick="selectDay('tue')">
+          <span class="day-code">DAY 02</span>
+          <span class="day-title">Tuesday</span>
+          <span class="day-count">7 Periods</span>
+        </button>
+        <button class="day-tab-btn" data-day="wed" onclick="selectDay('wed')">
+          <span class="day-code">DAY 03</span>
+          <span class="day-title">Wednesday</span>
+          <span class="day-count">6 Periods</span>
+        </button>
+        <button class="day-tab-btn" data-day="thu" onclick="selectDay('thu')">
+          <span class="day-code">DAY 04</span>
+          <span class="day-title">Thursday</span>
+          <span class="day-count">7 Periods</span>
+        </button>
+        <button class="day-tab-btn" data-day="fri" onclick="selectDay('fri')">
+          <span class="day-code">DAY 05</span>
+          <span class="day-title">Friday</span>
+          <span class="day-count">7 Periods</span>
+        </button>
       </div>
     </section>
 
-    <!-- Favorite Subjects -->
-    <section id="subjects">
-      <div class="section-header">
-        <span class="section-tag">Academic Interests</span>
-        <h2 class="section-title">Subjects I Am Passionate About</h2>
-        <p class="section-subtitle">
-          While every lesson teaches valuable lessons, these specific subjects inspire me the most.
+    <!-- Schedule Showcase -->
+    <section class="schedule-wrapper interactive">
+      <!-- Dynamic Day Header Banner -->
+      <div class="day-meta-card" id="dayMetaCard">
+        <div>
+          <h2 class="day-headline" id="dayTitle">Monday · The Vocational Marathon</h2>
+          <p class="day-subtext" id="dayDesc">
+            Six consecutive periods of specialized vocational training (УПК). Real workshop practice, technical mastery, and zero traditional desk fatigue.
+          </p>
+        </div>
+        <div class="day-quick-stats">
+          <div class="stat-pill">
+            <div class="stat-val" id="statPeriods">6</div>
+            <div class="stat-lbl">Periods</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-val" id="statRooms">1</div>
+            <div class="stat-lbl">Workshops</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-val">100%</div>
+            <div class="stat-lbl">Practice</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lessons List -->
+      <div class="lessons-container" id="lessonsContainer">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Highlights Grid -->
+    <section class="highlights-grid interactive">
+      <div class="highlight-card">
+        <span class="highlight-tag">Highlight #1</span>
+        <h3 class="highlight-title">The Monday UPK Phenomenon</h3>
+        <p class="highlight-text">
+          While most high schoolers kick off Monday with agonizing math or grammar quizzes, 10 "B" dedicates all 6 periods to hands-on vocational job training. A grueling test of stamina, but infinitely better than sitting at standard school desks all morning.
         </p>
       </div>
-
-      <div class="subjects-grid">
-        <div class="subject-card">
-          <div class="subject-icon">🇬🇧</div>
-          <h3 class="subject-title">English Language</h3>
-          <p class="subject-desc">
-            English is the universal bridge to global knowledge, internet culture, programming documentation, and international communication. I love building real projects and conversing without borders.
-          </p>
-        </div>
-
-        <div class="subject-card">
-          <div class="subject-icon">💻</div>
-          <h3 class="subject-title">Computer Science & IT</h3>
-          <p class="subject-desc">
-            Technology is the future. Learning algorithms, building websites, and understanding digital systems empowers me to create solutions rather than just consume content.
-          </p>
-        </div>
-
-        <div class="subject-card">
-          <div class="subject-icon">📐</div>
-          <h3 class="subject-title">Mathematics & Algebra</h3>
-          <p class="subject-desc">
-            Even though equations can be grueling, nothing beats the euphoric satisfaction of cracking a tough trigonometry or geometric problem step by step with pure logic.
-          </p>
-        </div>
-
-        <div class="subject-card">
-          <div class="subject-icon">🏃‍♂️</div>
-          <h3 class="subject-title">Physical Education</h3>
-          <p class="subject-desc">
-            Healthy body, healthy mind. Running, team sports, and gym exercises recharge my energy levels and relieve mental fatigue after hours of academic concentration.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Study Habits & Survival Tips -->
-    <section id="habits">
-      <div class="section-header">
-        <span class="section-tag">Practical Advice</span>
-        <h2 class="section-title">High School Survival Guide</h2>
-        <p class="section-subtitle">
-          Key habits and strategies that keep me organized and energized throughout demanding school weeks.
+      <div class="highlight-card">
+        <span class="highlight-tag" style="color: #a855f7;">Highlight #2</span>
+        <h3 class="highlight-title">The 7-Period Gauntlets</h3>
+        <p class="highlight-text">
+          Tuesday, Thursday, and Friday are maximum endurance tests featuring 7 packed academic lessons across 5 different floors. Navigating from physics laboratory 210 to top-floor literature 316 during a 10-minute break is our daily Olympic sprint.
         </p>
       </div>
-
-      <div class="tips-container">
-        <div class="tip-item">
-          <div class="tip-icon">🎯</div>
-          <div>
-            <h4 class="tip-title">Prioritize the Hardest Task First</h4>
-            <p class="tip-text">I tackle difficult homework (like math proofs or long essays) right away while my mental energy is at its peak, leaving easier reading for later.</p>
-          </div>
-        </div>
-
-        <div class="tip-item">
-          <div class="tip-icon">💧</div>
-          <div>
-            <h4 class="tip-title">Stay Hydrated & Eat Well</h4>
-            <p class="tip-text">Drinking plenty of water during breaks prevents headaches, and avoiding junk food keeps energy levels steady throughout 7 consecutive lessons.</p>
-          </div>
-        </div>
-
-        <div class="tip-item">
-          <div class="tip-icon">⏱️</div>
-          <div>
-            <h4 class="tip-title">The Pomodoro Technique</h4>
-            <p class="tip-text">Studying in focused 25-minute bursts followed by a 5-minute break makes even voluminous exam preparation feel manageable without burnout.</p>
-          </div>
-        </div>
-
-        <div class="tip-item">
-          <div class="tip-icon">🤝</div>
-          <div>
-            <h4 class="tip-title">Surround Yourself with Friends</h4>
-            <p class="tip-text">School isn't just about grades — mutual support, collaborative study sessions, and laughter with friends make student years truly unforgettable.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Reflection Quote -->
-    <section id="reflection">
-      <div class="quote-box">
-        <p class="quote-text">
-          "A school day isn't just a collection of lessons on a timetable — it is where we learn discipline, forge lifelong friendships, and take our first deliberate steps toward who we want to become in the real world."
+      <div class="highlight-card">
+        <span class="highlight-tag" style="color: #ec4899;">Highlight #3</span>
+        <h3 class="highlight-title">Friday Period 7: The Final Boss</h3>
+        <p class="highlight-text">
+          Finishing the week with 7th-period Physics in Room 210 after already conquering Math, PE, English, Social Studies, Chemistry, and Biology. True intellectual survival before the weekend unlocks!
         </p>
-        <div class="quote-author">— Personal Reflection & Project Conclusion</div>
       </div>
     </section>
-  </main>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <ul class="footer-links">
-        <li><a href="#routine">Daily Routine</a></li>
-        <li><a href="#timetable">Timetable</a></li>
-        <li><a href="#subjects">Favorite Classes</a></li>
-        <li><a href="#habits">Tips & Habits</a></li>
-      </ul>
-      <p>© 2026 Student Life Portfolio · Built for English Class Presentation</p>
-      <p style="margin-top: 6px; font-size: 0.8rem; color: var(--text-sub);">
-        Deployed with custom domain integration · Made with HTML, CSS & JavaScript
+    <!-- Footer -->
+    <footer class="interactive">
+      <p>© 2026 Class 10 "B" Authentic Timetable Project · Built for English Oral Presentation</p>
+      <p style="margin-top: 6px; color: #64748b; font-size: 0.75rem;">
+        Engineered with Three.js WebGL Particle Physics, GSAP Motion Design & Web Audio API
       </p>
-    </div>
-  </footer>
+    </footer>
+  </div>
 
   <script>
-    // Theme Switcher
-    const themeBtn = document.getElementById('themeBtn');
-    const themeIcon = document.getElementById('themeIcon');
-    const themeLabel = document.getElementById('themeLabel');
+    /* =========================================================================
+       AUDIO SYNTHESIZER (Web Audio API - Zero external files)
+       ========================================================================= */
+    let audioEnabled = true;
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
 
-    function setTheme(theme) {
-      if (theme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        themeIcon.textContent = '🌙';
-        themeLabel.textContent = 'Dark';
-        localStorage.setItem('theme', 'light');
-      } else {
-        document.documentElement.removeAttribute('data-theme');
-        themeIcon.textContent = '☀️';
-        themeLabel.textContent = 'Light';
-        localStorage.setItem('theme', 'dark');
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioContext();
+    }
+
+    function playSfx(type) {
+      if (!audioEnabled) return;
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      if (type === 'shatter') {
+        // Deep cinematic explosion boom + high noise burst
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.8);
+
+        // Hi-frequency particle chime
+        const chime = audioCtx.createOscillator();
+        const chimeGain = audioCtx.createGain();
+        chime.type = 'triangle';
+        chime.frequency.setValueAtTime(880, now);
+        chime.frequency.exponentialRampToValueAtTime(1400, now + 0.3);
+        chimeGain.gain.setValueAtTime(0.15, now);
+        chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        chime.connect(chimeGain);
+        chimeGain.connect(audioCtx.destination);
+        chime.start(now);
+        chime.stop(now + 0.4);
+      } else if (type === 'click') {
+        // Futuristic UI blip
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(540, now);
+        osc.frequency.exponentialRampToValueAtTime(920, now + 0.08);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.08);
       }
     }
 
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    setTheme(savedTheme);
-
-    themeBtn.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      setTheme(current === 'light' ? 'dark' : 'light');
+    const audioBtn = document.getElementById('audioBtn');
+    audioBtn.addEventListener('click', () => {
+      audioEnabled = !audioEnabled;
+      audioBtn.textContent = audioEnabled ? '🔊 Sound: ON' : '🔇 Sound: OFF';
+      if (audioEnabled) playSfx('click');
     });
 
-    // Weekly Timetable Data
-    const scheduleData = {
-      mon: [
-        { num: 1, name: "Algebra & Trigonometry", time: "08:30 – 09:15" },
-        { num: 2, name: "Russian Literature", time: "09:25 – 10:10" },
-        { num: 3, name: "Physics & Mechanics", time: "10:30 – 11:15" },
-        { num: 4, name: "English Language", time: "12:00 – 12:45" },
-        { num: 5, name: "World History", time: "12:55 – 13:40" },
-        { num: 6, name: "Physical Education", time: "13:45 – 14:30" }
-      ],
-      tue: [
-        { num: 1, name: "Geometry", time: "08:30 – 09:15" },
-        { num: 2, name: "Chemistry", time: "09:25 – 10:10" },
-        { num: 3, name: "English Language", time: "10:30 – 11:15" },
-        { num: 4, name: "Biology", time: "12:00 – 12:45" },
-        { num: 5, name: "Computer Science (IT)", time: "12:55 – 13:40" },
-        { num: 6, name: "Social Studies", time: "13:45 – 14:30" }
-      ],
-      wed: [
-        { num: 1, name: "Physics Lab", time: "08:30 – 09:15" },
-        { num: 2, name: "Algebra & Problem Solving", time: "09:25 – 10:10" },
-        { num: 3, name: "Russian Language", time: "10:30 – 11:15" },
-        { num: 4, name: "English Language", time: "12:00 – 12:45" },
-        { num: 5, name: "Geography", time: "12:55 – 13:40" },
-        { num: 6, name: "Physical Education", time: "13:45 – 14:30" }
-      ],
-      thu: [
-        { num: 1, name: "Computer Science (Coding)", time: "08:30 – 09:15" },
-        { num: 2, name: "Geometry & Spatial Figures", time: "09:25 – 10:10" },
-        { num: 3, name: "World Literature", time: "10:30 – 11:15" },
-        { num: 4, name: "Chemistry Lab", time: "12:00 – 12:45" },
-        { num: 5, name: "English Grammar & Debate", time: "12:55 – 13:40" },
-        { num: 6, name: "History of Civilization", time: "13:45 – 14:30" }
-      ],
-      fri: [
-        { num: 1, name: "Algebra Test Preparation", time: "08:30 – 09:15" },
-        { num: 2, name: "Physics & Formulas", time: "09:25 – 10:10" },
-        { num: 3, name: "English Speaking Club", time: "10:30 – 11:15" },
-        { num: 4, name: "Biology & Ecology", time: "12:00 – 12:45" },
-        { num: 5, name: "Astronomy & Nature", time: "12:55 – 13:40" },
-        { num: 6, name: "Class Assembly & Review", time: "13:45 – 14:30" }
-      ]
+    /* =========================================================================
+       SCHEDULE DATA (Transcribed verbatim from 10 "B" Class timetable photo)
+       ========================================================================= */
+    const timetableData = {
+      mon: {
+        title: "Monday · The Vocational Marathon",
+        desc: "Six consecutive periods of specialized vocational training (УПК). Real hands-on workshop practice, physical craftsmanship, and zero conventional classroom fatigue.",
+        periods: 6,
+        rooms: 1,
+        accent: "#38bdf8",
+        lessons: [
+          { num: 1, name: "Vocational Training (Professional Prep)", time: "08:30 – 09:15", room: "Workshop Lab", note: "Kickstarting the week with hands-on technical skills and craft mastery." },
+          { num: 2, name: "Vocational Training (Professional Prep)", time: "09:25 – 10:10", room: "Workshop Lab", note: "Deep practice in mechanical assembly and vocational discipline." },
+          { num: 3, name: "Vocational Training (Professional Prep)", time: "10:30 – 11:15", room: "Workshop Lab", note: "Mid-morning work session before the main industrial break." },
+          { num: 4, name: "Vocational Training (Professional Prep)", time: "11:35 – 12:20", room: "Workshop Lab", note: "Practical problem solving and technical blueprint execution." },
+          { num: 5, name: "Vocational Training (Professional Prep)", time: "12:30 – 13:15", room: "Workshop Lab", note: "Entering the final stretch of Monday's craft endurance." },
+          { num: 6, name: "Vocational Training (Professional Prep)", time: "13:25 – 14:10", room: "Workshop Lab", note: "Final period wrapped up! Monday conquered with pure physical skill." }
+        ]
+      },
+      tue: {
+        title: "Tuesday · The 7-Period Gauntlet",
+        desc: "A relentless marathon covering Russian classics, Belarusian history, physics formulas, high-energy gym, intense math, and evening literature.",
+        periods: 7,
+        rooms: 6,
+        accent: "#a855f7",
+        lessons: [
+          { num: 1, name: "Russian Literature", time: "08:30 – 09:15", room: "Room 305", note: "Analyzing classical psychological prose and literary themes." },
+          { num: 2, name: "Russian Language", time: "09:25 – 10:10", room: "Room 305", note: "Complex syntax, punctuation rules, and linguistic drills." },
+          { num: 3, name: "History of Belarus in World Context", time: "10:30 – 11:15", room: "Room 306", note: "Examining historic geopolitical shifts and national milestones." },
+          { num: 4, name: "Physics", time: "11:35 – 12:20", room: "Room 210", note: "Laboratory laws, kinematic formulas, and dynamic problems." },
+          { num: 5, name: "Physical Education & Health", time: "12:30 – 13:15", room: "Gym 1", note: "Much-needed cardio break: basketball, team drills, and athletics." },
+          { num: 6, name: "Mathematics", time: "13:25 – 14:10", room: "Room 301", note: "Tough algebraic equations and trigonometric proofs." },
+          { num: 7, name: "Belarusian Literature", time: "14:20 – 15:05", room: "Room 316", note: "The final bell of the day: lyrical analysis and cultural heritage." }
+        ]
+      },
+      wed: {
+        title: "Wednesday · Languages & Sciences",
+        desc: "A balanced midweek session featuring math, Russian, foreign language speaking clubs, computer coding, geography, and biology.",
+        periods: 6,
+        rooms: 6,
+        accent: "#10b981",
+        lessons: [
+          { num: 1, name: "Mathematics", time: "08:30 – 09:15", room: "Room 301", note: "Morning brain wake-up with functions and algebraic graphs." },
+          { num: 2, name: "Russian Language", time: "09:25 – 10:10", room: "Room 305", note: "Advanced grammar parsing and essay preparation." },
+          { num: 3, name: "English Language / German", time: "10:30 – 11:15", room: "Room 324 / 212", note: "Fluent conversational debates, vocabulary drills, and global ideas." },
+          { num: 4, name: "Computer Science (IT)", time: "11:35 – 12:20", room: "Lab 212 / 322", note: "Algorithms, coding projects, and modern computational logic." },
+          { num: 5, name: "Geography", time: "12:30 – 13:15", room: "Room 319", note: "World socioeconomic regions, demographics, and spatial maps." },
+          { num: 6, name: "Biology", time: "13:25 – 14:10", room: "Room 311", note: "Cellular structures, genetics, and biological ecosystems." }
+        ]
+      },
+      thu: {
+        title: "Thursday · Drafting & Exact Sciences",
+        desc: "Chemistry reactions, historical debates, technical drafting (черчение), active gym, algebra, and back-to-back Belarusian linguistics.",
+        periods: 7,
+        rooms: 6,
+        accent: "#f59e0b",
+        lessons: [
+          { num: 1, name: "Chemistry", time: "08:30 – 09:15", room: "Room 313", note: "Chemical bonding, molecular reactions, and periodic trends." },
+          { num: 2, name: "History of Belarus in World Context", time: "09:25 – 10:10", room: "Room 306", note: "Critical historical analysis and chronological debates." },
+          { num: 3, name: "Technical Drawing & Drafting (Черчение)", time: "10:30 – 11:15", room: "Room 305", note: "Architectural projection lines, drafting rulers, and spatial geometry." },
+          { num: 4, name: "Physical Education & Health", time: "11:35 – 12:20", room: "Gym 1", note: "Fitness testing, volleyball, and physical conditioning." },
+          { num: 5, name: "Mathematics", time: "12:30 – 13:15", room: "Room 301", note: "Intensive trigonometric formulas and problem solving." },
+          { num: 6, name: "Belarusian Language", time: "13:25 – 14:10", room: "Room 316", note: "Phonetics, orthography, and native language grammar rules." },
+          { num: 7, name: "Belarusian Literature", time: "14:20 – 15:05", room: "Room 316", note: "Classic prose reading and essay discussion to wrap up Thursday." }
+        ]
+      },
+      fri: {
+        title: "Friday · The Final Boss Countdown",
+        desc: "Seven intense periods standing between 10 'B' and the weekend: Math, Gym, Foreign Language, Social Studies, Chemistry, Biology, and final Physics.",
+        periods: 7,
+        rooms: 7,
+        accent: "#ec4899",
+        lessons: [
+          { num: 1, name: "Mathematics", time: "08:30 – 09:15", room: "Room 301", note: "Opening Friday with rigorous trigonometric calculations." },
+          { num: 2, name: "Physical Education & Health", time: "09:25 – 10:10", room: "Gym 1", note: "Early gym session to get adrenaline flowing before the long day." },
+          { num: 3, name: "English Language / German", time: "10:30 – 11:15", room: "Room 324 / 212", note: "Speaking practice, presentation skills, and English discussion." },
+          { num: 4, name: "Social Studies (Обществоведение)", time: "11:35 – 12:20", room: "Room 306", note: "Philosophy, civil law, modern society, and ethics." },
+          { num: 5, name: "Chemistry", time: "12:30 – 13:15", room: "Room 313", note: "Reactions and laboratory problem solving." },
+          { num: 6, name: "Biology", time: "13:25 – 14:10", room: "Room 311", note: "Evolutionary theory and ecological mechanisms." },
+          { num: 7, name: "Physics (The Final Boss)", time: "14:20 – 15:05", room: "Room 210", note: "The final 45 minutes of the school week! Weekend unlocked!" }
+        ]
+      }
     };
 
-    function renderTimetable(dayKey) {
-      const grid = document.getElementById('timetableGrid');
-      const lessons = scheduleData[dayKey] || scheduleData.mon;
-      grid.innerHTML = lessons.map(l => `
-        <div class="lesson-card">
-          <div class="lesson-num">${l.num}</div>
-          <div class="lesson-details">
-            <div class="lesson-name">${l.name}</div>
-            <div class="lesson-time">${l.time}</div>
-          </div>
-        </div>
-      `).join('');
+    /* =========================================================================
+       THREE.JS WEBGL PARTICLE PLANET & SHATTER MOTION SYSTEM
+       ========================================================================= */
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x030712, 0.0018);
+
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 75);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Particle Sphere Parameters
+    const PARTICLE_COUNT = 7500;
+    const SPHERE_RADIUS = 24;
+
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(PARTICLE_COUNT * 3);
+    const originPositions = new Float32Array(PARTICLE_COUNT * 3);
+    const velocities = new Float32Array(PARTICLE_COUNT * 3);
+    const colors = new Float32Array(PARTICLE_COUNT * 3);
+
+    // Initial sphere color palette (Cyan / Blue / Magenta)
+    const baseColor = new THREE.Color(0x38bdf8);
+    const secondaryColor = new THREE.Color(0xa855f7);
+
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = SPHERE_RADIUS + (Math.random() - 0.5) * 3.5;
+
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta);
+      const z = r * Math.cos(phi);
+
+      positions[i * 3] = x;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = z;
+
+      originPositions[i * 3] = x;
+      originPositions[i * 3 + 1] = y;
+      originPositions[i * 3 + 2] = z;
+
+      // Random explosion vector
+      velocities[i * 3] = (x / r) * (15 + Math.random() * 40);
+      velocities[i * 3 + 1] = (y / r) * (15 + Math.random() * 40);
+      velocities[i * 3 + 2] = (z / r) * (15 + Math.random() * 40);
+
+      // Color gradient across sphere
+      const mixRatio = Math.random();
+      const pColor = baseColor.clone().lerp(secondaryColor, mixRatio);
+      colors[i * 3] = pColor.r;
+      colors[i * 3 + 1] = pColor.g;
+      colors[i * 3 + 2] = pColor.b;
     }
 
-    function switchDay(dayKey, btn) {
-      document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderTimetable(dayKey);
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    // Particle Texture creation via 2D Canvas
+    function createCircleTexture() {
+      const c = document.createElement('canvas');
+      c.width = 64;
+      c.height = 64;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      grad.addColorStop(0, 'rgba(255,255,255,1)');
+      grad.addColorStop(0.3, 'rgba(255,255,255,0.7)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(32, 32, 32, 0, Math.PI * 2);
+      ctx.fill();
+      return new THREE.CanvasTexture(c);
     }
 
-    // Initial render
-    renderTimetable('mon');
+    const material = new THREE.PointsMaterial({
+      size: 1.25,
+      map: createCircleTexture(),
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
 
-    // Live Clock & Period Tracker
-    function updateClock() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('currentClock').textContent = `${hours}:${minutes}:${seconds}`;
+    const particleSystem = new THREE.Points(geometry, material);
+    scene.add(particleSystem);
 
-      const totalMinutes = now.getHours() * 60 + now.getMinutes();
-      const trackerTitle = document.getElementById('trackerTitle');
-      const trackerDesc = document.getElementById('trackerDesc');
+    // Subtle Outer Planetary Ring
+    const ringGeo = new THREE.RingGeometry(32, 38, 64);
+    const ringMat = new THREE.MeshBasicMaterial({
+      color: 0x38bdf8,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.12,
+      wireframe: true
+    });
+    const planetRing = new THREE.Mesh(ringGeo, ringMat);
+    planetRing.rotation.x = Math.PI / 2.5;
+    scene.add(planetRing);
 
-      if (totalMinutes >= 7 * 60 && totalMinutes < 8 * 60 + 30) {
-        trackerTitle.textContent = "🌅 Morning Routine & Commute";
-        trackerDesc.textContent = "Waking up, having breakfast and heading to school";
-      } else if (totalMinutes >= 8 * 60 + 30 && totalMinutes < 11 * 60 + 15) {
-        trackerTitle.textContent = "📚 In Class: Morning Academic Block";
-        trackerDesc.textContent = "Active learning, solving equations and taking notes";
-      } else if (totalMinutes >= 11 * 60 + 15 && totalMinutes < 12 * 60) {
-        trackerTitle.textContent = "🥪 Big Break & Cafeteria Lunch";
-        trackerDesc.textContent = "Recharging with food and hanging out with friends";
-      } else if (totalMinutes >= 12 * 60 && totalMinutes < 14 * 60 + 30) {
-        trackerTitle.textContent = "🌍 In Class: Afternoon Block";
-        trackerDesc.textContent = "English discussions, IT coding and humanities";
-      } else if (totalMinutes >= 14 * 60 + 30 && totalMinutes < 17 * 60 + 30) {
-        trackerTitle.textContent = "⚽ After-School Activities & Sports";
-        trackerDesc.textContent = "Workout, sports, walking home and unwinding";
-      } else if (totalMinutes >= 17 * 60 + 30 && totalMinutes < 22 * 60) {
-        trackerTitle.textContent = "📖 Homework & Evening Self-Study";
-        trackerDesc.textContent = "Writing assignments, reading and personal projects";
-      } else {
-        trackerTitle.textContent = "🌙 Night Rest & Sleep";
-        trackerDesc.textContent = "Resting and charging up for tomorrow's challenges";
+    // Shatter & Explode Animation State
+    let shatterProgress = 0; // 0 = solid sphere, 1 = maximum explosion
+    let isShattering = false;
+
+    function triggerShatterAnimation(targetColorHex) {
+      if (isShattering) return;
+      isShattering = true;
+      playSfx('shatter');
+
+      // Update particle colors toward new day accent
+      const targetCol = new THREE.Color(targetColorHex);
+      const colorAttr = geometry.attributes.color;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const curCol = new THREE.Color(colorAttr.getX(i), colorAttr.getY(i), colorAttr.getZ(i));
+        curCol.lerp(targetCol, 0.7);
+        colorAttr.setXYZ(i, curCol.r, curCol.g, curCol.b);
       }
+      colorAttr.needsUpdate = true;
+      ringMat.color = targetCol;
+
+      // GSAP timeline: explode outward, then pull gravitationally back
+      gsap.timeline({
+        onComplete: () => {
+          isShattering = false;
+        }
+      })
+      .to({ p: 0 }, {
+        p: 1.8,
+        duration: 0.7,
+        ease: "power3.out",
+        onUpdate: function() {
+          shatterProgress = this.targets()[0].p;
+          updateParticlesPositions();
+        }
+      })
+      .to({ p: 1.8 }, {
+        p: 0,
+        duration: 1.1,
+        ease: "elastic.out(1, 0.4)",
+        onUpdate: function() {
+          shatterProgress = this.targets()[0].p;
+          updateParticlesPositions();
+        }
+      });
     }
 
-    setInterval(updateClock, 1000);
-    updateClock();
+    function updateParticlesPositions() {
+      const posAttr = geometry.attributes.position;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const ox = originPositions[i * 3];
+        const oy = originPositions[i * 3 + 1];
+        const oz = originPositions[i * 3 + 2];
+
+        const vx = velocities[i * 3];
+        const vy = velocities[i * 3 + 1];
+        const vz = velocities[i * 3 + 2];
+
+        posAttr.setXYZ(
+          i,
+          ox + vx * shatterProgress,
+          oy + vy * shatterProgress,
+          oz + vz * shatterProgress
+        );
+      }
+      posAttr.needsUpdate = true;
+    }
+
+    // Mouse Interaction Parallax
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+      mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
+    });
+
+    // Render Loop
+    let clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+
+      // Smooth camera orbit damping
+      targetX += (mouseX - targetX) * 0.05;
+      targetY += (mouseY - targetY) * 0.05;
+      camera.position.x = Math.sin(targetX * 2) * 75;
+      camera.position.y = targetY * 40;
+      camera.lookAt(0, 0, 0);
+
+      // Sphere rotation
+      particleSystem.rotation.y += delta * 0.15;
+      particleSystem.rotation.x = Math.sin(elapsed * 0.2) * 0.1;
+      planetRing.rotation.z += delta * 0.08;
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Shatter Button Trigger
+    document.getElementById('shatterBtn').addEventListener('click', () => {
+      triggerShatterAnimation(document.documentElement.style.getPropertyValue('--current-accent') || '#38bdf8');
+    });
+
+    /* =========================================================================
+       DAY SWITCHER LOGIC
+       ========================================================================= */
+    function selectDay(dayKey) {
+      playSfx('click');
+      const data = timetableData[dayKey];
+      if (!data) return;
+
+      // Update Active Tab Button
+      document.querySelectorAll('.day-tab-btn').forEach(btn => {
+        if (btn.dataset.day === dayKey) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Update Theme Accent
+      document.documentElement.style.setProperty('--current-accent', data.accent);
+
+      // Trigger WebGL Shatter Animation
+      triggerShatterAnimation(data.accent);
+
+      // Update Day Header Metadata
+      const titleEl = document.getElementById('dayTitle');
+      const descEl = document.getElementById('dayDesc');
+      const periodsEl = document.getElementById('statPeriods');
+      const roomsEl = document.getElementById('statRooms');
+
+      titleEl.textContent = data.title;
+      descEl.textContent = data.desc;
+      periodsEl.textContent = data.periods;
+      roomsEl.textContent = data.rooms;
+
+      // Render Lessons with smooth fade-in
+      const container = document.getElementById('lessonsContainer');
+      container.style.opacity = '0';
+      container.style.transform = 'translateY(10px)';
+
+      setTimeout(() => {
+        container.innerHTML = data.lessons.map(l => `
+          <div class="lesson-row">
+            <div class="period-badge">
+              <span class="period-num">#${l.num}</span>
+              <span class="period-time">${l.time}</span>
+            </div>
+            <div class="lesson-main">
+              <div class="lesson-title">${l.name}</div>
+              <div class="lesson-commentary">${l.note}</div>
+            </div>
+            <div class="room-badge">${l.room}</div>
+          </div>
+        `).join('');
+
+        container.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+      }, 150);
+    }
+
+    // Initial load
+    selectDay('mon');
   </script>
 </body>
 </html>
