@@ -1,6 +1,4 @@
-import os
-
-html = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -679,13 +677,3 @@ if(document.fonts)document.fonts.ready.then(measure);
 </script>
 </body>
 </html>
-'''
-
-with open("D:/dz/school-day/index.html", "w", encoding="utf-8") as f:
-    f.write(html.strip() + "\\n")
-
-print("D:/dz/school-day/index.html restored to Opus's exact original design with fixed click and wheel handlers!")
-'''
-
-with open("D:/dz/school-day/apply_opus_fixed.py", "w", encoding="utf-8") as f:
-    f.write(html)
