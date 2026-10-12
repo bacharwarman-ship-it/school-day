@@ -286,52 +286,40 @@ footer{position:relative;z-index:2;padding:44px clamp(18px,6vw,96px);border-top:
 "use strict";
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 
-/* ---------------- OFFICIAL BELL SCHEDULES (СШ № 37 г. Минска) ---------------- */
-// Mon, Tue, Wed (start 08:30)
-const TIMES_MW=[
+/* ---------------- BELL SCHEDULES ---------------- */
+// College bell schedule (Monday):
+const TIMES_COLLEGE=[
   ["08:30","09:15"],
   ["09:25","10:10"],
   ["10:20","11:05"],
   ["11:25","12:10"],
   ["12:30","13:15"],
+  ["13:35","14:20"]
+];
+
+// School bell schedule (Tuesday – Friday):
+const TIMES_SCHOOL=[
+  ["08:30","09:15"],
+  ["09:30","10:15"],
+  ["10:30","11:15"],
+  ["11:30","12:15"],
+  ["12:30","13:15"],
   ["13:35","14:20"],
-  ["14:30","15:15"]
-];
-
-// Thu (start 08:15)
-const TIMES_THU=[
-  ["08:15","09:00"],
-  ["09:10","09:55"],
-  ["10:05","10:50"],
-  ["11:00","11:45"],
-  ["12:05","12:50"],
-  ["13:10","13:55"],
-  ["14:15","15:00"]
-];
-
-// Fri (start 08:15)
-const TIMES_FRI=[
-  ["08:15","09:00"],
-  ["09:10","09:55"],
-  ["10:05","10:50"],
-  ["11:00","11:45"],
-  ["12:05","12:50"],
-  ["13:10","13:55"],
-  ["14:15","15:00"]
+  ["14:35","15:20"]
 ];
 
 const DAYS=[
-{name:"Monday",short:"Mon",c1:"#f5a524",c2:"#fde68a",gym:true,times:TIMES_MW,
- note:"Vocational training day (УПК): seamstress skills. Practical sewing practice, fabric cutting, and garment stitching at the educational centre.",
+{name:"Monday",short:"Mon",c1:"#f5a524",c2:"#fde68a",gym:true,times:TIMES_COLLEGE,
+ note:"Vocational training day at the college. Sewing practice and basic garment making in Room 36.",
  lessons:[
-  {s:"Vocational Training",sub:"Sewing · Швея",room:"УПК · Sewing Lab",n:"Introduction and basic safety rules in the sewing workshop."},
-  {s:"Vocational Training",sub:"Sewing · Швея",room:"УПК · Sewing Lab",n:"Measuring fabrics, calculating dimensions, and pattern cutting."},
-  {s:"Vocational Training",sub:"Sewing · Швея",room:"УПК · Sewing Lab",n:"Sewing machine setup and straight stitching exercises."},
-  {s:"Vocational Training",sub:"Sewing · Швея",room:"УПК · Sewing Lab",n:"Assembling fabric pieces and practical seam joining."},
-  {s:"Vocational Training",sub:"Sewing · Швея",room:"УПК · Sewing Lab",n:"Ironing, edge pressing, and seam finishing."},
-  {s:"Vocational Training",sub:"Sewing · Швея",room:"УПК · Sewing Lab",n:"Final workpiece review and tidying up the sewing workspace."}
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Introduction and basic safety rules in Room 36."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Taking measurements and cutting fabric patterns."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Sewing machine setup and straight stitching practice."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Assembling fabric parts and basic seam joining."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Edge finishing, trimming, and pressing fabrics."},
+  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Completing practice pieces and cleaning the workspace."}
  ]},
-{name:"Tuesday",short:"Tue",c1:"#38bdf8",c2:"#a5b4fc",times:TIMES_MW,
+{name:"Tuesday",short:"Tue",c1:"#38bdf8",c2:"#a5b4fc",times:TIMES_SCHOOL,
  note:"Seven lessons across six rooms and three floors. Most of the ten-minute breaks are spent on the stairs.",
  lessons:[
   {s:"Russian Literature",room:"Room 305",n:"Classic prose analysis and literary discussion."},
@@ -342,7 +330,7 @@ const DAYS=[
   {s:"Mathematics",room:"Room 301",n:"Trigonometry equations and algebraic problem solving."},
   {s:"Belarusian Literature",room:"Room 316",n:"Poetic reflections at the close of a 7-period day."}
  ]},
-{name:"Wednesday",short:"Wed",c1:"#a78bfa",c2:"#f0abfc",gym:true,times:TIMES_MW,
+{name:"Wednesday",short:"Wed",c1:"#a78bfa",c2:"#f0abfc",gym:true,times:TIMES_SCHOOL,
  note:"Six lessons, six rooms, and a well-balanced academic flow. The calmest day of the week.",
  lessons:[
   {s:"Mathematics",room:"Room 301",n:"Morning algebraic proofs and functions."},
@@ -352,19 +340,19 @@ const DAYS=[
   {s:"Geography",room:"Room 319",n:"Global economic maps, climate zones, and demographics."},
   {s:"Biology",room:"Room 311",n:"Cellular structures, genetics, and biological ecosystems."}
  ]},
-{name:"Thursday",short:"Thu",c1:"#34d399",c2:"#bef264",times:TIMES_THU,
- note:"Seven lessons starting at 08:15 with Chemistry and concluding with Belarusian literature in Room 316.",
+{name:"Thursday",short:"Thu",c1:"#34d399",c2:"#bef264",times:TIMES_SCHOOL,
+ note:"Seven lessons starting with Chemistry and concluding with Belarusian literature in Room 316.",
  lessons:[
   {s:"Chemistry",room:"Room 313",n:"Chemical reactions, molecular weights, and periodic properties."},
   {s:"History of Belarus",room:"Room 306",n:"Historic chronicles, statehood, and national culture."},
-  {s:"Technical Drawing & Drafting",sub:"Черчение",room:"Room 305",n:"Orthographic projections, rulers, and geometric precision."},
+  {s:"Technical Drawing & Drafting",sub:"Drafting",room:"Room 305",n:"Orthographic projections, rulers, and geometric precision."},
   {s:"PE & Health",room:"Gym 1",n:"Cardio and athletics conditioning."},
   {s:"Mathematics",room:"Room 301",n:"Trigonometric identities and geometry problems."},
   {s:"Belarusian Language",room:"Room 316",n:"Orthography, vocabulary enrichment, and stylistic rules."},
-  {s:"Belarusian Literature",room:"Room 316",n:"Classic lyrical poetry to conclude the Thursday gauntlet."}
+  {s:"Belarusian Literature",room:"Room 316",n:"Classic lyrical poetry to conclude the Thursday schedule."}
  ]},
-{name:"Friday",short:"Fri",c1:"#fb7185",c2:"#fdba74",gym:true,times:TIMES_FRI,
- note:"Seven lessons starting at 08:15 in seven different rooms. Concluding with Physics before the weekend unlocks.",
+{name:"Friday",short:"Fri",c1:"#fb7185",c2:"#fdba74",gym:true,times:TIMES_SCHOOL,
+ note:"Seven lessons in seven different rooms. Concluding with Physics before the weekend unlocks.",
  lessons:[
   {s:"Mathematics",room:"Room 301",n:"Opening Friday with sharp numerical calculations."},
   {s:"PE & Health",room:"Gym 1",n:"Early workout session to boost energy levels."},
@@ -378,24 +366,24 @@ const DAYS=[
 
 /* After school routines adapted to 10B schedule */
 const AFTER=[
- [ {t:"14:45",a:"Home & lunch",n:"A warm lunch and short rest after sewing practice at УПК.",k:"home"},
+ [ {t:"14:45",a:"Home & lunch",n:"A warm lunch and short rest after sewing practice at the college.",k:"home"},
    {t:"16:00–17:30",a:"Gym workout",n:"First strength training session of the week.",k:"gym"},
    {t:"18:30–20:30",a:"Work on the laptop",n:"Writing code, digital tasks, headphones on.",k:"laptop"},
    {t:"21:00",a:"Homework",n:"Preparing assignments for Tuesday.",k:"study"} ],
- [ {t:"15:35",a:"Home & lunch",n:"Seven periods finished. Recharging with a hearty meal.",k:"home"},
+ [ {t:"15:40",a:"Home & lunch",n:"Seven periods finished. Recharging with a hearty meal.",k:"home"},
    {t:"16:30–18:00",a:"Homework",n:"Literature readings and math exercises.",k:"study"},
    {t:"18:30–20:30",a:"Work on the laptop",n:"Creative evening development session.",k:"laptop"},
    {t:"21:00",a:"Free time",n:"Music, series, relaxing before Wednesday.",k:"rest"} ],
- [ {t:"14:45",a:"Home & lunch",n:"Earlier bell today. Relaxing and having lunch.",k:"home"},
+ [ {t:"14:40",a:"Home & lunch",n:"Earlier bell today. Relaxing and having lunch.",k:"home"},
    {t:"16:00–17:30",a:"Gym workout",n:"Mid-week fitness and cardio session.",k:"gym"},
    {t:"18:30–20:30",a:"Work on the laptop",n:"Focused programming work.",k:"laptop"},
    {t:"21:00",a:"Homework",n:"Getting ready for Thursday's schedule.",k:"study"} ],
- [ {t:"15:25",a:"Home & lunch",n:"Lunch after surviving seven periods starting from 08:15.",k:"home"},
-   {t:"16:15–17:45",a:"Homework",n:"Technical drawing blueprints and formulas.",k:"study"},
+ [ {t:"15:40",a:"Home & lunch",n:"A calm lunch after surviving seven academic periods.",k:"home"},
+   {t:"16:30–18:00",a:"Homework",n:"Technical drawing blueprints and formulas.",k:"study"},
    {t:"18:30–20:30",a:"Work on the laptop",n:"Wrapping up tasks for the school week.",k:"laptop"},
    {t:"21:00",a:"Free evening",n:"Resting before the final push on Friday.",k:"rest"} ],
- [ {t:"15:25",a:"Home & lunch",n:"The school week is officially accomplished!",k:"home"},
-   {t:"16:15–17:45",a:"Gym workout",n:"Final training of the week.",k:"gym"},
+ [ {t:"15:40",a:"Home & lunch",n:"The school week is officially accomplished!",k:"home"},
+   {t:"16:30–18:00",a:"Gym workout",n:"Final training of the week.",k:"gym"},
    {t:"18:30–20:00",a:"Work on the laptop",n:"Light personal projects with zero deadlines.",k:"laptop"},
    {t:"20:00",a:"Weekend unlocked",n:"Free time, friends, cinema, and good sleep.",k:"rest"} ]
 ];
