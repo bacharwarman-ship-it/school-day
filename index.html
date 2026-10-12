@@ -3,254 +3,1073 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Class 10 B · Our School Week</title>
+<title>Class 10 B · Weekly Orbit</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#030712; --accent:#f5a524; --rgb:245,165,36;
-  --text:#f3f4f6; --muted:#8490a0; --line:rgba(255,255,255,.08);
-  --gap:54px; --navw:190px;
-  --ease:cubic-bezier(.16,1,.3,1);
-  --ios-card:rgba(255,255,255,.04);
-  --ios-card-hover:rgba(255,255,255,.07);
-  --ios-border:rgba(255,255,255,.09);
-  --ios-blur:blur(24px) saturate(180%);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{
-  background:radial-gradient(900px 700px at 78% 18%,rgba(var(--rgb),.09),transparent 60%),var(--bg);
-  background-attachment:fixed;
-  color:var(--text);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;line-height:1.55;
-}
-button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-a{color:inherit;text-decoration:none}
-::selection{background:var(--accent);color:#000}
-
-#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;transition:opacity .5s}
-.grain{position:fixed;inset:0;pointer-events:none;z-index:40;opacity:.04;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-.flash{position:fixed;inset:0;pointer-events:none;z-index:30;opacity:0;
-  background:radial-gradient(circle at var(--fx,72%) var(--fy,50%),rgba(255,255,255,.28),rgba(var(--rgb),.12) 30%,transparent 60%)}
-.flash.go{animation:flash .9s ease-out}
-@keyframes flash{from{opacity:1}to{opacity:0}}
-
-/* Header */
-.top{position:fixed;inset:0 0 auto 0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:18px clamp(18px,5vw,64px);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.05)}
-.brand{font:700 15px 'Syne';letter-spacing:.02em;display:flex;align-items:center;gap:10px}
-.brand i{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);transition:background .6s}
-.sound{display:flex;align-items:center;gap:10px;font:500 11px 'JetBrains Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(15,23,42,.6);backdrop-filter:blur(12px);transition:color .3s,border-color .3s}
-.sound:hover{color:#fff;border-color:rgba(255,255,255,.25)}
-.bars{display:flex;gap:2px;align-items:flex-end;height:12px}
-.bars i{width:2px;height:3px;background:var(--accent);border-radius:1px}
-.sound.on .bars i{animation:eq 1s ease-in-out infinite}
-.sound.on .bars i:nth-child(2){animation-delay:-.35s}.sound.on .bars i:nth-child(3){animation-delay:-.7s}
-@keyframes eq{0%,100%{height:3px}50%{height:12px}}
-
-/* Hero */
-main{position:relative;z-index:2}
-.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:120px clamp(20px,6vw,96px) 80px}
-.hero-in{max-width:560px;position:relative;z-index:2}
-.hit{position:absolute;right:0;top:0;width:50%;height:100%;cursor:pointer;z-index:1}
-.label{font:500 11px 'JetBrains Mono';letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-h1{font:800 clamp(3.2rem,8vw,6.6rem) 'Syne';line-height:.92;letter-spacing:-.045em;margin:20px 0 24px}
-h1 span{color:var(--accent);transition:color .6s}
-.lead{color:#a3acba;font-weight:300;font-size:1.05rem;max-width:440px;line-height:1.6}
-.actions{display:flex;gap:22px;align-items:center;margin-top:34px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border-radius:999px;background:var(--accent);color:#06070b;font:600 12px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;transition:transform .4s var(--ease),background .6s,box-shadow .4s;box-shadow:0 8px 30px -4px rgba(var(--rgb),.5)}
-.btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px -4px rgba(var(--rgb),.7)}
-.link{font:500 12px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:4px;transition:color .3s,border-color .3s}
-.link:hover{color:#fff;border-color:var(--accent)}
-.stats{display:flex;gap:40px;margin-top:56px}
-.stats b{display:block;font:700 1.9rem 'Syne';letter-spacing:-.03em;line-height:1}
-.stats span{font:500 10px 'JetBrains Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.fade{opacity:0;transform:translateY(16px);animation:up 1s var(--ease) forwards}
-.fade:nth-child(2){animation-delay:.08s}.fade:nth-child(3){animation-delay:.16s}.fade:nth-child(4){animation-delay:.24s}.fade:nth-child(5){animation-delay:.32s}
-@keyframes up{to{opacity:1;transform:none}}
-
-/* Timetable Section */
-.section{position:relative;padding:110px clamp(18px,6vw,96px)}
-.tt-header{margin-bottom:36px;transition:opacity .2s,transform .2s}
-.tt-header .sec-title{font:800 clamp(2.4rem,5.5vw,4rem) 'Syne';letter-spacing:-.045em;line-height:1;margin:10px 0 16px}
-.tt-header .sec-title span{color:var(--accent);transition:color .6s}
-.meta-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-top:6px}
-.meta{font:600 12px 'JetBrains Mono';color:var(--accent);letter-spacing:.06em;transition:color .6s}
-.note{color:#9aa4b4;font-weight:300;max-width:680px;line-height:1.55}
-
-.tt{display:grid;grid-template-columns:var(--navw) 1fr;column-gap:var(--gap);align-items:start}
-
-.sub-h{display:flex;align-items:center;gap:14px;margin-bottom:14px;font:600 11px 'JetBrains Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--muted);height:20px}
-.sub-h::after{content:"";flex:1;height:1px;background:var(--line)}
-.sub-h.after-school{margin-top:28px}
-
-/* Left: Days list with Gooey indicator */
-.days-wrap{position:sticky;top:96px}
-.days{position:relative;display:flex;flex-direction:column;gap:8px}
-.goo{position:absolute;left:0;top:0;bottom:0;width:100%;filter:url(#goo);pointer-events:none;z-index:0}
-.blob,.trail{position:absolute;left:0;top:0;width:100%;height:var(--h,60px);border-radius:30px;background:var(--accent);transform:translateY(var(--y,0px));transition:transform .45s cubic-bezier(.16,1,.3,1),background .6s;box-shadow:0 0 28px rgba(var(--rgb),.4)}
-.trail{transition:transform .8s cubic-bezier(.16,1,.3,1),background .6s;transform:translateY(var(--y,0px)) scale(.9);opacity:.75}
-
-/* Dynamic fluid droplet */
-.fluid-drop{position:fixed;width:16px;height:16px;border-radius:50%;pointer-events:none;z-index:99;opacity:0;will-change:transform,opacity}
-
-.day{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:center;height:60px;padding:0 22px;border-radius:30px;text-align:left;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--ios-border);backdrop-filter:var(--ios-blur);-webkit-backdrop-filter:var(--ios-blur);transition:color .4s,background .4s,border-color .4s,transform .3s var(--ease)}
-.day:hover{color:#fff;border-color:rgba(255,255,255,.2);transform:translateX(2px)}
-.day[aria-selected="true"]{color:#06070b;background:transparent;border-color:transparent;box-shadow:none}
-.day .nm{font:600 .98rem 'Plus Jakarta Sans'}
-.day .nm .s{display:none}
-.day .ct{font:500 11px 'JetBrains Mono';opacity:.8}
-.day .td{width:6px;height:6px;border-radius:50%;background:currentColor;margin-left:8px;display:inline-block;vertical-align:middle;box-shadow:0 0 8px currentColor}
-
-/* Right: iOS Panel & Grouped Cards */
-.panel{border-left:1.5px solid var(--line);padding-left:40px;position:relative;transition:border-color .4s,box-shadow .4s}
-.panel.impact{animation:panelImpactRipple .8s cubic-bezier(.16,1,.3,1)}
-@keyframes panelImpactRipple{
-  0%{border-left-color:var(--accent);box-shadow:-12px 0 32px rgba(var(--rgb),.5)}
-  100%{border-left-color:var(--line);box-shadow:none}
+:root {
+  --bg: #05070d;
+  --bg-deep: #030408;
+  --accent: #f5a524;
+  --accent-light: #fde68a;
+  --rgb: 245, 165, 36;
+  --text: #f3f5f9;
+  --text-dim: #9aa4b6;
+  --muted: #6b778c;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --glass: rgba(13, 17, 26, 0.65);
+  --glass-card: rgba(18, 24, 38, 0.55);
+  --glass-hover: rgba(255, 255, 255, 0.06);
+  --glass-active: rgba(var(--rgb), 0.14);
+  --specular: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  --shadow-lg: 0 24px 64px -12px rgba(0, 0, 0, 0.65);
+  --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --nav-w: 240px;
 }
 
-/* iOS Grouped List Container */
-.ios-group{
-  background:var(--ios-card);
-  border:1px solid var(--ios-border);
-  border-radius:24px;
-  overflow:hidden;
-  backdrop-filter:var(--ios-blur);
-  -webkit-backdrop-filter:var(--ios-blur);
-  box-shadow:0 1px 0 0 rgba(255,255,255,.05) inset,0 12px 32px rgba(0,0,0,.3);
-  margin-bottom:24px;
-  transition:border-color .4s,box-shadow .4s;
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.list{list-style:none;display:flex;flex-direction:column}
-
-.row{
-  display:grid;grid-template-columns:38px 1fr auto;gap:16px;align-items:center;
-  min-height:64px;padding:14px 20px;
-  border-bottom:1px solid rgba(255,255,255,.05);
-  background:transparent;
-  transition:background .25s,border-color .25s,box-shadow .25s,transform .25s var(--ease);
-  position:relative;
-  opacity:1;
-  animation:rowEnter .32s var(--ease) backwards;
-  animation-delay:calc(var(--i)*25ms);
-}
-.row:last-child{border-bottom:none}
-.row:hover{background:var(--ios-card-hover)}
-
-@keyframes rowEnter{
-  from{opacity:0;transform:translateY(8px)}
-  to{opacity:1;transform:none}
+html {
+  scroll-behavior: smooth;
+  background: var(--bg-deep);
+  color-scheme: dark;
 }
 
-/* Liquid Ripple Glow across rows on drop impact */
-.row.lit{
-  background:rgba(var(--rgb),.18) !important;
-  box-shadow:inset 3px 0 0 var(--accent);
+body {
+  background: radial-gradient(1100px 800px at 75% 15%, rgba(var(--rgb), 0.09), transparent 60%),
+              radial-gradient(900px 700px at 15% 65%, rgba(56, 189, 248, 0.04), transparent 60%),
+              var(--bg-deep);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.55;
 }
 
-/* iOS Number & Icon Squircle */
-.row .n{
-  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
-  font:600 12px 'JetBrains Mono';color:var(--accent);
-  background:rgba(var(--rgb),.12);
-  border:1px solid rgba(var(--rgb),.28);
-  transition:color .6s,background .6s,border-color .6s;
-}
-.row .n svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-
-.row h4{font:600 1rem 'Plus Jakarta Sans';color:#fff;display:flex;align-items:center;gap:8px}
-.row h4 small{font:500 10.5px 'JetBrains Mono';color:var(--muted);letter-spacing:.04em}
-.row p{font-size:.87rem;color:#8d97a7;font-weight:300;margin-top:2px;line-height:1.4}
-.row .r{display:flex;align-items:center;gap:12px;white-space:nowrap}
-.row .tm{font:500 12px 'JetBrains Mono';color:#aeb6c2}
-
-/* iOS Capsule Badge */
-.row .rm{
-  font:600 11px 'JetBrains Mono';letter-spacing:.02em;color:var(--accent);
-  background:rgba(var(--rgb),.12);border:1px solid rgba(var(--rgb),.25);
-  padding:5px 12px;border-radius:999px;
-  transition:color .6s,background .6s;
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }
 
-.row.live{background:linear-gradient(90deg,rgba(var(--rgb),.22),transparent)}
-.row.live .n{background:var(--accent);color:#06070b;border-color:transparent;box-shadow:0 0 14px var(--accent)}
-.row.live h4::after{content:"NOW";font:700 9px 'JetBrains Mono';margin-left:6px;padding:2px 6px;border-radius:6px;background:var(--accent);color:#06070b}
-
-.panel.out{opacity:.35;transform:translateY(2px);transition:opacity .12s,transform .12s}
-
-/* Footer (Clean & Minimal) */
-footer{position:relative;z-index:2;padding:44px clamp(18px,6vw,96px);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font:500 11px 'JetBrains Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-
-.reveal{opacity:0;transform:translateY(24px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
-.reveal.in{opacity:1;transform:none}
-
-/* Responsive (Tablet & Phone) */
-@media (max-width:960px){
-  .hero{align-items:flex-end;padding-top:48vh;padding-bottom:70px}
-  .hit{width:100%;height:46vh}
+a {
+  color: inherit;
+  text-decoration: none;
 }
-@media (max-width:768px){
-  :root{--gap:16px;--navw:100%}
-  .section{padding:70px 16px 50px}
-  .top{padding:12px 18px}
-  .hero{padding:96px 18px 50px;min-height:85vh;min-height:85svh}
-  h1{font-size:clamp(2.4rem,10vw,3.8rem);margin:14px 0 18px}
-  .lead{font-size:.92rem}
-  .stats{margin-top:36px;gap:24px}
-  .stats b{font-size:1.5rem}
 
-  .tt-header{margin-bottom:20px}
-  .tt-header .sec-title{font-size:clamp(2rem,8.5vw,2.8rem);margin:6px 0 10px}
-  .meta-row{gap:8px}
-  .note{font-size:.88rem}
+::selection {
+  background: var(--accent);
+  color: #04060a;
+}
 
-  /* Single stacked column on phone */
-  .tt{display:flex;flex-direction:column;gap:18px}
-  .days-wrap{position:sticky;top:62px;z-index:15;background:rgba(3,7,18,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:8px 0;margin:0 -4px}
-  .days-wrap .sub-h{display:none}
+/* ---------------- Atmospheric FX & Canvases ---------------- */
+#gl {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
 
-  .days{display:flex;flex-direction:row;gap:4px;background:rgba(255,255,255,.05);border:1px solid var(--ios-border);border-radius:999px;padding:4px;width:100%}
-  .goo{width:100%;filter:none}
-  .blob,.trail{top:4px;left:0;width:var(--w,64px);height:calc(100% - 8px);border-radius:999px;transform:translateX(var(--x,0px));transition:transform .4s cubic-bezier(.16,1,.3,1),background .6s}
-  .trail{display:none}
+.flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  opacity: 0;
+  background: radial-gradient(circle at var(--fx, 70%) var(--fy, 45%), rgba(255, 255, 255, 0.35), rgba(var(--rgb), 0.18) 30%, transparent 65%);
+}
+.flash.go {
+  animation: flashBurst 0.85s ease-out;
+}
+@keyframes flashBurst {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
 
-  .day{flex:1;height:44px;padding:0 4px;border-radius:999px;border:none;background:transparent;justify-content:center;backdrop-filter:none;-webkit-backdrop-filter:none}
-  .day:hover{transform:none}
-  .day .nm .f{display:none}
-  .day .nm .s{display:inline;font-size:.9rem;font-weight:600}
-  .day .ct{display:none}
-  .day .td{width:5px;height:5px;margin-left:4px}
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
 
-  .panel{border-left:none;border-top:1.5px solid var(--line);padding-left:0;padding-top:18px;width:100%}
-  .panel.impact{animation:panelImpactTop .8s cubic-bezier(.16,1,.3,1)}
-  @keyframes panelImpactTop{
-    0%{border-top-color:var(--accent);box-shadow:0 -8px 28px rgba(var(--rgb),.45)}
-    100%{border-top-color:var(--line);box-shadow:none}
+/* Fullscreen SVG layer for Lucas Bebber Gooey Fluid Droplet */
+.fluid-layer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 95;
+}
+
+/* ---------------- Top Glass Header ---------------- */
+.top {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px clamp(18px, 5vw, 64px);
+  background: rgba(5, 7, 13, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand {
+  font: 700 15px 'Syne', sans-serif;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent);
+  transition: background 0.6s, box-shadow 0.6s;
+}
+.brand span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-left: 4px;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.week-tag {
+  font: 500 11px 'JetBrains Mono', monospace;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+}
+
+.sound {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 600 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 7px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
+}
+.sound:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+}
+.bars {
+  display: flex;
+  gap: 2.5px;
+  align-items: flex-end;
+  height: 12px;
+}
+.bars i {
+  width: 2px;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 1px;
+  transition: background 0.6s;
+}
+.sound.on .bars i {
+  animation: eq 0.9s ease-in-out infinite;
+}
+.sound.on .bars i:nth-child(2) { animation-delay: -0.32s; }
+.sound.on .bars i:nth-child(3) { animation-delay: -0.65s; }
+@keyframes eq {
+  0%, 100% { height: 3px; }
+  50% { height: 12px; }
+}
+
+/* ---------------- Hero Section ---------------- */
+main {
+  position: relative;
+  z-index: 2;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding: 130px clamp(20px, 6vw, 96px) 80px;
+}
+
+.hero-in {
+  max-width: 580px;
+  position: relative;
+  z-index: 2;
+}
+
+.hit {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 55%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(var(--rgb), 0.1);
+  border: 1px solid rgba(var(--rgb), 0.25);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 22px;
+  transition: color 0.6s, background 0.6s, border-color 0.6s;
+}
+.hero-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+h1 {
+  font: 800 clamp(3.4rem, 8.5vw, 6.8rem) 'Syne', sans-serif;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  margin-bottom: 24px;
+}
+h1 span {
+  color: var(--accent);
+  transition: color 0.6s;
+}
+
+.lead {
+  color: var(--text-dim);
+  font-weight: 400;
+  font-size: 1.05rem;
+  max-width: 480px;
+  line-height: 1.65;
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 28px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #05070d;
+  font: 700 12px 'JetBrains Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: transform 0.35s var(--ease), background 0.6s, box-shadow 0.35s;
+  box-shadow: 0 10px 32px -4px rgba(var(--rgb), 0.5);
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px -4px rgba(var(--rgb), 0.7);
+}
+.btn svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.2;
+}
+
+.link {
+  font: 600 12px 'JetBrains Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 4px;
+  transition: color 0.3s, border-color 0.3s;
+}
+.link:hover {
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.stats {
+  display: flex;
+  gap: 44px;
+  margin-top: 56px;
+}
+.stats b {
+  display: block;
+  font: 700 2rem 'Syne', sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stats span {
+  font: 500 10px 'JetBrains Mono', monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 6px;
+  display: block;
+}
+
+.fade {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: up 1s var(--ease) forwards;
+}
+.fade:nth-child(2) { animation-delay: 0.08s; }
+.fade:nth-child(3) { animation-delay: 0.16s; }
+.fade:nth-child(4) { animation-delay: 0.24s; }
+.fade:nth-child(5) { animation-delay: 0.32s; }
+@keyframes up {
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------------- Timetable Section ---------------- */
+.section {
+  position: relative;
+  padding: 120px clamp(18px, 6vw, 96px);
+}
+
+.section-head {
+  margin-bottom: 32px;
+}
+.kicker {
+  font: 600 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+  transition: color 0.6s;
+}
+.sec-title {
+  font: 800 clamp(2.4rem, 5.5vw, 4rem) 'Syne', sans-serif;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+.sec-title span {
+  color: var(--accent);
+  transition: color 0.6s;
+}
+
+/* ---------------- MONOLITHIC WORKBENCH SHELL ---------------- */
+/* Left day rail + right schedule viewport united inside one single glass shell */
+.workbench-shell {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  box-shadow: var(--specular), var(--shadow-lg);
+  border-radius: 28px;
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  display: grid;
+  grid-template-columns: var(--nav-w) 1fr;
+  align-items: stretch;
+  overflow: hidden;
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+/* Left: Day Navigation Rail */
+.day-rail {
+  border-right: 1px solid var(--line);
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: rgba(8, 11, 18, 0.4);
+}
+
+.rail-top {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.rail-label {
+  font: 600 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.rail-label span.badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-dim);
+}
+
+/* Day Tabs */
+.day-nav {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Sliding active indicator pill behind day tabs */
+.day-pill-active {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--accent);
+  box-shadow: 0 0 24px rgba(var(--rgb), 0.4);
+  transform: translateY(var(--pill-y, 0px));
+  transition: transform 0.42s var(--ease), background 0.6s, box-shadow 0.6s;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.day-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  padding: 0 16px;
+  border-radius: 14px;
+  color: var(--text-dim);
+  transition: color 0.3s, transform 0.3s var(--ease);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.day-btn:hover {
+  color: #fff;
+  transform: translateX(2px);
+}
+.day-btn[aria-selected="true"] {
+  color: #04060a;
+  font-weight: 700;
+  transform: none;
+}
+
+.day-btn-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.day-btn-title .full-name {
+  font: 600 0.95rem 'Plus Jakarta Sans', sans-serif;
+}
+.day-btn-title .short-name {
+  display: none;
+  font: 600 0.92rem 'Plus Jakarta Sans', sans-serif;
+}
+.day-btn[aria-selected="true"] .full-name {
+  font-weight: 700;
+}
+.day-btn .today-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.day-btn .day-badge {
+  font: 600 11px 'JetBrains Mono', monospace;
+  opacity: 0.75;
+}
+.day-btn[aria-selected="true"] .day-badge {
+  opacity: 0.9;
+}
+
+.rail-footer {
+  padding: 16px 8px 4px;
+  border-top: 1px solid var(--line);
+  font: 500 11px 'JetBrains Mono', monospace;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rail-footer .live-beacon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  transition: background 0.6s;
+}
+
+/* ---------------- Right: Schedule Viewport ---------------- */
+.schedule-viewport {
+  padding: 32px 36px 40px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.schedule-viewport.impact {
+  animation: viewportImpact 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes viewportImpact {
+  0% { box-shadow: inset 4px 0 0 var(--accent), inset 28px 0 36px -12px rgba(var(--rgb), 0.35); }
+  100% { box-shadow: inset 0 0 0 transparent, inset 0 0 0 transparent; }
+}
+
+.viewport-head {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
+}
+
+.viewport-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin-top: 8px;
+}
+.viewport-title {
+  font: 800 clamp(1.8rem, 3.2vw, 2.6rem) 'Syne', sans-serif;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.viewport-title span.accent-dot {
+  color: var(--accent);
+  transition: color 0.6s;
+}
+
+.meta-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 11.5px 'JetBrains Mono', monospace;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+}
+.meta-chip.highlight {
+  background: rgba(var(--rgb), 0.12);
+  border-color: rgba(var(--rgb), 0.28);
+  color: var(--accent);
+  transition: color 0.6s, background 0.6s, border-color 0.6s;
+}
+
+.viewport-note {
+  font-size: 0.94rem;
+  color: var(--text-dim);
+  font-weight: 300;
+  max-width: 680px;
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+/* ---------------- Timeline Architecture ---------------- */
+.timeline-section-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font: 600 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.timeline-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.timeline-section-title.after-school {
+  margin-top: 36px;
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+
+/* Individual Period Row */
+.timeline-row {
+  display: grid;
+  grid-template-columns: 84px 34px 1fr;
+  gap: 18px;
+  align-items: stretch;
+  position: relative;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: var(--glass-card);
+  border: 1px solid var(--line);
+  margin-bottom: 8px;
+  transition: background 0.25s, border-color 0.25s, transform 0.25s var(--ease), box-shadow 0.25s;
+}
+.timeline-row:hover {
+  background: var(--glass-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(2px);
+}
+
+/* Radial Ripple Glow from Droplet Impact */
+.timeline-row.lit {
+  background: rgba(var(--rgb), 0.16) !important;
+  border-color: rgba(var(--rgb), 0.45) !important;
+  box-shadow: inset 3.5px 0 0 var(--accent), 0 4px 24px rgba(var(--rgb), 0.22) !important;
+  transform: translateX(4px);
+}
+
+/* Live Period Beacon */
+.timeline-row.live {
+  border-color: rgba(var(--rgb), 0.5);
+  background: linear-gradient(90deg, rgba(var(--rgb), 0.18), var(--glass-card));
+  box-shadow: inset 3px 0 0 var(--accent), 0 0 28px rgba(var(--rgb), 0.15);
+}
+
+/* Time Column (Apple Tabular 2-line) */
+.time-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.25;
+}
+.time-start {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.time-end {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+/* Timeline Spine & Node */
+.timeline-spine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.period-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font: 700 11px 'JetBrains Mono', monospace;
+  color: var(--accent);
+  background: rgba(var(--rgb), 0.12);
+  border: 1px solid rgba(var(--rgb), 0.3);
+  transition: color 0.6s, background 0.6s, border-color 0.6s;
+  z-index: 1;
+}
+.period-dot svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.timeline-row.live .period-dot {
+  background: var(--accent);
+  color: #04060a;
+  border-color: transparent;
+  box-shadow: 0 0 14px var(--accent);
+}
+
+/* Lesson Card Main Content */
+.lesson-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+}
+.lesson-main {
+  flex: 1;
+}
+.lesson-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.lesson-title {
+  font: 600 1.02rem 'Plus Jakarta Sans', sans-serif;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+.track-badge {
+  font: 600 10px 'JetBrains Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(var(--rgb), 0.12);
+  border: 1px solid rgba(var(--rgb), 0.28);
+  padding: 2px 7px;
+  border-radius: 6px;
+  transition: color 0.6s, background 0.6s, border-color 0.6s;
+}
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font: 700 9px 'JetBrains Mono', monospace;
+  letter-spacing: 0.1em;
+  background: var(--accent);
+  color: #04060a;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.live-pill .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #04060a;
+  animation: pulseBeacon 1.2s infinite;
+}
+@keyframes pulseBeacon {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.lesson-desc {
+  font-size: 0.86rem;
+  color: var(--text-dim);
+  font-weight: 300;
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+/* Room Pill Badge */
+.lesson-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+.room-pill {
+  font: 600 11.5px 'JetBrains Mono', monospace;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+  background: rgba(var(--rgb), 0.1);
+  border: 1px solid rgba(var(--rgb), 0.25);
+  padding: 6px 14px;
+  border-radius: 999px;
+  transition: color 0.6s, background 0.6s, border-color 0.6s;
+}
+
+/* ---------------- Break Divider Chip ---------------- */
+.break-chip {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 18px 8px 102px;
+  position: relative;
+}
+.break-chip .break-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 500 10.5px 'JetBrains Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+.break-chip .break-badge svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* ---------------- Footer ---------------- */
+footer {
+  position: relative;
+  z-index: 2;
+  padding: 44px clamp(18px, 6vw, 96px);
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font: 500 11px 'JetBrains Mono', monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+footer span b {
+  color: var(--accent);
+  transition: color 0.6s;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------------- Mobile & Tablet Responsive ---------------- */
+@media (max-width: 960px) {
+  .hero {
+    align-items: flex-end;
+    padding-top: 48vh;
+    padding-bottom: 70px;
+  }
+  .hit {
+    width: 100%;
+    height: 48vh;
+  }
+  .workbench-shell {
+    grid-template-columns: 200px 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --nav-w: 100%;
   }
 
-  .ios-group{border-radius:20px;margin-bottom:18px}
-  .row{grid-template-columns:36px 1fr;gap:8px 12px;padding:12px 14px}
-  .row .n{width:36px;height:36px;font-size:11px;border-radius:10px;grid-row:span 2}
-  .row h4{font-size:.94rem}
-  .row p{font-size:.82rem}
-  .row .r{grid-column:2;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
-  .row .tm{font-size:11px}
-  .row .rm{font-size:10px;padding:3px 8px}
+  .top {
+    padding: 12px 18px;
+  }
+  .section {
+    padding: 70px 14px 50px;
+  }
+  .hero {
+    padding: 100px 16px 50px;
+    min-height: 85vh;
+  }
+  h1 {
+    font-size: clamp(2.5rem, 10vw, 3.8rem);
+    margin-bottom: 18px;
+  }
+  .stats {
+    gap: 28px;
+    margin-top: 40px;
+  }
+  .stats b {
+    font-size: 1.6rem;
+  }
+
+  /* Monolithic workbench converts to responsive stack */
+  .workbench-shell {
+    display: flex;
+    flex-direction: column;
+    border-radius: 22px;
+  }
+
+  .day-rail {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 12px;
+    position: sticky;
+    top: 61px;
+    z-index: 25;
+    background: rgba(5, 7, 13, 0.92);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+  .rail-label, .rail-footer {
+    display: none;
+  }
+
+  .day-nav {
+    flex-direction: row;
+    gap: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line);
+    padding: 4px;
+    border-radius: 999px;
+    width: 100%;
+  }
+
+  .day-pill-active {
+    top: 4px;
+    left: 0;
+    width: var(--pill-w, 64px);
+    height: calc(100% - 8px);
+    border-radius: 999px;
+    transform: translateX(var(--pill-x, 0px));
+  }
+
+  .day-btn {
+    flex: 1;
+    height: 42px;
+    padding: 0 4px;
+    border-radius: 999px;
+    justify-content: center;
+  }
+  .day-btn:hover {
+    transform: none;
+  }
+  .day-btn-title .full-name {
+    display: none;
+  }
+  .day-btn-title .short-name {
+    display: inline;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .day-btn .day-badge {
+    display: none;
+  }
+  .day-btn .today-dot {
+    width: 5px;
+    height: 5px;
+    margin-left: 3px;
+  }
+
+  .schedule-viewport {
+    padding: 22px 14px 28px;
+  }
+  .viewport-title {
+    font-size: 1.8rem;
+  }
+
+  /* Responsive 2-tier timeline row */
+  .timeline-row {
+    grid-template-columns: 62px 1fr;
+    gap: 8px 12px;
+    padding: 14px 12px;
+    border-radius: 16px;
+  }
+  .timeline-spine {
+    display: none;
+  }
+  .time-col {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .time-start {
+    font-size: 12.5px;
+  }
+  .time-end {
+    font-size: 10.5px;
+  }
+  .lesson-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .lesson-meta {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .room-pill {
+    font-size: 10.5px;
+    padding: 4px 10px;
+  }
+  .break-chip {
+    padding: 6px 10px;
+  }
+  .break-chip .break-badge {
+    font-size: 9.5px;
+    padding: 3px 8px;
+  }
 }
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+
+<!-- Lucas Bebber SVG Gooey Filter Definition & Canvas Layer -->
+<svg class="fluid-layer" id="fluidLayer" aria-hidden="true">
   <defs>
-    <filter id="goo" x="-10%" y="-10%" width="140%" height="140%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="b"/>
-      <feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -9"/>
+    <filter id="fluid-goo" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 0 20 -9" result="goo" />
+      <feComposite in="SourceGraphic" in2="goo" operator="atop" />
     </filter>
   </defs>
+  <!-- Fluid Gooey Body and Droplet Elements -->
+  <g filter="url(#fluid-goo)" id="fluidGooGroup">
+    <circle id="donorBlob" cx="-100" cy="-100" r="0" fill="var(--accent)" />
+    <circle id="neckBlob" cx="-100" cy="-100" r="0" fill="var(--accent)" />
+    <circle id="travelBlob" cx="-100" cy="-100" r="0" fill="var(--accent)" />
+    <circle id="targetBlob" cx="-100" cy="-100" r="0" fill="var(--accent)" />
+  </g>
+  <!-- Sharp micro-splash particles (outside filter for crystal-sharp clarity) -->
+  <g id="splashParticlesGroup"></g>
 </svg>
 
 <canvas id="gl"></canvas>
@@ -258,566 +1077,946 @@ footer{position:relative;z-index:2;padding:44px clamp(18px,6vw,96px);border-top:
 <div class="grain"></div>
 
 <header class="top">
-  <a href="#" class="brand"><i></i>Class 10 B</a>
-  <button class="sound on" id="sound" aria-pressed="true"><span class="bars"><i></i><i></i><i></i></span><span id="soundLbl">Sound on</span></button>
+  <a href="#" class="brand"><i></i>Class 10 B<span>Weekly Orbit</span></a>
+  <div class="top-actions">
+    <span class="week-tag">Quarter III</span>
+    <button class="sound on" id="sound" aria-pressed="true">
+      <span class="bars"><i></i><i></i><i></i></span>
+      <span id="soundLbl">Sound on</span>
+    </button>
+  </div>
 </header>
 
 <main>
   <section class="hero">
-    <div class="hit" id="hit" title="Click the planet"></div>
+    <div class="hit" id="hit" title="Interact with the planet"></div>
     <div class="hero-in">
-      <p class="label fade">English project · Class 10 B</p>
+      <div class="hero-pill fade"><span class="dot"></span>English Project · Gymnasium № 37</div>
       <h1 class="fade">Our school<br>week<span>.</span></h1>
-      <p class="lead fade">The authentic weekly timetable of class 10 B, plus after-school workouts, homework, and laptop work. Select a day to watch the planet reconstruct.</p>
+      <p class="lead fade">The authentic timetable of class 10 B. Monday vocational training at the college, academic flow at the gymnasium, plus evening workouts and coding. Select a day to reconstruct the planetary orbit.</p>
       <div class="actions fade">
-        <a href="#timetable" class="btn">View timetable</a>
+        <a href="#timetable" class="btn">
+          <span>Explore Schedule</span>
+          <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
         <button class="link" id="shatterBtn">Shatter the planet</button>
       </div>
       <div class="stats fade">
         <div><b>33</b><span>Lessons</span></div>
         <div><b>3</b><span>Gym days</span></div>
-        <div><b id="roomCount">0</b><span>Rooms</span></div>
+        <div><b id="roomCount">10</b><span>Classrooms</span></div>
       </div>
     </div>
   </section>
 
   <section class="section" id="timetable">
-    <div class="tt-header" id="ph"></div>
-    <div class="tt">
-      <div class="days-wrap">
-        <p class="sub-h">Days</p>
-        <nav class="days" id="days" role="tablist" aria-label="Days">
-          <div class="goo" aria-hidden="true">
-            <span class="trail"></span><span class="blob"></span>
+    <div class="section-head">
+      <p class="kicker">Academic Overview</p>
+      <h2 class="sec-title">Timetable & Rhythm<span>.</span></h2>
+    </div>
+
+    <!-- Monolithic Workbench Shell -->
+    <div class="workbench-shell" id="workbench">
+      
+      <!-- Left Rail: Day Navigation -->
+      <aside class="day-rail">
+        <div class="rail-top">
+          <div class="rail-label">
+            <span>Days</span>
+            <span class="badge">5 Periods</span>
           </div>
-        </nav>
+          <nav class="day-nav" id="days" role="tablist" aria-label="Days of the week">
+            <div class="day-pill-active" id="activePill" aria-hidden="true"></div>
+          </nav>
+        </div>
+        <div class="rail-footer">
+          <span class="live-beacon"></span>
+          <span>Gymnasium № 37 · Minsk</span>
+        </div>
+      </aside>
+
+      <!-- Right Viewport: Schedule Details -->
+      <div class="schedule-viewport" id="viewport">
+        <div class="viewport-head" id="ph"></div>
+        <div class="viewport-body" id="viewportBody"></div>
       </div>
-      <div class="panel" id="panel">
-        <div class="lists" id="lists"></div>
-      </div>
+
     </div>
   </section>
 </main>
 
 <footer>
-  <span>Class 10 B · English Project</span>
-  <span>High School Life · 2026</span>
+  <span>Class 10 B · Gymnasium № 37 · Minsk</span>
+  <span>Bespoke Design · <b>Apple HIG & Linear Craft</b></span>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
 <script>
 (function(){
 "use strict";
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 
-/* ---------------- BELL SCHEDULES ---------------- */
-// College bell schedule (Monday):
-const TIMES_COLLEGE=[
-  ["08:30","09:15"],
-  ["09:25","10:10"],
-  ["10:20","11:05"],
-  ["11:25","12:10"],
-  ["12:30","13:15"],
-  ["13:35","14:20"]
+/* ---------------- BELL SCHEDULES & DATA ---------------- */
+// College bells on Monday (Vocational Training - Sewing, Room 36):
+const TIMES_COLLEGE = [
+  ["08:30", "09:15"],
+  ["09:25", "10:10"],
+  ["10:20", "11:05"],
+  ["11:25", "12:10"],
+  ["12:30", "13:15"],
+  ["13:35", "14:20"]
 ];
 
-// School bell schedule (Tuesday – Friday):
-const TIMES_SCHOOL=[
-  ["08:30","09:15"],
-  ["09:30","10:15"],
-  ["10:30","11:15"],
-  ["11:30","12:15"],
-  ["12:30","13:15"],
-  ["13:35","14:20"],
-  ["14:35","15:20"]
+// High school bells (Tuesday – Friday):
+const TIMES_SCHOOL = [
+  ["08:30", "09:15"],
+  ["09:30", "10:15"],
+  ["10:30", "11:15"],
+  ["11:30", "12:15"],
+  ["12:30", "13:15"],
+  ["13:35", "14:20"],
+  ["14:35", "15:20"]
 ];
 
-const DAYS=[
-{name:"Monday",short:"Mon",c1:"#f5a524",c2:"#fde68a",gym:true,times:TIMES_COLLEGE,
- note:"Vocational training day at the college. Sewing practice and basic garment making in Room 36.",
- lessons:[
-  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Introduction and basic safety rules in Room 36."},
-  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Taking measurements and cutting fabric patterns."},
-  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Sewing machine setup and straight stitching practice."},
-  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Assembling fabric parts and basic seam joining."},
-  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Edge finishing, trimming, and pressing fabrics."},
-  {s:"Vocational Training",sub:"Sewing",room:"College, Room 36",n:"Completing practice pieces and cleaning the workspace."}
- ]},
-{name:"Tuesday",short:"Tue",c1:"#38bdf8",c2:"#a5b4fc",times:TIMES_SCHOOL,
- note:"Seven lessons across six rooms and three floors. Most of the ten-minute breaks are spent on the stairs.",
- lessons:[
-  {s:"Russian Literature",room:"Room 305",n:"Classic prose analysis and literary discussion."},
-  {s:"Russian Language",room:"Room 305",n:"Advanced syntax and grammar exercises."},
-  {s:"History of Belarus in World Context",room:"Room 306",n:"Historic milestones in the broader European context."},
-  {s:"Physics",room:"Room 210",n:"Kinematic formulas, mechanics, and laboratory experiments."},
-  {s:"PE & Health",room:"Gym 1",n:"High-energy fitness and team sports in the main gymnasium."},
-  {s:"Mathematics",room:"Room 301",n:"Trigonometry equations and algebraic problem solving."},
-  {s:"Belarusian Literature",room:"Room 316",n:"Poetic reflections at the close of a 7-period day."}
- ]},
-{name:"Wednesday",short:"Wed",c1:"#a78bfa",c2:"#f0abfc",gym:true,times:TIMES_SCHOOL,
- note:"Six lessons, six rooms, and a well-balanced academic flow. The calmest day of the week.",
- lessons:[
-  {s:"Mathematics",room:"Room 301",n:"Morning algebraic proofs and functions."},
-  {s:"Russian Language",room:"Room 305",n:"Grammar parsing, punctuation, and linguistic drills."},
-  {s:"English / German Language",room:"Room 324 / 212",n:"Conversational fluency debates and foreign language vocabulary."},
-  {s:"Computer Science / IT",room:"Lab 212/322",n:"Algorithms, programming scripts, and digital systems."},
-  {s:"Geography",room:"Room 319",n:"Global economic maps, climate zones, and demographics."},
-  {s:"Biology",room:"Room 311",n:"Cellular structures, genetics, and biological ecosystems."}
- ]},
-{name:"Thursday",short:"Thu",c1:"#34d399",c2:"#bef264",times:TIMES_SCHOOL,
- note:"Seven lessons starting with Chemistry and concluding with Belarusian literature in Room 316.",
- lessons:[
-  {s:"Chemistry",room:"Room 313",n:"Chemical reactions, molecular weights, and periodic properties."},
-  {s:"History of Belarus",room:"Room 306",n:"Historic chronicles, statehood, and national culture."},
-  {s:"Technical Drawing & Drafting",sub:"Drafting",room:"Room 305",n:"Orthographic projections, rulers, and geometric precision."},
-  {s:"PE & Health",room:"Gym 1",n:"Cardio and athletics conditioning."},
-  {s:"Mathematics",room:"Room 301",n:"Trigonometric identities and geometry problems."},
-  {s:"Belarusian Language",room:"Room 316",n:"Orthography, vocabulary enrichment, and stylistic rules."},
-  {s:"Belarusian Literature",room:"Room 316",n:"Classic lyrical poetry to conclude the Thursday schedule."}
- ]},
-{name:"Friday",short:"Fri",c1:"#fb7185",c2:"#fdba74",gym:true,times:TIMES_SCHOOL,
- note:"Seven lessons in seven different rooms. Concluding with Physics before the weekend unlocks.",
- lessons:[
-  {s:"Mathematics",room:"Room 301",n:"Opening Friday with sharp numerical calculations."},
-  {s:"PE & Health",room:"Gym 1",n:"Early workout session to boost energy levels."},
-  {s:"English / German",room:"Room 324 / 212",n:"Oral communication and creative language presentations."},
-  {s:"Social Studies",room:"Room 306",n:"Civil society, jurisprudence, and modern sociology."},
-  {s:"Chemistry",room:"Room 313",n:"Laboratory formulas and practical chemical problem solving."},
-  {s:"Biology",room:"Room 311",n:"Evolutionary adaptations and ecosystem dynamics."},
-  {s:"Physics",room:"Room 210",n:"The final lesson of the week! Weekend officially unlocked."}
- ]}
-];
-
-/* After school routines adapted to 10B schedule */
-const AFTER=[
- [ {t:"14:45",a:"Home & lunch",n:"A warm lunch and short rest after sewing practice at the college.",k:"home"},
-   {t:"16:00–17:30",a:"Gym workout",n:"First strength training session of the week.",k:"gym"},
-   {t:"18:30–20:30",a:"Work on the laptop",n:"Writing code, digital tasks, headphones on.",k:"laptop"},
-   {t:"21:00",a:"Homework",n:"Preparing assignments for Tuesday.",k:"study"} ],
- [ {t:"15:40",a:"Home & lunch",n:"Seven periods finished. Recharging with a hearty meal.",k:"home"},
-   {t:"16:30–18:00",a:"Homework",n:"Literature readings and math exercises.",k:"study"},
-   {t:"18:30–20:30",a:"Work on the laptop",n:"Creative evening development session.",k:"laptop"},
-   {t:"21:00",a:"Free time",n:"Music, series, relaxing before Wednesday.",k:"rest"} ],
- [ {t:"14:40",a:"Home & lunch",n:"Earlier bell today. Relaxing and having lunch.",k:"home"},
-   {t:"16:00–17:30",a:"Gym workout",n:"Mid-week fitness and cardio session.",k:"gym"},
-   {t:"18:30–20:30",a:"Work on the laptop",n:"Focused programming work.",k:"laptop"},
-   {t:"21:00",a:"Homework",n:"Getting ready for Thursday's schedule.",k:"study"} ],
- [ {t:"15:40",a:"Home & lunch",n:"A calm lunch after surviving seven academic periods.",k:"home"},
-   {t:"16:30–18:00",a:"Homework",n:"Technical drawing blueprints and formulas.",k:"study"},
-   {t:"18:30–20:30",a:"Work on the laptop",n:"Wrapping up tasks for the school week.",k:"laptop"},
-   {t:"21:00",a:"Free evening",n:"Resting before the final push on Friday.",k:"rest"} ],
- [ {t:"15:40",a:"Home & lunch",n:"The school week is officially accomplished!",k:"home"},
-   {t:"16:30–18:00",a:"Gym workout",n:"Final training of the week.",k:"gym"},
-   {t:"18:30–20:00",a:"Work on the laptop",n:"Light personal projects with zero deadlines.",k:"laptop"},
-   {t:"20:00",a:"Weekend unlocked",n:"Free time, friends, cinema, and good sleep.",k:"rest"} ]
-];
-
-const ICONS={
-  home:'<path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/>',
-  gym:'<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',
-  laptop:'<path d="M4 6h16v10H4zM2 19h20"/>',
-  study:'<path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>',
-  rest:'<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>'
+// High-school and college break interval notes:
+const BREAKS = {
+  college: [
+    "10 min break · Setup needles & bobbins",
+    "10 min break · Sewing machine adjustment",
+    "20 min lunch break · College canteen",
+    "20 min break · Pattern assembly & check",
+    "20 min break · Final press & tidy up"
+  ],
+  school: [
+    "15 min break · Move to Room 305",
+    "15 min break · Move to Room 306",
+    "15 min break · Lockers & recess",
+    "15 min break · Move to next floor",
+    "20 min lunch break · School cafeteria",
+    "15 min break · Afternoon prep"
+  ]
 };
-const TAGS={home:"Home",gym:"Gym",laptop:"Laptop",study:"Homework",rest:"Free"};
 
-const rgb=h=>{const n=parseInt(h.slice(1),16);return ((n>>16)&255)+","+((n>>8)&255)+","+(n&255);};
-const toMin=s=>{const p=s.split(":");return +p[0]*60+ +p[1];};
-const rnd=(a,b)=>a+Math.random()*(b-a);
-{const all=new Set();DAYS.forEach(D=>D.lessons.forEach(l=>all.add(l.room)));$("#roomCount").textContent=all.size;}
-
-/* ---------------- SOUND (Web Audio, zero files) ---------------- */
-const Sound={
-  ctx:null,on:true,
-  init(){
-    if(this.ctx){if(this.ctx.state==="suspended")this.ctx.resume();return;}
-    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
-    const c=this.ctx=new AC();
-    this.out=c.createGain();this.out.gain.value=.7;
-    const comp=c.createDynamicsCompressor();this.out.connect(comp);comp.connect(c.destination);
-    this.verb=c.createConvolver();
-    const len=c.sampleRate*3,ir=c.createBuffer(2,len,c.sampleRate);
-    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}
-    this.verb.buffer=ir;const vg=c.createGain();vg.gain.value=.5;this.verb.connect(vg);vg.connect(this.out);
-    const nl=c.sampleRate*2;this.noise=c.createBuffer(1,nl,c.sampleRate);
-    const nd=this.noise.getChannelData(0);for(let i=0;i<nl;i++)nd[i]=Math.random()*2-1;
+const DAYS = [
+  {
+    name: "Monday",
+    short: "Mon",
+    c1: "#f5a524",
+    c2: "#fde68a",
+    gym: true,
+    times: TIMES_COLLEGE,
+    breaks: BREAKS.college,
+    note: "Vocational training day at the college. Sewing practice and basic garment making in Room 36.",
+    lessons: [
+      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Safety protocols and fabric classification in Room 36." },
+      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Taking measurements and cutting fabric patterns." },
+      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Sewing machine setup and straight stitching practice." },
+      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Assembling garment parts and basic seam joining." },
+      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Edge finishing, trimming, and steam pressing." },
+      { s: "Vocational Training", sub: "Sewing", room: "College, Room 36", n: "Completing practice pieces and workspace cleaning." }
+    ]
   },
-  ok(){return this.on&&this.ctx;},
-  route(n,w){n.connect(this.out);if(w){const g=this.ctx.createGain();g.gain.value=w;n.connect(g);g.connect(this.verb);}},
-  env(g,t,a,p,d){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(p,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d);},
-  ns(){const s=this.ctx.createBufferSource();s.buffer=this.noise;return s;},
+  {
+    name: "Tuesday",
+    short: "Tue",
+    c1: "#38bdf8",
+    c2: "#a5b4fc",
+    gym: false,
+    times: TIMES_SCHOOL,
+    breaks: BREAKS.school,
+    note: "Seven academic periods across six rooms and three floors. Most breaks are spent moving between classrooms.",
+    lessons: [
+      { s: "Russian Literature", room: "Room 305", n: "Classic prose analysis and literary discussion." },
+      { s: "Russian Language", room: "Room 305", n: "Advanced syntax and punctuation exercises." },
+      { s: "History of Belarus in World Context", room: "Room 306", n: "Historic milestones in the broader European context." },
+      { s: "Physics", room: "Room 210", n: "Kinematic formulas, mechanics, and laboratory experiments." },
+      { s: "PE & Health", room: "Gym 1", n: "High-energy fitness and team sports in the gymnasium." },
+      { s: "Mathematics", room: "Room 301", n: "Trigonometric equations and algebraic problem solving." },
+      { s: "Belarusian Literature", room: "Room 316", n: "Poetic reflections at the close of a 7-period day." }
+    ]
+  },
+  {
+    name: "Wednesday",
+    short: "Wed",
+    c1: "#a78bfa",
+    c2: "#f0abfc",
+    gym: true,
+    times: TIMES_SCHOOL,
+    breaks: BREAKS.school,
+    note: "Six periods, six classrooms, and a well-balanced academic flow. The calmest day of the school week.",
+    lessons: [
+      { s: "Mathematics", room: "Room 301", n: "Morning algebraic proofs and quadratic functions." },
+      { s: "Russian Language", room: "Room 305", n: "Grammar parsing, punctuation, and linguistic drills." },
+      { s: "English / German Language", room: "Room 324 / 212", n: "Conversational fluency debates and foreign language vocabulary." },
+      { s: "Computer Science / IT", room: "Lab 212 / 322", n: "Algorithms, programming scripts, and digital systems." },
+      { s: "Geography", room: "Room 319", n: "Global economic maps, climate zones, and demographics." },
+      { s: "Biology", room: "Room 311", n: "Cellular structures, genetics, and biological ecosystems." }
+    ]
+  },
+  {
+    name: "Thursday",
+    short: "Thu",
+    c1: "#34d399",
+    c2: "#bef264",
+    gym: false,
+    times: TIMES_SCHOOL,
+    breaks: BREAKS.school,
+    note: "Seven periods starting with Chemistry and concluding with Belarusian literature in Room 316.",
+    lessons: [
+      { s: "Chemistry", room: "Room 313", n: "Chemical reactions, molecular weights, and periodic properties." },
+      { s: "History of Belarus", room: "Room 306", n: "Historic chronicles, statehood, and national culture." },
+      { s: "Technical Drawing & Drafting", sub: "Drafting", room: "Room 305", n: "Orthographic projections, rulers, and geometric precision." },
+      { s: "PE & Health", room: "Gym 1", n: "Cardio and athletics conditioning in the main gym." },
+      { s: "Mathematics", room: "Room 301", n: "Trigonometric identities and geometry theorems." },
+      { s: "Belarusian Language", room: "Room 316", n: "Orthography, vocabulary enrichment, and stylistic rules." },
+      { s: "Belarusian Literature", room: "Room 316", n: "Classic lyrical poetry to conclude the Thursday schedule." }
+    ]
+  },
+  {
+    name: "Friday",
+    short: "Fri",
+    c1: "#fb7185",
+    c2: "#fdba74",
+    gym: true,
+    times: TIMES_SCHOOL,
+    breaks: BREAKS.school,
+    note: "Seven periods in seven different classrooms. Concluding with Physics before the weekend unlocks.",
+    lessons: [
+      { s: "Mathematics", room: "Room 301", n: "Opening Friday with sharp numerical calculations." },
+      { s: "PE & Health", room: "Gym 1", n: "Early workout session to boost energy levels." },
+      { s: "English / German", room: "Room 324 / 212", n: "Oral communication and creative language presentations." },
+      { s: "Social Studies", room: "Room 306", n: "Civil society, jurisprudence, and modern sociology." },
+      { s: "Chemistry", room: "Room 313", n: "Laboratory formulas and practical chemical problem solving." },
+      { s: "Biology", room: "Room 311", n: "Evolutionary adaptations and ecosystem dynamics." },
+      { s: "Physics", room: "Room 210", n: "The final lesson of the week! Weekend officially unlocked." }
+    ]
+  }
+];
+
+const AFTER = [
+  [
+    { t: "14:45", a: "Home & lunch", n: "A warm lunch and short rest after sewing practice at the college.", k: "home" },
+    { t: "16:00–17:30", a: "Gym workout", n: "First strength training session of the week.", k: "gym" },
+    { t: "18:30–20:30", a: "Work on the laptop", n: "Writing code, digital tasks, headphones on.", k: "laptop" },
+    { t: "21:00", a: "Homework", n: "Preparing assignments for Tuesday.", k: "study" }
+  ],
+  [
+    { t: "15:40", a: "Home & lunch", n: "Seven periods finished. Recharging with a hearty meal.", k: "home" },
+    { t: "16:30–18:00", a: "Homework", n: "Literature readings and math exercises.", k: "study" },
+    { t: "18:30–20:30", a: "Work on the laptop", n: "Creative evening development session.", k: "laptop" },
+    { t: "21:00", a: "Free time", n: "Music, series, relaxing before Wednesday.", k: "rest" }
+  ],
+  [
+    { t: "14:40", a: "Home & lunch", n: "Earlier bell today. Relaxing and having lunch.", k: "home" },
+    { t: "16:00–17:30", a: "Gym workout", n: "Mid-week fitness and cardio session.", k: "gym" },
+    { t: "18:30–20:30", a: "Work on the laptop", n: "Focused programming and tech experiments.", k: "laptop" },
+    { t: "21:00", a: "Homework", n: "Getting ready for Thursday schedule.", k: "study" }
+  ],
+  [
+    { t: "15:40", a: "Home & lunch", n: "A calm lunch after surviving seven academic periods.", k: "home" },
+    { t: "16:30–18:00", a: "Homework", n: "Technical drawing blueprints and formulas.", k: "study" },
+    { t: "18:30–20:30", a: "Work on the laptop", n: "Wrapping up tasks for the school week.", k: "laptop" },
+    { t: "21:00", a: "Free evening", n: "Resting before the final push on Friday.", k: "rest" }
+  ],
+  [
+    { t: "15:40", a: "Home & lunch", n: "The high school week is officially accomplished!", k: "home" },
+    { t: "16:30–18:00", a: "Gym workout", n: "Final fitness training of the week.", k: "gym" },
+    { t: "18:30–20:00", a: "Work on the laptop", n: "Light personal projects with zero deadlines.", k: "laptop" },
+    { t: "20:00", a: "Weekend unlocked", n: "Free time, friends, cinema, and good sleep.", k: "rest" }
+  ]
+];
+
+const ICONS = {
+  home: '<path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/>',
+  gym: '<path d="M6 7v10M18 7v10M3 10v4M21 10v4M6 12h12"/>',
+  laptop: '<path d="M4 6h16v10H4zM2 19h20"/>',
+  study: '<path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/>',
+  rest: '<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>'
+};
+const TAGS = { home: "Home", gym: "Gym", laptop: "Laptop", study: "Homework", rest: "Free" };
+
+const rgb = h => { const n = parseInt(h.slice(1), 16); return ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255); };
+const toMin = s => { const p = s.split(":"); return +p[0] * 60 + +p[1]; };
+const rnd = (a, b) => a + Math.random() * (b - a);
+
+{
+  const allRooms = new Set();
+  DAYS.forEach(d => d.lessons.forEach(l => allRooms.add(l.room)));
+  const countEl = $("#roomCount");
+  if(countEl) countEl.textContent = allRooms.size;
+}
+
+/* ---------------- AUDIO & HAPTIC ENGINE (Web Audio) ---------------- */
+const Sound = {
+  ctx: null, on: true,
+  init(){
+    if(this.ctx){ if(this.ctx.state === "suspended") this.ctx.resume(); return; }
+    const AC = window.AudioContext || window.webkitAudioContext; if(!AC) return;
+    const c = this.ctx = new AC();
+    this.out = c.createGain(); this.out.gain.value = 0.65;
+    const comp = c.createDynamicsCompressor(); this.out.connect(comp); comp.connect(c.destination);
+    this.verb = c.createConvolver();
+    const len = c.sampleRate * 2.5, ir = c.createBuffer(2, len, c.sampleRate);
+    for(let ch = 0; ch < 2; ch++){ const d = ir.getChannelData(ch); for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.5); }
+    this.verb.buffer = ir; const vg = c.createGain(); vg.gain.value = 0.45; this.verb.connect(vg); vg.connect(this.out);
+    const nl = c.sampleRate * 2; this.noise = c.createBuffer(1, nl, c.sampleRate);
+    const nd = this.noise.getChannelData(0); for(let i = 0; i < nl; i++) nd[i] = Math.random() * 2 - 1;
+  },
+  ok(){ return this.on && this.ctx; },
+  route(n, w){ n.connect(this.out); if(w){ const g = this.ctx.createGain(); g.gain.value = w; n.connect(g); g.connect(this.verb); } },
+  env(g, t, a, p, d){ g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(p, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); },
+  ns(){ const s = this.ctx.createBufferSource(); s.buffer = this.noise; return s; },
+  haptic(){
+    if(navigator.vibrate) try{ navigator.vibrate([10]); }catch(e){}
+    if(!this.ok()) return;
+    const c = this.ctx, t = c.currentTime;
+    const o = c.createOscillator();
+    o.frequency.setValueAtTime(1400, t);
+    o.frequency.exponentialRampToValueAtTime(350, t + 0.04);
+    const g = c.createGain();
+    this.env(g, t, 0.002, 0.08, 0.04);
+    o.connect(g); this.route(g, 0.1);
+    o.start(t); o.stop(t + 0.05);
+  },
+  splash(){
+    if(!this.ok()) return;
+    const c = this.ctx, t = c.currentTime;
+    const o = c.createOscillator();
+    o.frequency.setValueAtTime(450, t);
+    o.frequency.exponentialRampToValueAtTime(1200, t + 0.09);
+    const g = c.createGain();
+    this.env(g, t, 0.004, 0.14, 0.18);
+    o.connect(g); this.route(g, 0.35);
+    o.start(t); o.stop(t + 0.2);
+  },
   boom(){
-    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
-    const o=c.createOscillator();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(30,t+1.4);
-    const g=c.createGain();this.env(g,t,.006,.9,1.7);o.connect(g);this.route(g,.25);o.start(t);o.stop(t+1.9);
-    const n=this.ns(),lp=c.createBiquadFilter();lp.type="lowpass";lp.frequency.setValueAtTime(1400,t);lp.frequency.exponentialRampToValueAtTime(60,t+1.4);
-    const g2=c.createGain();this.env(g2,t,.004,.8,1.5);n.connect(lp);lp.connect(g2);this.route(g2,.45);n.start(t);n.stop(t+1.8);
+    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
+    const o = c.createOscillator(); o.frequency.setValueAtTime(160, t); o.frequency.exponentialRampToValueAtTime(32, t + 1.4);
+    const g = c.createGain(); this.env(g, t, 0.006, 0.85, 1.6); o.connect(g); this.route(g, 0.25); o.start(t); o.stop(t + 1.8);
+    const n = this.ns(), lp = c.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.setValueAtTime(1400, t); lp.frequency.exponentialRampToValueAtTime(60, t + 1.4);
+    const g2 = c.createGain(); this.env(g2, t, 0.004, 0.75, 1.4); n.connect(lp); lp.connect(g2); this.route(g2, 0.45); n.start(t); n.stop(t + 1.7);
   },
   shatter(){
-    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
-    const n=this.ns(),hp=c.createBiquadFilter();hp.type="highpass";hp.frequency.value=2000;
-    const g=c.createGain();this.env(g,t,.002,.45,.6);n.connect(hp);hp.connect(g);this.route(g,.5);n.start(t,Math.random());n.stop(t+.8);
-    for(let i=0;i<16;i++){
-      const t0=t+Math.pow(Math.random(),1.6)*.7,s=this.ns(),bp=c.createBiquadFilter();
-      bp.type="bandpass";bp.frequency.value=rnd(2800,9500);bp.Q.value=rnd(6,15);
-      const gg=c.createGain(),d=rnd(.05,.16);this.env(gg,t0,.002,rnd(.2,.5),d);
-      s.connect(bp);bp.connect(gg);this.route(gg,.6);s.start(t0,Math.random()*1.5);s.stop(t0+d+.05);
+    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
+    const n = this.ns(), hp = c.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 2000;
+    const g = c.createGain(); this.env(g, t, 0.002, 0.45, 0.6); n.connect(hp); hp.connect(g); this.route(g, 0.5); n.start(t, Math.random()); n.stop(t + 0.8);
+    for(let i = 0; i < 14; i++){
+      const t0 = t + Math.pow(Math.random(), 1.6) * 0.7, s = this.ns(), bp = c.createBiquadFilter();
+      bp.type = "bandpass"; bp.frequency.value = rnd(2800, 9500); bp.Q.value = rnd(6, 15);
+      const gg = c.createGain(), d = rnd(0.05, 0.16); this.env(gg, t0, 0.002, rnd(0.2, 0.5), d);
+      s.connect(bp); bp.connect(gg); this.route(gg, 0.6); s.start(t0, Math.random() * 1.5); s.stop(t0 + d + 0.05);
     }
   },
   implode(){
-    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
-    const n=this.ns(),bp=c.createBiquadFilter();bp.type="bandpass";bp.Q.value=1.4;
-    bp.frequency.setValueAtTime(200,t);bp.frequency.exponentialRampToValueAtTime(2400,t+.7);
-    const g=c.createGain();g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.35,t+.68);g.gain.exponentialRampToValueAtTime(.0001,t+.8);
-    n.connect(bp);bp.connect(g);this.route(g,.5);n.start(t,Math.random());n.stop(t+.9);
+    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
+    const n = this.ns(), bp = c.createBiquadFilter(); bp.type = "bandpass"; bp.Q.value = 1.4;
+    bp.frequency.setValueAtTime(200, t); bp.frequency.exponentialRampToValueAtTime(2400, t + 0.7);
+    const g = c.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.35, t + 0.68); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.8);
+    n.connect(bp); bp.connect(g); this.route(g, 0.5); n.start(t, Math.random()); n.stop(t + 0.9);
   },
   chime(){
-    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
-    const notes=[1046.5,1174.66,1318.51,1567.98,1760,2093,2349.32];
-    for(let i=0;i<6;i++){
-      const t0=t+i*.08+Math.random()*.03,f=notes[(Math.random()*notes.length)|0],d=rnd(1.2,2);
-      [[1,1],[2.756,.3]].forEach(([m,a])=>{
-        const o=c.createOscillator();o.frequency.value=f*m;
-        const g=c.createGain();this.env(g,t0,.004,.12*a,d/m);o.connect(g);this.route(g,.8);o.start(t0);o.stop(t0+d+.1);
-      });
+    if(!this.ok()) return; const c = this.ctx, t = c.currentTime;
+    const notes = [1046.5, 1174.66, 1318.51, 1567.98, 1760, 2093];
+    for(let i = 0; i < 5; i++){
+      const t0 = t + i * 0.08 + Math.random() * 0.03, f = notes[(Math.random() * notes.length) | 0], d = rnd(1.1, 1.8);
+      const o = c.createOscillator(); o.frequency.value = f;
+      const g = c.createGain(); this.env(g, t0, 0.004, 0.14, d); o.connect(g); this.route(g, 0.7); o.start(t0); o.stop(t0 + d + 0.1);
     }
-  },
-  tick(){
-    if(!this.ok())return;const c=this.ctx,t=c.currentTime;
-    const o=c.createOscillator();o.frequency.setValueAtTime(1500,t);o.frequency.exponentialRampToValueAtTime(800,t+.05);
-    const g=c.createGain();this.env(g,t,.002,.05,.06);o.connect(g);this.route(g,.15);o.start(t);o.stop(t+.1);
   }
 };
-addEventListener("pointerdown",()=>Sound.init(),{capture:true});
-addEventListener("keydown",()=>Sound.init(),{capture:true});
-const soundBtn=$("#sound");
-soundBtn.addEventListener("click",()=>{
-  Sound.on=!Sound.on;soundBtn.classList.toggle("on",Sound.on);
-  soundBtn.setAttribute("aria-pressed",Sound.on);$("#soundLbl").textContent=Sound.on?"Sound on":"Sound off";
-  if(Sound.on){Sound.init();Sound.tick();}
+
+addEventListener("pointerdown", () => Sound.init(), { capture: true, once: true });
+addEventListener("keydown", () => Sound.init(), { capture: true, once: true });
+const soundBtn = $("#sound");
+soundBtn.addEventListener("click", () => {
+  Sound.on = !Sound.on; soundBtn.classList.toggle("on", Sound.on);
+  soundBtn.setAttribute("aria-pressed", Sound.on);
+  $("#soundLbl").textContent = Sound.on ? "Sound on" : "Sound off";
+  if(Sound.on){ Sound.init(); Sound.haptic(); }
 });
 
-/* ---------------- PLANET (GPU-animated particles) ---------------- */
-const E=.9, C=1.5, TOTAL=E+C+.35;
-function initGL(startDay,hooks){
-  const canvas=$("#gl");
-  const renderer=new THREE.WebGLRenderer({canvas,antialias:false,alpha:true,powerPreference:"high-performance"});
-  const PR=Math.min(devicePixelRatio,1.5);renderer.setPixelRatio(PR);renderer.setClearColor(0,0);
-  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(55,1,.1,200);
-  const group=new THREE.Group();scene.add(group);
+/* ---------------- 3D PLANET (WebGL Particle System) ---------------- */
+const E = 0.9, C = 1.5, TOTAL = E + C + 0.35;
+function initGL(startDay, hooks){
+  const canvas = $("#gl");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: "high-performance" });
+  const PR = Math.min(devicePixelRatio, 1.5); renderer.setPixelRatio(PR); renderer.setClearColor(0, 0);
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(55, 1, 0.1, 200);
+  const group = new THREE.Group(); scene.add(group);
 
-  const N=innerWidth<700?7600:9000;
-  const FROM=new Float32Array(N*3),TO=new Float32Array(N*3),DIR=new Float32Array(N*3),RA=new Float32Array(N),SZ=new Float32Array(N);
-  for(let i=0;i<N;i++){RA[i]=Math.random();SZ[i]=.5+Math.pow(Math.random(),3)*1.8;}
+  const N = innerWidth < 700 ? 7500 : 9000;
+  const FROM = new Float32Array(N * 3), TO = new Float32Array(N * 3), DIR = new Float32Array(N * 3), RA = new Float32Array(N), SZ = new Float32Array(N);
+  for(let i = 0; i < N; i++){ RA[i] = Math.random(); SZ[i] = 0.5 + Math.pow(Math.random(), 3) * 1.8; }
 
-  const sph=(r,o,k)=>{const u=Math.random()*2-1,a=Math.random()*6.2832,s=Math.sqrt(1-u*u);o[k]=Math.cos(a)*s*r;o[k+1]=u*r;o[k+2]=Math.sin(a)*s*r;};
-  const rotX=(o,k,a)=>{const y=o[k+1],z=o[k+2],c=Math.cos(a),s=Math.sin(a);o[k+1]=y*c-z*s;o[k+2]=y*s+z*c;};
-  const rotZ=(o,k,a)=>{const x=o[k],y=o[k+1],c=Math.cos(a),s=Math.sin(a);o[k]=x*c-y*s;o[k+1]=x*s+y*c;};
-  const ring=(o,k,r0,r1,h)=>{const a=Math.random()*6.2832,r=r0+Math.pow(Math.random(),.7)*(r1-r0);o[k]=Math.cos(a)*r;o[k+1]=(Math.random()-.5)*h;o[k+2]=Math.sin(a)*r;};
-  const spikes=[];for(let i=0;i<24;i++){const y=1-(i+.5)/24*2,r=Math.sqrt(1-y*y),a=i*2.39996;spikes.push([Math.cos(a)*r,y,Math.sin(a)*r]);}
+  const sph = (r, o, k) => { const u = Math.random() * 2 - 1, a = Math.random() * 6.2832, s = Math.sqrt(1 - u * u); o[k] = Math.cos(a) * s * r; o[k + 1] = u * r; o[k + 2] = Math.sin(a) * s * r; };
+  const rotX = (o, k, a) => { const y = o[k + 1], z = o[k + 2], c = Math.cos(a), s = Math.sin(a); o[k + 1] = y * c - z * s; o[k + 2] = y * s + z * c; };
+  const rotZ = (o, k, a) => { const x = o[k], y = o[k + 1], c = Math.cos(a), s = Math.sin(a); o[k] = x * c - y * s; o[k + 1] = x * s + y * c; };
+  const ring = (o, k, r0, r1, h) => { const a = Math.random() * 6.2832, r = r0 + Math.pow(Math.random(), 0.7) * (r1 - r0); o[k] = Math.cos(a) * r; o[k + 1] = (Math.random() - 0.5) * h; o[k + 2] = Math.sin(a) * r; };
+  const spikes = []; for(let i = 0; i < 24; i++){ const y = 1 - (i + 0.5) / 24 * 2, r = Math.sqrt(1 - y * y), a = i * 2.39996; spikes.push([Math.cos(a) * r, y, Math.sin(a) * r]); }
 
-  function buildShape(d,o){
-    for(let i=0;i<N;i++){
-      const k=i*3,q=Math.random();
-      if(d===0){ if(q<.14)sph(rnd(.1,.85),o,k); else{sph(1,o,k);const a=Math.atan2(o[k+2],o[k]);const r=1.5+(Math.sin(a*14)>.2?.12:0)+rnd(-.02,.02);o[k]*=r;o[k+1]*=r;o[k+2]*=r;} }
-      else if(d===1){ if(q<.66)sph(1.25+rnd(-.03,.03),o,k); else{ring(o,k,1.85,2.8,.05);rotX(o,k,.42);rotZ(o,k,-.18);} }
-      else if(d===2){ sph(1,o,k);const x=o[k],y=o[k+1],z=o[k+2];const n=Math.sin(x*3.1+1.3)*Math.sin(y*3.7)*Math.sin(z*2.9+.7);const r=q<.2?rnd(.3,1.4):1.42+n*.4+rnd(-.05,.05);o[k]=x*r;o[k+1]=y*r;o[k+2]=z*r; }
-      else if(d===3){ if(q<.58)sph(1.15+rnd(-.03,.03),o,k); else{ring(o,k,2,2.16,.04);const w=q<.79?1:-1;rotX(o,k,1.1*w);rotZ(o,k,.55*w);} }
-      else{ if(q<.62)sph(1.32+rnd(-.03,.03),o,k); else{const s=spikes[(Math.random()*24)|0],t=Math.pow(Math.random(),1.4),r=1.32+t*1.4,j=.06*(1-t);o[k]=s[0]*r+rnd(-j,j);o[k+1]=s[1]*r+rnd(-j,j);o[k+2]=s[2]*r+rnd(-j,j);} }
+  function buildShape(d, o){
+    for(let i = 0; i < N; i++){
+      const k = i * 3, q = Math.random();
+      if(d === 0){ if(q < 0.14) sph(rnd(0.1, 0.85), o, k); else { sph(1, o, k); const a = Math.atan2(o[k + 2], o[k]); const r = 1.5 + (Math.sin(a * 14) > 0.2 ? 0.12 : 0) + rnd(-0.02, 0.02); o[k] *= r; o[k + 1] *= r; o[k + 2] *= r; } }
+      else if(d === 1){ if(q < 0.66) sph(1.25 + rnd(-0.03, 0.03), o, k); else { ring(o, k, 1.85, 2.8, 0.05); rotX(o, k, 0.42); rotZ(o, k, -0.18); } }
+      else if(d === 2){ sph(1, o, k); const x = o[k], y = o[k + 1], z = o[k + 2]; const n = Math.sin(x * 3.1 + 1.3) * Math.sin(y * 3.7) * Math.sin(z * 2.9 + 0.7); const r = q < 0.2 ? rnd(0.3, 1.4) : 1.42 + n * 0.4 + rnd(-0.05, 0.05); o[k] = x * r; o[k + 1] = y * r; o[k + 2] = z * r; }
+      else if(d === 3){ if(q < 0.58) sph(1.15 + rnd(-0.03, 0.03), o, k); else { ring(o, k, 2, 2.16, 0.04); const w = q < 0.79 ? 1 : -1; rotX(o, k, 1.1 * w); rotZ(o, k, 0.55 * w); } }
+      else { if(q < 0.62) sph(1.32 + rnd(-0.03, 0.03), o, k); else { const s = spikes[(Math.random() * 24) | 0], t = Math.pow(Math.random(), 1.4), r = 1.32 + t * 1.4, j = 0.06 * (1 - t); o[k] = s[0] * r + rnd(-j, j); o[k + 1] = s[1] * r + rnd(-j, j); o[k + 2] = s[2] * r + rnd(-j, j); } }
     }
   }
   function makeDirs(){
-    for(let i=0;i<N;i++){
-      const k=i*3;sph(1,DIR,k);const d=2.5+Math.pow(Math.random(),1.5)*7;
-      DIR[k]*=d;DIR[k+1]*=d;DIR[k+2]*=d;
-      if(Math.random()<.25)DIR[k+2]+=3+Math.random()*6;
+    for(let i = 0; i < N; i++){
+      const k = i * 3; sph(1, DIR, k); const d = 2.5 + Math.pow(Math.random(), 1.5) * 7;
+      DIR[k] *= d; DIR[k + 1] *= d; DIR[k + 2] *= d;
+      if(Math.random() < 0.25) DIR[k + 2] += 3 + Math.random() * 6;
     }
   }
-  buildShape(startDay,TO);for(let i=0;i<N;i++)sph(rnd(5,11),FROM,i*3);makeDirs();
+  buildShape(startDay, TO); for(let i = 0; i < N; i++) sph(rnd(5, 11), FROM, i * 3); makeDirs();
 
-  const geo=new THREE.BufferGeometry();
-  const aFrom=new THREE.BufferAttribute(FROM,3),aTo=new THREE.BufferAttribute(TO,3),aDir=new THREE.BufferAttribute(DIR,3);
-  geo.setAttribute("position",aFrom);geo.setAttribute("aTo",aTo);geo.setAttribute("aDir",aDir);
-  geo.setAttribute("aRand",new THREE.BufferAttribute(RA,1));geo.setAttribute("aSize",new THREE.BufferAttribute(SZ,1));
+  const geo = new THREE.BufferGeometry();
+  const aFrom = new THREE.BufferAttribute(FROM, 3), aTo = new THREE.BufferAttribute(TO, 3), aDir = new THREE.BufferAttribute(DIR, 3);
+  geo.setAttribute("position", aFrom); geo.setAttribute("aTo", aTo); geo.setAttribute("aDir", aDir);
+  geo.setAttribute("aRand", new THREE.BufferAttribute(RA, 1)); geo.setAttribute("aSize", new THREE.BufferAttribute(SZ, 1));
 
-  const cA=new THREE.Color(DAYS[startDay].c1),cB=new THREE.Color(DAYS[startDay].c2),tA=cA.clone(),tB=cB.clone();
-  const U={uT:{value:E},uTime:{value:0},uSpin:{value:0},uSize:{value:26},uPR:{value:PR},uFlash:{value:0},uColor:{value:cA},uColor2:{value:cB}};
-  const mat=new THREE.ShaderMaterial({
-    uniforms:U,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
-    vertexShader:`
+  const cA = new THREE.Color(DAYS[startDay].c1), cB = new THREE.Color(DAYS[startDay].c2), tA = cA.clone(), tB = cB.clone();
+  const U = { uT: { value: E }, uTime: { value: 0 }, uSpin: { value: 0 }, uSize: { value: 26 }, uPR: { value: PR }, uFlash: { value: 0 }, uColor: { value: cA }, uColor2: { value: cB } };
+  const mat = new THREE.ShaderMaterial({
+    uniforms: U, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: `
       attribute vec3 aTo; attribute vec3 aDir; attribute float aRand; attribute float aSize;
-      uniform float uT,uTime,uSpin,uSize,uPR,uFlash;
+      uniform float uT, uTime, uSpin, uSize, uPR, uFlash;
       varying float vRand;
-      const float E=${E.toFixed(2)}; const float C=${C.toFixed(2)};
-      vec3 rotY(vec3 p,float a){float c=cos(a),s=sin(a);return vec3(c*p.x+s*p.z,p.y,-s*p.x+c*p.z);}
-      float ease(float x){return x<.5?4.*x*x*x:1.-pow(-2.*x+2.,3.)/2.;}
+      const float E = ${E.toFixed(2)}; const float C = ${C.toFixed(2)};
+      vec3 rotY(vec3 p, float a){ float c = cos(a), s = sin(a); return vec3(c * p.x + s * p.z, p.y, -s * p.x + c * p.z); }
+      float ease(float x){ return x < .5 ? 4. * x * x * x : 1. - pow(-2. * x + 2., 3.) / 2.; }
       void main(){
-        vec3 fromP=rotY(position,uSpin);
-        vec3 toP=rotY(aTo,uSpin);
-        float tE=min(uT,E);
-        vec3 burst=aDir*(1.-exp(-3.*tE));
-        vec3 turb=vec3(sin(aRand*40.+uT*2.1),sin(aRand*57.+uT*1.7),cos(aRand*33.+uT*2.4))*.6*smoothstep(0.,.5,tE);
-        float p=clamp((uT-E-aRand*.35)/C,0.,1.);
-        float e=ease(p);
-        vec3 pos=mix(fromP+burst+turb,toP,e);
-        pos=rotY(pos,sin(e*3.14159)*1.6*step(E,uT));
-        pos*=1.+sin(uTime*1.4+aRand*12.)*.012*e;
-        vec4 mv=modelViewMatrix*vec4(pos,1.);
-        gl_Position=projectionMatrix*mv;
-        float tw=.75+.25*sin(uTime*2.+aRand*50.);
-        gl_PointSize=min(uSize*aSize*uPR*tw*(1.+uFlash*.6)/max(-mv.z,.1),48.);
-        vRand=aRand;
+        vec3 fromP = rotY(position, uSpin);
+        vec3 toP = rotY(aTo, uSpin);
+        float tE = min(uT, E);
+        vec3 burst = aDir * (1. - exp(-3. * tE));
+        vec3 turb = vec3(sin(aRand * 40. + uT * 2.1), sin(aRand * 57. + uT * 1.7), cos(aRand * 33. + uT * 2.4)) * .6 * smoothstep(0., .5, tE);
+        float p = clamp((uT - E - aRand * .35) / C, 0., 1.);
+        float e = ease(p);
+        vec3 pos = mix(fromP + burst + turb, toP, e);
+        pos = rotY(pos, sin(e * 3.14159) * 1.6 * step(E, uT));
+        pos *= 1. + sin(uTime * 1.4 + aRand * 12.) * .012 * e;
+        vec4 mv = modelViewMatrix * vec4(pos, 1.);
+        gl_Position = projectionMatrix * mv;
+        float tw = .75 + .25 * sin(uTime * 2. + aRand * 50.);
+        gl_PointSize = min(uSize * aSize * uPR * tw * (1. + uFlash * .6) / max(-mv.z, .1), 48.);
+        vRand = aRand;
       }`,
-    fragmentShader:`
-      uniform vec3 uColor,uColor2; uniform float uFlash; varying float vRand;
+    fragmentShader: `
+      uniform vec3 uColor, uColor2; uniform float uFlash; varying float vRand;
       void main(){
-        float d=length(gl_PointCoord-.5); if(d>.5) discard;
-        float a=pow(1.-d*2.,1.8);
-        vec3 c=mix(uColor,uColor2,smoothstep(.65,.95,vRand));
-        c=mix(c,vec3(1.),pow(a,3.)*.5+uFlash*.3);
-        gl_FragColor=vec4(c*a*.8,a);
+        float d = length(gl_PointCoord - .5); if(d > .5) discard;
+        float a = pow(1. - d * 2., 1.8);
+        vec3 c = mix(uColor, uColor2, smoothstep(.65, .95, vRand));
+        c = mix(c, vec3(1.), pow(a, 3.) * .5 + uFlash * .3);
+        gl_FragColor = vec4(c * a * .8, a);
       }`
   });
-  const pts=new THREE.Points(geo,mat);pts.frustumCulled=false;group.add(pts);
+  const pts = new THREE.Points(geo, mat); pts.frustumCulled = false; group.add(pts);
 
-  const gc=document.createElement("canvas");gc.width=gc.height=128;
-  const gx=gc.getContext("2d"),gr=gx.createRadialGradient(64,64,0,64,64,64);
-  gr.addColorStop(0,"rgba(255,255,255,1)");gr.addColorStop(.2,"rgba(255,255,255,.3)");gr.addColorStop(.55,"rgba(255,255,255,.05)");gr.addColorStop(1,"rgba(255,255,255,0)");
-  gx.fillStyle=gr;gx.fillRect(0,0,128,128);
-  const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(gc),transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
-  glow.scale.setScalar(6.5);group.add(glow);
+  const gc = document.createElement("canvas"); gc.width = gc.height = 128;
+  const gx = gc.getContext("2d"), gr = gx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(0.2, "rgba(255,255,255,.3)"); gr.addColorStop(0.55, "rgba(255,255,255,.05)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+  gx.fillStyle = gr; gx.fillRect(0, 0, 128, 128);
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(gc), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+  glow.scale.setScalar(6.5); group.add(glow);
 
-  const shock=new THREE.Mesh(new THREE.RingGeometry(.94,1,96),new THREE.MeshBasicMaterial({transparent:true,opacity:0,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,depthWrite:false}));
+  const shock = new THREE.Mesh(new THREE.RingGeometry(0.94, 1, 96), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false }));
   scene.add(shock);
 
-  const SN=1200,sp=new Float32Array(SN*3);for(let i=0;i<SN;i++)sph(rnd(25,70),sp,i*3);
-  const sg=new THREE.BufferGeometry();sg.setAttribute("position",new THREE.BufferAttribute(sp,3));
-  const stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xa5b4fc,size:.08,transparent:true,opacity:.6,depthWrite:false}));
+  const SN = 1200, sp = new Float32Array(SN * 3); for(let i = 0; i < SN; i++) sph(rnd(25, 70), sp, i * 3);
+  const sg = new THREE.BufferGeometry(); sg.setAttribute("position", new THREE.BufferAttribute(sp, 3));
+  const stars = new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xa5b4fc, size: 0.08, transparent: true, opacity: 0.6, depthWrite: false }));
   scene.add(stars);
 
-  const base={x:0,y:0,z:7.5};
+  const base = { x: 0, y: 0, z: 7.5 };
   function layout(){
-    const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();
-    if(w>960){base.x=w>1400?2.4:2.0;base.y=0;base.z=7.5;}else{base.x=0;base.y=1.5;base.z=w<600?10.5:9;}
+    const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    if(w > 960){ base.x = w > 1400 ? 2.4 : 2.0; base.y = 0; base.z = 7.5; } else { base.x = 0; base.y = 1.5; base.z = w < 600 ? 10.5 : 9; }
   }
-  layout();addEventListener("resize",layout);
-  let mx=0,my=0,sx=0,sy=0;
-  addEventListener("pointermove",e=>{mx=e.clientX/innerWidth*2-1;my=-(e.clientY/innerHeight*2-1);},{passive:true});
+  layout(); addEventListener("resize", layout);
+  let mx = 0, my = 0, sx = 0, sy = 0;
+  addEventListener("pointermove", e => { mx = e.clientX / innerWidth * 2 - 1; my = -(e.clientY / innerHeight * 2 - 1); }, { passive: true });
 
-  let uT=E,spin=0,flash=0,ringT=9,glowOp=0,queued=null,pendingColor=null;
+  let uT = E, spin = 0, flash = 0, ringT = 9, glowOp = 0, queued = null, pendingColor = null, isVisible = true;
   function burst(d){
-    FROM.set(TO);buildShape(d,TO);makeDirs();
-    aFrom.needsUpdate=aTo.needsUpdate=aDir.needsUpdate=true;
-    uT=0;flash=1;ringT=0;pendingColor=d;
+    FROM.set(TO); buildShape(d, TO); makeDirs();
+    aFrom.needsUpdate = aTo.needsUpdate = aDir.needsUpdate = true;
+    uT = 0; flash = 1; ringT = 0; pendingColor = d;
     shock.material.color.copy(cA);
     hooks.burst();
   }
-  function request(d){ if(uT<TOTAL){queued=d;return;} burst(d); }
+  function request(d){ if(uT < TOTAL){ queued = d; return; } burst(d); }
 
-  let last=performance.now(),time=0;
+  let last = performance.now(), time = 0;
   function loop(now){
     requestAnimationFrame(loop);
-    const dt=Math.min(.033,(now-last)/1000);last=now;time+=dt;uT+=dt;
-    if(pendingColor!==null&&uT>E){tA.set(DAYS[pendingColor].c1);tB.set(DAYS[pendingColor].c2);pendingColor=null;hooks.collapse();}
-    if(queued!==null&&uT>=TOTAL){const q=queued;queued=null;burst(q);}
-    const k=1-Math.exp(-4*dt);sx+=(mx-sx)*k;sy+=(my-sy)*k;
-    const ck=1-Math.exp(-2.4*dt);cA.lerp(tA,ck);cB.lerp(tB,ck);
-    flash*=Math.exp(-3*dt);
-    spin+=dt*(uT<E?.7:.13);
-    U.uT.value=uT;U.uTime.value=time;U.uSpin.value=spin;U.uFlash.value=flash;
-    group.rotation.x=sy*.3;group.rotation.y=sx*.45;
-    group.position.set(base.x+sx*.25,base.y+sy*.15,0);
-    camera.position.set(sx*.35,sy*.2,base.z);camera.lookAt(base.x*.15,base.y*.5,0);
-    glowOp+=((uT<E+.4?.04:.42)-glowOp)*(1-Math.exp(-3*dt));
-    glow.material.opacity=glowOp;glow.material.color.copy(cA);
-    if(ringT<1.2){ringT+=dt;const p=ringT/1.2,s=1+(1-Math.pow(1-p,3))*9;shock.scale.set(s,s,s);shock.material.opacity=(1-p)*.6;shock.position.copy(group.position);}
-    else shock.material.opacity=0;
-    stars.rotation.y+=dt*.006;
-    renderer.render(scene,camera);
+    if(!isVisible) return; // Battery saving when hero is out of view
+    const dt = Math.min(0.033, (now - last) / 1000); last = now; time += dt; uT += dt;
+    if(pendingColor !== null && uT > E){ tA.set(DAYS[pendingColor].c1); tB.set(DAYS[pendingColor].c2); pendingColor = null; hooks.collapse(); }
+    if(queued !== null && uT >= TOTAL){ const q = queued; queued = null; burst(q); }
+    const k = 1 - Math.exp(-4 * dt); sx += (mx - sx) * k; sy += (my - sy) * k;
+    const ck = 1 - Math.exp(-2.4 * dt); cA.lerp(tA, ck); cB.lerp(tB, ck);
+    flash *= Math.exp(-3 * dt);
+    spin += dt * (uT < E ? 0.7 : 0.13);
+    U.uT.value = uT; U.uTime.value = time; U.uSpin.value = spin; U.uFlash.value = flash;
+    group.rotation.x = sy * 0.3; group.rotation.y = sx * 0.45;
+    group.position.set(base.x + sx * 0.25, base.y + sy * 0.15, 0);
+    camera.position.set(sx * 0.35, sy * 0.2, base.z); camera.lookAt(base.x * 0.15, base.y * 0.5, 0);
+    glowOp += ((uT < E + 0.4 ? 0.04 : 0.42) - glowOp) * (1 - Math.exp(-3 * dt));
+    glow.material.opacity = glowOp; glow.material.color.copy(cA);
+    if(ringT < 1.2){ ringT += dt; const p = ringT / 1.2, s = 1 + (1 - Math.pow(1 - p, 3)) * 9; shock.scale.set(s, s, s); shock.material.opacity = (1 - p) * 0.6; shock.position.copy(group.position); }
+    else shock.material.opacity = 0;
+    stars.rotation.y += dt * 0.006;
+    renderer.render(scene, camera);
   }
   requestAnimationFrame(loop);
-  return {request};
+
+  const heroObserver = new IntersectionObserver(entries => {
+    isVisible = entries[0].isIntersecting;
+  }, { threshold: 0.05 });
+  const heroEl = $(".hero");
+  if(heroEl) heroObserver.observe(heroEl);
+
+  return { request };
 }
 
-/* ---------------- UI LOGIC & DRIP-TO-PANEL INTERACTION ---------------- */
-const root=document.documentElement;
-const now=new Date(),wd=now.getDay(),todayIdx=(wd>=1&&wd<=5)?wd-1:-1;
-const nav=$("#days"),panel=$("#panel"),ph=$("#ph"),lists=$("#lists"),flashEl=$("#flash");
-let current=-1,tmr=null,GL=null;
+/* ---------------- LUCAS BEBBER SVG GOOEY FLUID ENGINE ---------------- */
+const FluidEngine = {
+  activeAnimation: null,
 
-DAYS.forEach((D,i)=>{
-  const b=document.createElement("button");
-  b.className="day";b.setAttribute("role","tab");
-  b.innerHTML=`<span class="nm"><span class="f">${D.name}</span><span class="s">${D.short}</span>${i===todayIdx?'<i class="td" title="Today"></i>':""}</span><span class="ct">${D.lessons.length}</span>`;
-  b.addEventListener("click",()=>selectDay(i));
-  nav.appendChild(b);
-});
-const dayBtns=$$(".day");
+  launch(fromBtn, targetViewport, accentColor, onImpact){
+    if(!fromBtn || !targetViewport) return;
 
-function moveBlob(){
-  const b=dayBtns[current];if(!b)return;
-  const isMobile=window.innerWidth<=768;
-  if(isMobile){
-    nav.style.setProperty("--x",b.offsetLeft+"px");
-    nav.style.setProperty("--w",b.offsetWidth+"px");
-    nav.style.setProperty("--y","0px");
-    nav.style.setProperty("--h",b.offsetHeight+"px");
-  } else {
-    nav.style.setProperty("--y",b.offsetTop+"px");
-    nav.style.setProperty("--h",b.offsetHeight+"px");
-    nav.style.setProperty("--x","0px");
-    nav.style.setProperty("--w","100%");
-  }
-}
-addEventListener("resize",moveBlob);
+    const donor = $("#donorBlob");
+    const neck = $("#neckBlob");
+    const travel = $("#travelBlob");
+    const target = $("#targetBlob");
+    const splashGroup = $("#splashParticlesGroup");
 
-/* Dynamic fluid droplet: precisely targets the panel border on any screen */
-function triggerDropletFlow(){
-  const activeBtn=dayBtns[current];
-  if(!activeBtn||!panel)return;
-  
-  const btnRect=activeBtn.getBoundingClientRect();
-  const panelRect=panel.getBoundingClientRect();
-  const isMobile=window.innerWidth<=768;
-  
-  let drop=document.getElementById("fluidDrop");
-  if(!drop){
-    drop=document.createElement("div");
-    drop.id="fluidDrop";
-    drop.className="fluid-drop";
-    document.body.appendChild(drop);
-  }
-  
-  const color=DAYS[current].c1;
-  drop.style.background=color;
-  drop.style.boxShadow=`0 0 16px ${color}, 0 0 28px ${color}`;
-  
-  let startX,startY,deltaX,deltaY;
-  
-  if(isMobile){
-    startX=btnRect.left+btnRect.width/2;
-    startY=btnRect.bottom;
-    deltaX=0;
-    deltaY=Math.max(16,panelRect.top-startY+8);
-  } else {
-    startX=btnRect.right-2;
-    startY=btnRect.top+btnRect.height/2;
-    deltaX=Math.max(16,panelRect.left-startX);
-    deltaY=0;
-  }
-  
-  drop.style.left=startX+"px";
-  drop.style.top=startY+"px";
-  drop.style.opacity="1";
-  
-  const keyframes=isMobile?[
-    {transform:'translate(-50%, 0) scale(1)',opacity:1},
-    {transform:`translate(-50%, ${deltaY*0.45}px) scale(1.3)`,opacity:0.95},
-    {transform:`translate(-50%, ${deltaY}px) scale(0.2)`,opacity:0}
-  ]:[
-    {transform:'translate(0, -50%) scale(1)',opacity:1},
-    {transform:`translate(${deltaX*0.45}px, -50%) scale(1.3)`,opacity:0.95},
-    {transform:`translate(${deltaX}px, -50%) scale(0.2)`,opacity:0}
-  ];
-  
-  const anim=drop.animate(keyframes,{
-    duration:360,
-    easing:'cubic-bezier(0.25, 1, 0.4, 1)',
-    fill:'forwards'
-  });
-  
-  anim.onfinish=()=>{
-    drop.style.opacity="0";
-    panel.classList.remove("impact");
-    void panel.offsetWidth;
-    panel.classList.add("impact");
-    
-    const rows=$$(".row");
-    rows.forEach((r,idx)=>{
-      setTimeout(()=>{
-        r.classList.add("lit");
-        setTimeout(()=>r.classList.remove("lit"),500);
-      },idx*28);
-    });
-  };
-}
+    if(!donor || !neck || !travel || !target) return;
 
-function render(d,instant){
-  clearTimeout(tmr);
-  const D=DAYS[d],m=now.getHours()*60+now.getMinutes();
-  const build=()=>{
-    const times=D.times;
-    const rooms=new Set(D.lessons.map(l=>l.room)).size;
-    const startTm=times[0][0];
-    const endTm=times[D.lessons.length-1][1];
-    ph.innerHTML=`<p class="label reveal in">Day 0${d+1} / 05${d===todayIdx?" · Today":""}</p>
-      <h2 class="sec-title reveal in">${D.name}<span>.</span></h2>
-      <div class="meta-row">
-        <span class="meta">${D.lessons.length} lessons · ${rooms} ${rooms===1?"room":"rooms"} · ${startTm}–${endTm}${D.gym?" · Gym Day":""}</span>
-        <p class="note">${D.note}</p>
-      </div>`;
-    let i=0;
-    const lessons=D.lessons.map((L,k)=>{
-      const t=times[k],live=d===todayIdx&&m>=toMin(t[0])&&m<toMin(t[1]);
-      return `<li class="row${live?" live":""}" style="--i:${i++}"><span class="n">${k+1}</span>
-        <div><h4>${L.s}${L.sub?`<small>${L.sub}</small>`:""}</h4><p>${L.n}</p></div>
-        <div class="r"><span class="tm">${t[0]}–${t[1]}</span><span class="rm">${L.room}</span></div></li>`;
-    }).join("");
-    const after=AFTER[d].map(A=>`<li class="row" style="--i:${i++}"><span class="n"><svg viewBox="0 0 24 24">${ICONS[A.k]}</svg></span>
-        <div><h4>${A.a}</h4><p>${A.n}</p></div>
-        <div class="r"><span class="tm">${A.t}</span><span class="rm">${TAGS[A.k]}</span></div></li>`).join("");
-    lists.innerHTML=`<p class="sub-h">Lessons</p><div class="ios-group"><ol class="list">${lessons}</ol></div>
-      <p class="sub-h after-school">After school</p><div class="ios-group"><ul class="list">${after}</ul></div>`;
-    panel.classList.remove("out");
-  };
-  if(instant){
-    panel.classList.remove("out");
-    build();
-  }else{
-    panel.classList.add("out");
-    tmr=setTimeout(build,140);
-  }
-}
+    donor.setAttribute("fill", accentColor);
+    neck.setAttribute("fill", accentColor);
+    travel.setAttribute("fill", accentColor);
+    target.setAttribute("fill", accentColor);
 
-function setAccent(d){root.style.setProperty("--accent",DAYS[d].c1);root.style.setProperty("--rgb",rgb(DAYS[d].c1));}
+    const btnRect = fromBtn.getBoundingClientRect();
+    const vpRect = targetViewport.getBoundingClientRect();
+    const isMobile = window.innerWidth <= 768;
 
-const hooks={
-  burst(){
-    Sound.boom();Sound.shatter();
-    const mob=innerWidth<=960;
-    flashEl.style.setProperty("--fx",mob?"50%":"72%");flashEl.style.setProperty("--fy",mob?"26%":"50%");
-    flashEl.classList.remove("go");void flashEl.offsetWidth;flashEl.classList.add("go");
+    let startX, startY, endX, endY;
+
+    if(isMobile){
+      startX = btnRect.left + btnRect.width / 2;
+      startY = btnRect.bottom;
+      endX = startX;
+      endY = vpRect.top + 6;
+    } else {
+      startX = btnRect.right;
+      startY = btnRect.top + btnRect.height / 2;
+      endX = vpRect.left;
+      endY = startY;
+    }
+
+    const duration = isMobile ? 320 : 380;
+    const startTime = performance.now();
+
+    if(this.activeAnimation) cancelAnimationFrame(this.activeAnimation);
+
+    const step = now => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+
+      // Phase 1: Neck stretch & pinch-off (0 to 0.3)
+      if(progress < 0.3){
+        const p1 = progress / 0.3;
+        const stretchDist = (isMobile ? (endY - startY) : (endX - startX)) * 0.28 * p1;
+        const donorR = 14 * (1 - p1 * 0.25);
+        const neckR = 10 * Math.sin(p1 * Math.PI);
+
+        donor.setAttribute("cx", startX);
+        donor.setAttribute("cy", startY);
+        donor.setAttribute("r", donorR);
+
+        const nx = isMobile ? startX : (startX + stretchDist);
+        const ny = isMobile ? (startY + stretchDist) : startY;
+        neck.setAttribute("cx", nx);
+        neck.setAttribute("cy", ny);
+        neck.setAttribute("r", neckR);
+
+        travel.setAttribute("r", 0);
+        target.setAttribute("r", 0);
+      }
+      // Phase 2: Viscous flight with 100% OPACITY (0.3 to 0.88)
+      else if(progress < 0.88){
+        const p2 = (progress - 0.3) / 0.58;
+        // EaseInOut cubic flight curve
+        const easeP2 = p2 < 0.5 ? 4 * p2 * p2 * p2 : 1 - Math.pow(-2 * p2 + 2, 3) / 2;
+
+        const curX = startX + (endX - startX) * easeP2;
+        const curY = startY + (endY - startY) * easeP2;
+
+        // Donor blob smoothly snaps back into the button
+        const donorR = Math.max(0, 10 * (1 - p2 * 1.5));
+        donor.setAttribute("r", donorR);
+        neck.setAttribute("r", 0);
+
+        // Traveling droplet stays completely solid & vibrant
+        travel.setAttribute("cx", curX);
+        travel.setAttribute("cy", curY);
+        travel.setAttribute("r", 11.5);
+
+        target.setAttribute("r", 0);
+      }
+      // Phase 3: Impact & absorption into the timetable boundary (0.88 to 1.0)
+      else {
+        const p3 = (progress - 0.88) / 0.12;
+        donor.setAttribute("r", 0);
+        neck.setAttribute("r", 0);
+        travel.setAttribute("r", 11.5 * (1 - p3));
+
+        // Target blob swells like a rising meniscus on the border
+        const targetR = 18 * Math.sin(p3 * Math.PI);
+        target.setAttribute("cx", endX);
+        target.setAttribute("cy", endY);
+        target.setAttribute("r", targetR);
+      }
+
+      if(progress < 1){
+        this.activeAnimation = requestAnimationFrame(step);
+      } else {
+        // Complete! Reset fluid elements
+        donor.setAttribute("r", 0);
+        neck.setAttribute("r", 0);
+        travel.setAttribute("r", 0);
+        target.setAttribute("r", 0);
+
+        // Spawn sharp micro-splash particles
+        Sound.splash();
+        this.createSplash(endX, endY, accentColor, splashGroup, isMobile);
+
+        // Execute impact callback with exact collision coordinates
+        if(onImpact) onImpact(endX, endY);
+      }
+    };
+
+    this.activeAnimation = requestAnimationFrame(step);
   },
-  collapse(){Sound.implode();setTimeout(()=>Sound.chime(),600);}
+
+  createSplash(x, y, color, group, isMobile){
+    group.innerHTML = "";
+    const count = 5;
+    for(let i = 0; i < count; i++){
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", x);
+      circle.setAttribute("cy", y);
+      circle.setAttribute("r", rnd(2.5, 4.5));
+      circle.setAttribute("fill", color);
+      group.appendChild(circle);
+
+      const angle = isMobile ? rnd(-0.2, Math.PI + 0.2) : rnd(-Math.PI * 0.45, Math.PI * 0.45);
+      const dist = rnd(18, 42);
+      const targetX = x + Math.cos(angle) * dist;
+      const targetY = y + Math.sin(angle) * dist;
+
+      circle.animate([
+        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+        { transform: `translate(${targetX - x}px, ${targetY - y}px) scale(0)`, opacity: 0 }
+      ], {
+        duration: rnd(260, 360),
+        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        fill: 'forwards'
+      });
+    }
+    setTimeout(() => { group.innerHTML = ""; }, 400);
+  }
 };
-function shatter(d){ if(GL)GL.request(d); else {hooks.burst();setTimeout(hooks.collapse,900);} }
+
+/* ---------------- APPLICATION STATE & UI RENDERER ---------------- */
+const root = document.documentElement;
+const now = new Date(), wd = now.getDay(), todayIdx = (wd >= 1 && wd <= 5) ? wd - 1 : -1;
+const daysNav = $("#days"), activePill = $("#activePill"), viewport = $("#viewport"), ph = $("#ph"), viewportBody = $("#viewportBody"), flashEl = $("#flash");
+let current = -1, renderTimer = null, GL = null;
+
+// Populate day selector buttons
+DAYS.forEach((D, i) => {
+  const btn = document.createElement("button");
+  btn.className = "day-btn";
+  btn.setAttribute("role", "tab");
+  btn.setAttribute("aria-selected", "false");
+  btn.setAttribute("id", `tab-day-${i}`);
+  btn.innerHTML = `
+    <span class="day-btn-title">
+      <span class="full-name">${D.name}</span>
+      <span class="short-name">${D.short}</span>
+      ${i === todayIdx ? '<i class="today-dot" title="Today"></i>' : ''}
+    </span>
+    <span class="day-badge">${D.lessons.length}</span>
+  `;
+  btn.addEventListener("click", () => selectDay(i));
+  daysNav.appendChild(btn);
+});
+const dayBtns = $$(".day-btn");
+
+function syncActivePill(){
+  const btn = dayBtns[current]; if(!btn) return;
+  const isMobile = window.innerWidth <= 768;
+  if(isMobile){
+    daysNav.style.setProperty("--pill-x", btn.offsetLeft + "px");
+    daysNav.style.setProperty("--pill-w", btn.offsetWidth + "px");
+    daysNav.style.setProperty("--pill-y", "0px");
+  } else {
+    daysNav.style.setProperty("--pill-y", btn.offsetTop + "px");
+    daysNav.style.setProperty("--pill-x", "0px");
+  }
+}
+addEventListener("resize", syncActivePill);
+
+function setAccent(d){
+  const c = DAYS[d].c1;
+  root.style.setProperty("--accent", c);
+  root.style.setProperty("--rgb", rgb(c));
+}
+
+/* Radial wave propagation from droplet impact location (X, Y) */
+function triggerRadialWave(hitX, hitY){
+  viewport.classList.remove("impact");
+  void viewport.offsetWidth;
+  viewport.classList.add("impact");
+
+  const rows = $$(".timeline-row");
+  rows.forEach(row => {
+    const rect = row.getBoundingClientRect();
+    const rowCenterX = rect.left + rect.width / 2;
+    const rowCenterY = rect.top + rect.height / 2;
+    const dist = Math.hypot(hitX - rowCenterX, hitY - rowCenterY);
+    const delay = Math.min(220, Math.round(dist * 0.28));
+
+    setTimeout(() => {
+      row.classList.add("lit");
+      setTimeout(() => row.classList.remove("lit"), 460);
+    }, delay);
+  });
+}
+
+function render(d, instant){
+  clearTimeout(renderTimer);
+  const D = DAYS[d];
+  const m = now.getHours() * 60 + now.getMinutes();
+
+  const build = () => {
+    const times = D.times;
+    const uniqueRooms = new Set(D.lessons.map(l => l.room)).size;
+    const startTm = times[0][0];
+    const endTm = times[D.lessons.length - 1][1];
+
+    ph.innerHTML = `
+      <div class="viewport-title">
+        <span>${D.name}</span><span class="accent-dot">.</span>
+      </div>
+      <div class="viewport-meta-row">
+        <div class="meta-pill-group">
+          <span class="meta-chip highlight">${D.lessons.length} Lessons</span>
+          <span class="meta-chip">${uniqueRooms} ${uniqueRooms === 1 ? 'Room' : 'Rooms'}</span>
+          <span class="meta-chip">${startTm} – ${endTm}</span>
+          ${D.gym ? '<span class="meta-chip highlight">Gym Day</span>' : ''}
+          ${d === todayIdx ? '<span class="meta-chip highlight">Active Today</span>' : ''}
+        </div>
+      </div>
+      <p class="viewport-note">${D.note}</p>
+    `;
+
+    // Build timeline items with break chips
+    let lessonHtml = '';
+    D.lessons.forEach((L, k) => {
+      const t = times[k];
+      const live = (d === todayIdx) && (m >= toMin(t[0])) && (m < toMin(t[1]));
+      
+      lessonHtml += `
+        <div class="timeline-row${live ? ' live' : ''}" data-period="${k + 1}">
+          <div class="time-col">
+            <span class="time-start">${t[0]}</span>
+            <span class="time-end">${t[1]}</span>
+          </div>
+          <div class="timeline-spine">
+            <span class="period-dot">${k + 1}</span>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-main">
+              <div class="lesson-title-wrap">
+                <h4 class="lesson-title">${L.s}</h4>
+                ${L.sub ? `<span class="track-badge">${L.sub}</span>` : ''}
+                ${live ? `<span class="live-pill"><span class="dot"></span>LIVE</span>` : ''}
+              </div>
+              <p class="lesson-desc">${L.n}</p>
+            </div>
+            <div class="lesson-meta">
+              <span class="room-pill">${L.room}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Insert break chip between periods
+      if(k < D.lessons.length - 1 && D.breaks[k]){
+        lessonHtml += `
+          <div class="break-chip">
+            <span class="break-badge">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              <span>${D.breaks[k]}</span>
+            </span>
+          </div>
+        `;
+      }
+    });
+
+    // After-school evening routines
+    let afterHtml = '';
+    AFTER[d].forEach(A => {
+      afterHtml += `
+        <div class="timeline-row">
+          <div class="time-col">
+            <span class="time-start">${A.t.split('–')[0]}</span>
+            <span class="time-end">${A.t.includes('–') ? A.t.split('–')[1] : 'Routine'}</span>
+          </div>
+          <div class="timeline-spine">
+            <span class="period-dot"><svg viewBox="0 0 24 24">${ICONS[A.k]}</svg></span>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-main">
+              <div class="lesson-title-wrap">
+                <h4 class="lesson-title">${A.a}</h4>
+                <span class="track-badge">${TAGS[A.k]}</span>
+              </div>
+              <p class="lesson-desc">${A.n}</p>
+            </div>
+            <div class="lesson-meta">
+              <span class="room-pill">${TAGS[A.k]}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    viewportBody.innerHTML = `
+      <div class="timeline-section-title">Lessons Schedule</div>
+      <div class="timeline-list">${lessonHtml}</div>
+      <div class="timeline-section-title after-school">After School Routine</div>
+      <div class="timeline-list">${afterHtml}</div>
+    `;
+
+    viewport.style.opacity = "1";
+    viewport.style.transform = "none";
+  };
+
+  if(instant){
+    build();
+  } else {
+    viewport.style.opacity = "0.4";
+    viewport.style.transform = "translateY(4px)";
+    renderTimer = setTimeout(build, 110);
+  }
+}
+
+const hooks = {
+  burst(){
+    Sound.boom(); Sound.shatter();
+    const mob = innerWidth <= 960;
+    flashEl.style.setProperty("--fx", mob ? "50%" : "72%");
+    flashEl.style.setProperty("--fy", mob ? "26%" : "50%");
+    flashEl.classList.remove("go"); void flashEl.offsetWidth; flashEl.classList.add("go");
+  },
+  collapse(){ Sound.implode(); setTimeout(() => Sound.chime(), 600); }
+};
+
+function shatter(d){
+  if(GL) GL.request(d);
+  else { hooks.burst(); setTimeout(hooks.collapse, 900); }
+}
 
 function selectDay(d){
-  if(d===current)return;
-  const first=current===-1;current=d;
-  dayBtns.forEach((b,i)=>b.setAttribute("aria-selected",i===d?"true":"false"));
-  moveBlob();setAccent(d);render(d,first);
-  if(!first){Sound.tick();triggerDropletFlow();shatter(d);}
+  if(d === current) return;
+  const first = current === -1;
+  const prevBtn = dayBtns[current];
+  current = d;
+
+  dayBtns.forEach((b, i) => b.setAttribute("aria-selected", i === d ? "true" : "false"));
+  syncActivePill();
+  setAccent(d);
+  render(d, first);
+
+  if(!first){
+    Sound.haptic();
+    const activeBtn = dayBtns[d];
+    FluidEngine.launch(activeBtn, viewport, DAYS[d].c1, (hitX, hitY) => {
+      triggerRadialWave(hitX, hitY);
+    });
+    shatter(d);
+  }
 }
 
-$("#shatterBtn").addEventListener("click",()=>shatter(current));
-$("#hit").addEventListener("click",()=>shatter(current));
-addEventListener("keydown",e=>{
-  if(e.key==="ArrowDown"||e.key==="ArrowRight"){e.preventDefault();selectDay((current+1)%5);}
-  if(e.key==="ArrowUp"||e.key==="ArrowLeft"){e.preventDefault();selectDay((current+4)%5);}
+$("#shatterBtn").addEventListener("click", () => shatter(current));
+$("#hit").addEventListener("click", () => shatter(current));
+
+/* Keyboard navigation between days */
+addEventListener("keydown", e => {
+  if(e.key === "ArrowDown" || e.key === "ArrowRight"){ e.preventDefault(); selectDay((current + 1) % 5); }
+  if(e.key === "ArrowUp" || e.key === "ArrowLeft"){ e.preventDefault(); selectDay((current + 4) % 5); }
 });
 
-const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.add("in");io.unobserve(en.target);}}),{threshold:.15});
-$$(".reveal").forEach(el=>io.observe(el));
+/* Axis-locked Touch Swipe Navigation for mobile devices */
+let touchStartX = 0, touchStartY = 0;
+const touchTarget = $("#workbench");
+if(touchTarget){
+  touchTarget.addEventListener("touchstart", e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
 
-const glc=$("#gl");
-addEventListener("scroll",()=>{glc.style.opacity=1-Math.min(.7,scrollY/innerHeight*.7);},{passive:true});
+  touchTarget.addEventListener("touchend", e => {
+    const deltaX = e.changedTouches[0].clientX - touchStartX;
+    const deltaY = e.changedTouches[0].clientY - touchStartY;
+    // Axis lock: ensure swipe is predominantly horizontal and passes threshold
+    if(Math.abs(deltaX) > 48 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5){
+      if(deltaX < 0){
+        // Swipe left -> next day
+        selectDay((current + 1) % 5);
+      } else {
+        // Swipe right -> previous day
+        selectDay((current + 4) % 5);
+      }
+    }
+  }, { passive: true });
+}
 
-const start=todayIdx>=0?todayIdx:0;
-try{ if(window.THREE&&document.createElement("canvas").getContext("webgl")) GL=initGL(start,hooks); }
-catch(err){console.warn("WebGL unavailable",err);GL=null;}
+/* Scroll reveal animations */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){ entry.target.classList.add("in"); io.unobserve(entry.target); }
+  });
+}, { threshold: 0.15 });
+$$(".reveal").forEach(el => io.observe(el));
+
+/* Smooth canvas opacity on scroll */
+const glCanvas = $("#gl");
+addEventListener("scroll", () => {
+  if(glCanvas) glCanvas.style.opacity = Math.max(0.15, 1 - scrollY / innerHeight * 0.85);
+}, { passive: true });
+
+/* Initialize */
+const start = todayIdx >= 0 ? todayIdx : 0;
+try {
+  if(window.THREE && document.createElement("canvas").getContext("webgl")) GL = initGL(start, hooks);
+} catch(err){ console.warn("WebGL unavailable", err); GL = null; }
+
 selectDay(start);
-if(document.fonts)document.fonts.ready.then(moveBlob);
+if(document.fonts) document.fonts.ready.then(syncActivePill);
+
 })();
 </script>
 </body>
